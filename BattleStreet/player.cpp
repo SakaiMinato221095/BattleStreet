@@ -23,19 +23,19 @@
 
 #include "camera.h"
 
-#include "kazedama.h"
+#include "coll.h"
 
 //-======================================
 //-	マクロ定義
 //-======================================
 
-#define PLAYER_SPEED	(4.0f)	//プレイヤーの速度
+#define PLAYER_SPEED		(4.0f)	// プレイヤーの速度
+#define PLAYER_JUMP			(30.0f)	// プレイヤーのジャンプ力
+#define PLAYER_DOUBLE_JUMP	(35.0f)	// プレイヤーの二段ジャンプ力
 
 //-======================================
 //-	静的変数宣言
 //-======================================
-
-CPlayer *CPlayer::m_pInstance = NULL;
 
 //-------------------------------------
 //-	コンストラクタ
@@ -46,6 +46,10 @@ CPlayer::CPlayer()
 	ZeroMemory(&m_data, sizeof(m_data));
 
 	m_bJump = false;
+	m_bLanding = false;
+
+	m_stateType = STATE_TYPE(0);
+	m_stateTypeNew = m_stateType;
 
 	ZeroMemory(m_mtxWorld, sizeof(D3DXMATRIX));
 
@@ -54,12 +58,6 @@ CPlayer::CPlayer()
 	m_nNumModel = 0;
 
 	m_pMotion = NULL;
-
-	if (m_pInstance == NULL)
-	{
-		// 自身のポインタを代入
-		m_pInstance = this;
-	}
 }
 
 //-------------------------------------
@@ -73,8 +71,11 @@ CPlayer::~CPlayer()
 //-------------------------------------
 //- プレイヤーの初期化処理
 //-------------------------------------
-HRESULT CPlayer::Init(CModel::MODEL_TYPE modelType, CMotion::MOTION_TYPE motionType, int nStateMax)
+HRESULT CPlayer::Init(D3DXVECTOR3 pos , D3DXVECTOR3 rot,CModel::MODEL_TYPE modelType, CMotion::MOTION_TYPE motionType, int nStateMax)
 {
+	// 戦闘プレイヤーの設定処理
+	InitSet(pos, rot);
+
 	// モデルのパーツ数を取得
 	m_nNumModel = CModel::GetPartsNum(modelType);
 
@@ -120,6 +121,16 @@ HRESULT CPlayer::Init(CModel::MODEL_TYPE modelType, CMotion::MOTION_TYPE motionT
 //-------------------------------------
 void CPlayer::Uninit(void)
 {
+	if (m_pColl != NULL)
+	{
+		// 当たり判定の終了処理
+		m_pColl->Uninit();
+
+		// 当たり判定の開放処理
+		delete m_pColl;
+		m_pColl = NULL;
+	}
+
 	// モデルの終了処理
 	for (int nCount = 0; nCount < m_nNumModel; nCount++)
 	{
@@ -148,9 +159,6 @@ void CPlayer::Uninit(void)
 		m_pMotion = NULL;
 	}
 
-	// 自身のポインタを初期化
-	m_pInstance = NULL;
-
 	// 自分自身のポインタの開放
 	Release();
 }
@@ -163,20 +171,82 @@ void CPlayer::Update(void)
 	// 前回の位置を更新
 	m_data.posOld = m_data.pos;
 
-	// 移動の入力処理
-	InputMove();
+	if (CManager::GetInstance()->GetMode() == CScene::MODE_GAME)
+	{
+		// 移動の入力処理
+		InputMove();
 
-	// ジャンプの入力処理
-	InputJump();
-
-	// アクションの入力処理
-	InputAction();
+		// ジャンプの入力処理
+		InputJump();
+	}
 
 	// 向きの更新処理
 	UpdateRot();
 
 	// 位置情報の更新処理
 	UpdatePos();
+
+	// 追加情報の更新処理
+	UpdatePlusData();
+
+	// 通常モーションの更新処理
+	UpdateMotionNone();
+
+	//縦幅の処理
+	if (m_data.pos.y <= 0.0f)
+	{
+		m_bJump = false;
+
+		if (m_bLanding == false)
+		{
+			m_bLanding = true;
+		}
+
+		m_data.pos.y = 0.0f;
+		m_data.move.y = 0.0f;
+	}
+
+	if (m_pColl != nullptr)
+	{
+		// 当たり判定の情報更新処理
+		m_pColl->UpdateData(
+			m_data.pos,
+			m_data.posOld,
+			m_data.size);
+
+		//// プレイヤーの当たり判定
+		//if (m_pColl->Hit(CMgrColl::TAG_BLOCK, CMgrColl::STATE_HIT_NONE) == true)
+		//{
+		//	bool bHitSxisX = m_pColl->GetData().abHitSxis[CColl::TYPE_SXIS_X];
+		//	bool bHitSxisY = m_pColl->GetData().abHitSxis[CColl::TYPE_SXIS_Y];
+
+		//	if (bHitSxisX == true)
+		//	{
+		//		// 移動量をなくす
+		//		m_data.move.x = 0.0f;
+
+		//		// プレイヤーのX座標移動を停止
+		//		m_data.pos.x = m_pColl->GetData().pos.x;
+		//	}
+
+		//	if (bHitSxisY == true)
+		//	{
+		//		// 移動量をなくす
+		//		m_data.move.y = 0.0f;
+
+		//		// プレイヤーのY座標移動を停止
+		//		m_data.pos.y = m_pColl->GetData().pos.y;
+
+		//		// ジャンプを使用可
+		//		m_bJump = false;
+
+		//		if (m_bLanding == false)
+		//		{
+		//			m_bLanding = true;
+		//		}
+		//	}
+		//}
+	}
 
 	// デバック表示
 	DebugPlayer();
@@ -192,7 +262,7 @@ void CPlayer::Draw(void)
 	D3DXVECTOR3 rot = m_data.rot;	// 向き情報
 
 	// デバイスを取得
-	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
+	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// デバイスの情報取得の成功を判定
 	if (pDevice == NULL)
@@ -224,57 +294,65 @@ void CPlayer::Draw(void)
 	// パーツ数の描画処理
 	for (int nCount = 0; nCount < m_nNumModel; nCount++)
 	{
-		m_apModel[nCount]->Draw();
+		if (m_apModel[nCount] != nullptr)
+		{
+			m_apModel[nCount]->Draw();
+		}
 	}
 }
 
 //-------------------------------------
-//- プレイヤーのモーション情報取得処理
+//- プレイヤーの生成処理
 //-------------------------------------
-void CPlayer::Hit(int nDamage)
+CPlayer *CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, CModel::MODEL_TYPE modelType, CMotion::MOTION_TYPE motionType)
 {
+	// プレイヤーのポインタを宣言
+	CPlayer *pPlayer = new CPlayer;
 
+	// 生成の成功の有無を判定
+	if (pPlayer != NULL)
+	{
+		// 初期化処理
+		if (FAILED(pPlayer->Init(pos, rot, modelType, motionType, STATE_TYPE_MAX)))
+		{// 失敗時
+
+		 // 「なし」を返す
+			return NULL;
+		}
+	}
+	else if (pPlayer == NULL)
+	{// 失敗時
+
+	 // 「なし」を返す
+		return NULL;
+	}
+
+	// プレイヤーのポインタを返す
+	return pPlayer;
 }
 
 //-------------------------------------
-//- プレイヤーのモーション情報取得処理
+//- プレイヤーの初期設定処理
 //-------------------------------------
-CMotion *CPlayer::GetMotion(void)
+void CPlayer::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
-	// モーションを返す
-	return m_pMotion;
-}
+	m_data.pos = pos;
+	m_data.posOld = pos;
+	m_data.rot = rot;
+	m_data.rotDest = rot;
 
-//-------------------------------------
-//- プレイヤーのモデルの情報取得
-//-------------------------------------
-CModel *CPlayer::GetModel(int nNumParts)
-{
-	return m_apModel[nNumParts];
-}
+	m_data.size = D3DXVECTOR3(50.0f, 100.0f, 50.0f);
 
-//-------------------------------------
-//- プレイヤーの値設定処理
-//-------------------------------------
-void CPlayer::SetData(Data data)
-{
-	m_data = data;
-}
+	// 当たり判定設定
+	m_pColl = CColl::Create(
+		CMgrColl::TAG_PLAYER,
+		m_data.pos,
+		m_data.size);
 
-//-------------------------------------
-//- プレイヤーの値取得処理
-//-------------------------------------
-CPlayer::Data CPlayer::GetData(void)
-{
-	return m_data;
-}
+	//// 相手タグの設定処理
+	//m_pColl->SetTagTgt(CMgrColl::TAG_BLOCK, CMgrColl::TYPE_RECTANGLE_SIDE, true);
 
-//-------------------------------------
-//- プレイヤーのインスタンス取得処理
-//-------------------------------------
-CPlayer * CPlayer::GetInstance(void)
-{
-	return m_pInstance;
+	m_data.plus.speedRate = 1.0f;
 }
 
 //-------------------------------------
@@ -295,13 +373,6 @@ void CPlayer::UpdatePos(void)
 	// 移動量を減衰
 	move.x += (0.0f - move.x) * 0.3f;
 	move.z += (0.0f - move.z) * 0.3f;
-
-	//縦幅の処理
-	if (pos.y <= 0.0f)
-	{
-		m_bJump = false;
-		pos.y = 0.0f;
-	}
 
 	// 情報更新
 	m_data.pos = pos;
@@ -359,12 +430,93 @@ void CPlayer::UpdateRot(void)
 }
 
 //-------------------------------------
+//- プレイヤーの追加データの更新処理
+//-------------------------------------
+void CPlayer::UpdatePlusData(void)
+{
+	if (m_data.plus.sppedPlusTime != 0)
+	{
+		m_data.plus.sppedPlusTime--;
+		
+		if (m_data.plus.sppedPlusTime <= 0)
+		{
+			m_data.plus.speedRate = 1.0f;
+		}
+	}	
+}
+
+//-------------------------------------
+//- 通常状態プレイヤーのモーション更新処理
+//-------------------------------------
+void CPlayer::UpdateMotionNone(void)
+{
+	// 変数宣言（情報取得）
+	CMotion *pMotion = GetMotion();		// モーション
+	D3DXVECTOR3 move = GetData().move;	// 移動量
+
+	// 状態を判定
+	if (m_stateTypeNew == STATE_TYPE_NEUTRAL ||
+		m_stateTypeNew == STATE_TYPE_MOVE )
+	{
+		// 移動量で状態を変更
+		if (move.x >= 0.3f ||
+			move.x <= -0.3f ||
+			move.z >= 0.3f ||
+			move.z <= -0.3f)
+		{
+			// 移動状態に変更
+			m_stateTypeNew = STATE_TYPE_MOVE;
+		}
+		else
+		{
+			// 待機状態の変更
+			m_stateTypeNew = STATE_TYPE_NEUTRAL;
+		}
+	}
+
+	if (m_stateTypeNew == STATE_TYPE_JUMP || 
+		m_stateTypeNew == STATE_TYPE_DOUBLEJUMP)
+	{
+		if (m_data.move.y <= 0.0f)
+		{
+			//m_stateTypeNew = STATE_TYPE_LANDING;
+		}
+	}
+
+	if (m_pMotion != nullptr)
+	{
+		// モーションの終了状況を判定
+		if (pMotion->IsFinsih() == true)
+		{
+			// モーションの更新
+			pMotion->Update();
+		}
+		else
+		{
+			// 待機状態を設定
+			m_stateTypeNew = STATE_TYPE_NEUTRAL;
+		}
+
+		// モーションの設定処理
+		if (m_stateType != m_stateTypeNew)
+		{
+			// 現在のモーションの設定
+			pMotion->Set(m_stateTypeNew);
+
+			// 状態の更新
+			m_stateType = m_stateTypeNew;
+		}
+	}
+
+}
+
+//-------------------------------------
 //- プレイヤーの移動処理
 //-------------------------------------
 void CPlayer::InputMove(void)
 {
 	// キーボードのポインタを宣言
-	CInputKeyboard *pInputKeyboard = CManager::GetInputKeyboard();
+	CInputKeyboard *pInputKeyboard = CManager::GetInstance()->GetInstance()->GetInputKeyboard();
 
 	// キーボードの情報取得の成功を判定
 	if (pInputKeyboard == NULL)
@@ -375,7 +527,7 @@ void CPlayer::InputMove(void)
 	}
 
 	// X入力のポインタを宣言
-	CXInput *pXInput = CManager::GetXInput();
+	CXInput *pXInput = CManager::GetInstance()->GetXInput();
 
 	// X入力の情報取得の成功を判定
 	if (pXInput == NULL)
@@ -385,22 +537,94 @@ void CPlayer::InputMove(void)
 	}
 
 	// 変数宣言
-	D3DXVECTOR3 move = m_data.move;			// 移動量を取得
-	D3DXVECTOR3 rotDest = m_data.rotDest;	// 目的の回転量を取得
+	D3DXVECTOR3 move = m_data.move;					// 移動量を取得
+	D3DXVECTOR3 rotDest = m_data.rotDest;			// 目的の回転量を取得
+	float speedRate = m_data.plus.speedRate;		// 速度の倍率
+
+	D3DXVECTOR3 speed = D3DXVECTOR3(PLAYER_SPEED, 0.0f, PLAYER_SPEED);
+	speed *= speedRate;
 
 	// カメラの情報を取得
-	CCamera *pCamera = CManager::GetCamera();
+	CCamera *pCamera = CManager::GetInstance()->GetCamera();
 
 	// カメラの向きを取得
 	D3DXVECTOR3 rotCamera = pCamera->GetData().rot;
 
-	if (
+	// 移動
+	if (pInputKeyboard->GetPress(DIK_W) == true ||
+		pXInput->GetPress(CXInput::TYPE_STICK_UP, CXInput::TYPE_INPUT_STICK_L) == true)
+	{//Wキーが押されたとき
+		if (pInputKeyboard->GetPress(DIK_A) == true ||
+			pXInput->GetPress(CXInput::TYPE_STICK_LEFT, CXInput::TYPE_INPUT_STICK_L) == true)
+		{//左上移動
+
+			move.x -= sinf((D3DX_PI * 0.75f) + rotCamera.y);
+			move.z -= cosf((D3DX_PI * 0.75f) + rotCamera.y);
+
+			rotDest.y = (D3DX_PI * 0.75f) + rotCamera.y;
+		}
+		else if (
+			pInputKeyboard->GetPress(DIK_D) == true ||
+			pXInput->GetPress(CXInput::TYPE_STICK_RIGHT, CXInput::TYPE_INPUT_STICK_L) == true)
+		{//右上移動
+
+			move.x += sinf((D3DX_PI * 0.25f) + rotCamera.y);
+			move.z += cosf((D3DX_PI * 0.25f) + rotCamera.y);
+
+			rotDest.y = -(D3DX_PI * 0.75f) + rotCamera.y;
+		}
+		else
+		{
+
+			move.x += sinf((D3DX_PI * 0.0f) + rotCamera.y);
+			move.z += cosf((D3DX_PI * 0.0f) + rotCamera.y);
+
+			rotDest.y = D3DX_PI + rotCamera.y;
+
+		}
+	}
+
+	else if (
+		pInputKeyboard->GetPress(DIK_S) == true ||
+		pXInput->GetPress(CXInput::TYPE_STICK_DOWN, CXInput::TYPE_INPUT_STICK_L) == true)
+	{//Sキーが押されたとき
+		if (
+			pInputKeyboard->GetPress(DIK_A) == true ||
+			pXInput->GetPress(CXInput::TYPE_STICK_LEFT, CXInput::TYPE_INPUT_STICK_L) == true)
+		{//左下移動
+
+			move.x -= sinf((D3DX_PI * 0.25f) + rotCamera.y);
+			move.z -= cosf((D3DX_PI * 0.25f) + rotCamera.y);
+
+			rotDest.y = (D3DX_PI * 0.25f) + rotCamera.y;
+		}
+		else  if (
+			pInputKeyboard->GetPress(DIK_D) == true ||
+			pXInput->GetPress(CXInput::TYPE_STICK_RIGHT, CXInput::TYPE_INPUT_STICK_L) == true)
+		{//右下移動
+
+			move.x += sinf((D3DX_PI * 0.75f) + rotCamera.y);
+			move.z += cosf((D3DX_PI * 0.75f) + rotCamera.y);
+
+			rotDest.y = -(D3DX_PI * 0.25f) + rotCamera.y;
+		}
+		else
+		{
+			//移動量
+			move.x += sinf((D3DX_PI * 1.0f) + rotCamera.y);
+			move.z += cosf((D3DX_PI * 1.0f) + rotCamera.y);
+
+			rotDest.y = (D3DX_PI * 0.0f) + rotCamera.y;
+		}
+	}
+
+	else  if (
 		pInputKeyboard->GetPress(DIK_A) == true ||
 		pXInput->GetPress(CXInput::TYPE_STICK_LEFT, CXInput::TYPE_INPUT_STICK_L) == true)
 	{//Aキーが押されたとき
 
-		move.x -= sinf((D3DX_PI * 0.5f) + rotCamera.y) * PLAYER_SPEED;
-		move.z -= cosf((D3DX_PI * 0.5f) + rotCamera.y) * PLAYER_SPEED;
+		move.x -= sinf((D3DX_PI * 0.5f) + rotCamera.y);
+		move.z -= cosf((D3DX_PI * 0.5f) + rotCamera.y);
 
 		rotDest.y = (D3DX_PI * 0.5f) + rotCamera.y;
 	}
@@ -409,8 +633,8 @@ void CPlayer::InputMove(void)
 		pXInput->GetPress(CXInput::TYPE_STICK_RIGHT, CXInput::TYPE_INPUT_STICK_L) == true)
 	{//Dキーが押されたとき
 
-		move.x += sinf((D3DX_PI * 0.5f) + rotCamera.y) * PLAYER_SPEED;
-		move.z += cosf((D3DX_PI * 0.5f) + rotCamera.y) * PLAYER_SPEED;
+		move.x += sinf((D3DX_PI * 0.5f) + rotCamera.y);
+		move.z += cosf((D3DX_PI * 0.5f) + rotCamera.y);
 
 		rotDest.y = -(D3DX_PI * 0.5f) + rotCamera.y;
 	}
@@ -418,7 +642,6 @@ void CPlayer::InputMove(void)
 	// 情報更新
 	m_data.move = move;			// 移動量
 	m_data.rotDest = rotDest;	// 目的の向き
-
 }
 
 //-------------------------------------
@@ -426,8 +649,20 @@ void CPlayer::InputMove(void)
 //-------------------------------------
 void CPlayer::InputJump(void)
 {
+	if (m_bJump == false)
+	{
+		// 通常ジャンプ処理
+		InputNormalJump();
+	}
+}
+
+//-------------------------------------
+//- プレイヤーの通常ジャンプ入力処理
+//-------------------------------------
+void CPlayer::InputNormalJump(void)
+{
 	// キーボードのポインタを宣言
-	CInputKeyboard *pInputKeyboard = CManager::GetInputKeyboard();
+	CInputKeyboard *pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
 
 	// キーボードの情報取得の成功を判定
 	if (pInputKeyboard == NULL)
@@ -438,10 +673,20 @@ void CPlayer::InputJump(void)
 	}
 
 	// X入力のポインタを宣言
-	CXInput *pXInput = CManager::GetXInput();
+	CXInput *pXInput = CManager::GetInstance()->GetXInput();
 
 	// X入力の情報取得の成功を判定
 	if (pXInput == NULL)
+	{
+		// 処理を抜ける
+		return;
+	}
+
+	// サウンドのポインタを宣言
+	CSound *pSound = CManager::GetInstance()->GetSound();
+	
+	// サウンドの情報取得の成功を判定
+	if (pSound == NULL)
 	{
 		// 処理を抜ける
 		return;
@@ -456,85 +701,19 @@ void CPlayer::InputJump(void)
 	{
 		// ジャンプ状態に変更
 		m_bJump = true;
-		
+
+		// ジャンプSEの再生
+		pSound->Play(CSound::LABEL_SE_JUMP);
+
 		// ジャンプ量を設定
-		move.y = 20.0f;
+		move.y = PLAYER_JUMP;
+
+		// 状態をジャンプに変更
+		m_stateTypeNew = STATE_TYPE_JUMP;
 	}
 
 	// 情報更新
 	m_data.move = move;			// 移動量
-}
-
-//-------------------------------------
-//- プレイヤーのアクション入力処理
-//-------------------------------------
-void CPlayer::InputAction(void)
-{
-	// キーボードのポインタを宣言
-	CInputKeyboard *pInputKeyboard = CManager::GetInputKeyboard();
-
-	// キーボードの情報取得の成功を判定
-	if (pInputKeyboard == NULL)
-	{// 失敗時
-
-	 // 移動処理を抜ける
-		return;
-	}
-
-	// X入力のポインタを宣言
-	CXInput *pXInput = CManager::GetXInput();
-
-	// X入力の情報取得の成功を判定
-	if (pXInput == NULL)
-	{
-		// 処理を抜ける
-		return;
-	}
-
-	// 風だまのポインタの有無を判定
-	if (CKazedama::GetInstance() == NULL)
-	{
-		// 入力処理（Jキー / Bボタン）
-		if (pInputKeyboard->GetTrigger(DIK_J) != NULL ||
-			pXInput->GetTrigger(XINPUT_GAMEPAD_B, CXInput::TYPE_INPUT_BUTTON))
-		{
-			// 情報取得
-			D3DXVECTOR3 pos = m_data.pos;
-			D3DXVECTOR3 rot = m_data.rot;
-
-			// 変数宣言
-			D3DXVECTOR3 posBody = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-
-			// 銃の位置を代入（番号ベタ打ち[15]番）
-			posBody.x = m_apModel[0]->GetMtxWorld()._41;
-			posBody.y = m_apModel[0]->GetMtxWorld()._42;
-			posBody.z = m_apModel[0]->GetMtxWorld()._43;
-
-			// 風だまの生成処理
-			CKazedama *pKazedama = CKazedama::Create(CKazedama::TEX_NULL);
-
-			if (rot.y >= 0.0f && rot.y <= D3DX_PI)
-			{
-				// 風だまの設定処理
-				pKazedama->Set(
-					posBody,
-					D3DXVECTOR3(50.0f, 50.0f, 0.0f),
-					D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f),
-					D3DXVECTOR3(-20.0f, 0.0f, 0.0f),
-					CKazedama::TYPE_ROT_LEFT);
-			}
-			else if (rot.y <= 0.0f && rot.y <= D3DX_PI)
-			{
-				// 風だまの設定処理
-				pKazedama->Set(
-					posBody,
-					D3DXVECTOR3(50.0f, 50.0f, 0.0f),
-					D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f),
-					D3DXVECTOR3(20.0f, 0.0f, 0.0f),
-					CKazedama::TYPE_ROT_RIGHT);
-			}
-		}
-	}
 }
 
 //-------------------------------------
@@ -543,7 +722,7 @@ void CPlayer::InputAction(void)
 void CPlayer::DebugPlayer(void)
 {
 	// デバックプロックの取得
-	CDebugProc *pDebugProc = CManager::GetDbugProc();
+	CDebugProc *pDebugProc = CManager::GetInstance()->GetDbugProc();
 
 	// デバックプロック取得の有無を判定
 	if (pDebugProc == NULL)
@@ -552,7 +731,8 @@ void CPlayer::DebugPlayer(void)
 	}
 
 	pDebugProc->Print("\n");
-	pDebugProc->Print("プレイヤーの位置\n");
+	pDebugProc->Print("プレイヤーの位置");
+	pDebugProc->Print("\n");
 	pDebugProc->Print("%f,%f,%f",m_data.pos.x, m_data.pos.y, m_data.pos.z);
 	pDebugProc->Print("\n");
 }

@@ -76,10 +76,16 @@ public:
 	static void UpdateAll(void);
 	static void DrawAll(void);
 
-	static CObject *GetObject(int nPriority,int nldx);
+	static CObject* GetTop(int nPriority);
+	CObject* GetNext(void);
 
-	virtual CObject2d *GetObject2d(void);
-	virtual CBgMulti *GetBgMulti(void);
+	void IsUpdateStop(bool bIsUpdateStop) { m_bIsUpdateStop = bIsUpdateStop; }
+
+	static bool GetIsUpdateAllStop(void) { return m_bIsUpdateAllStop; }
+	static void SetIsUpdateAllStop(bool bIsUpdateAllStop) { m_bIsUpdateAllStop = bIsUpdateAllStop; }
+
+	virtual CObject2d* GetObject2d(void) { return nullptr; }
+	virtual CBgMulti* GetBgMulti(void) { return nullptr; }
 
 protected:
 
@@ -87,14 +93,23 @@ protected:
 
 private:
 
+	void ReleaseObj(void);
+
 	static void Debug(void);
 
-	static CObject *m_apObject[OBJECT_PRIORITY_MAX][OBJECT_NUM_MAX];	// オブジェクトのポインタ
+	static CObject* m_apTop[OBJECT_PRIORITY_MAX];	// 先頭のオブジェクトへのポインタ
+	static CObject* m_apCur[OBJECT_PRIORITY_MAX];	// 最後尾のオブジェクトへのポインタ
 
-	static int m_nNumAll;		// オブジェクトの総数
+	static int m_nNumAll;				// オブジェクトの総数
+	static bool m_bIsUpdateAllStop;		// 全更新の有無
 
-	int m_nID;					// 自分自身のポインタの番号
-	int m_nPriority;			// 自分自身の優先順位の番号
+	CObject* m_pPrev;		// 前のオブジェクトへのポインタ
+	CObject* m_pNext;		// 次のオブジェクトへのポインタ
+
+	int m_nPriority;		// 自身の優先順位
+
+	bool m_bIsUpdateStop;		// 更新の有無
+	bool m_bIsDeath;			// 死亡の有無
 };
 
 #endif	// 二重インクルード防止の終了

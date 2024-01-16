@@ -51,8 +51,8 @@ public:
 
 	void BindModel(int nModelNldx, int nModelNum);
 
-	void SetVtxData(VtxData vtxData);
-	VtxData GetVtxData(void);
+	void SetVtxData(VtxData vtxData) { m_vtxData = vtxData; }
+	VtxData GetVtxData(void) { return m_vtxData; }
 
 	virtual void SetModel(int nModelNldx);
 

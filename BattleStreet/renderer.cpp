@@ -213,7 +213,7 @@ void CRenderer::Draw(void)
 			CObject::DrawAll();
 
 			// フェードの取得
-			CFade *pFade = CManager::GetFade();
+			CFade *pFade = CManager::GetInstance()->GetFade();
 
 			// フェードの有無を判定
 			if (pFade != NULL)
@@ -223,7 +223,7 @@ void CRenderer::Draw(void)
 			}
 
 			// デバックプロックの取得
-			CDebugProc *pDbugProc = CManager::GetDbugProc();
+			CDebugProc *pDbugProc = CManager::GetInstance()->GetDbugProc();
 
 			// デバックプロックの有無を判定
 			if (pDbugProc != NULL)
@@ -373,15 +373,4 @@ void CRenderer::SetAlphaTest(bool bUse)
 				0);
 		}
 	}
-}
-
-
-
-//-------------------------------------
-//- デバイスの取得処理
-//-------------------------------------
-LPDIRECT3DDEVICE9 CRenderer::GetDevice(void)
-{
-	// デバイスの情報を返す
-	return m_pD3DDevice;
 }

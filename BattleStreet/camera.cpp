@@ -23,6 +23,15 @@
 #include "player.h"
 
 //=======================================
+//=	コンスト定義
+//=======================================
+
+const D3DXVECTOR3 FOLL_POS_V = (D3DXVECTOR3(0.0f, 500.0f, 500.0f));		// 追尾状態の初期視点
+const D3DXVECTOR3 FOLL_POS_R = (D3DXVECTOR3(0.0f, 200.0f, 0.0f));		// 追尾状態の初期注視点
+const float FOLL_LENGTH = (1000.0f);									// 追尾状態の視点と注視点の距離
+const float FOLL_POS_DEST_SPEED = (0.3f);								// 追尾状態の位置補正速度
+
+//=======================================
 //=	マクロ定義
 //=======================================
 
@@ -39,7 +48,7 @@ CCamera::CCamera()
 	ZeroMemory(m_mtxProjectien, sizeof(D3DXMATRIX));
 	ZeroMemory(m_mtxView, sizeof(D3DXMATRIX));
 
-	m_mode = MODE_FOLLOWING;
+	m_mode = MODE(0);
 }
 
 //-------------------------------------
@@ -64,11 +73,11 @@ HRESULT CCamera::Init(void)
 	// グローバル変数の初期化
 	{
 		// 情報設定
-		posV = D3DXVECTOR3(0.0f, 400.0f, 1500.0f);	// 視点
-		posR = D3DXVECTOR3(0.0f, 300.0f, 0.0f);		// 注視点
-		vecU = D3DXVECTOR3(0.0f, 1.0f, 0.0f);		// 上方向のベクトル
-		rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);		// 向き
-		fLength = 1500.0f;							// カメラとの長さ
+		posV = FOLL_POS_V;						// 視点
+		posR = FOLL_POS_R;						// 注視点
+		vecU = D3DXVECTOR3(0.0f, 1.0f, 0.0f);	// 上方向のベクトル
+		rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// 向き
+		fLength = FOLL_LENGTH;					// カメラとの長さ
 
 		// 情報更新
 		m_data.posV = posV;			// 視点
@@ -99,7 +108,7 @@ void CCamera::Uninit(void)
 void CCamera::Update(void)
 {
 	// キーボードのポインタを宣言
-	CInputKeyboard *pInputKeyboard = CManager::GetInputKeyboard();
+	CInputKeyboard *pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
 
 	// キーボードの情報取得の成功を判定
 	if (pInputKeyboard == NULL)
@@ -109,7 +118,7 @@ void CCamera::Update(void)
 		return;
 	}
 
-	if (CManager::GetMode() == CScene::MODE_GAME)
+	if (CManager::GetInstance()->GetMode() == CScene::MODE_GAME)
 	{
 		// カメラのモード
 		switch (m_mode)
@@ -132,7 +141,7 @@ void CCamera::Update(void)
 			break;
 		}
 	}
-	else if (CManager::GetMode() == CScene::MODE_TITEL)
+	else if (CManager::GetInstance()->GetMode() == CScene::MODE_TITEL)
 	{
 		// タイトルの更新処理
 		UpdateTitle();
@@ -151,7 +160,7 @@ void CCamera::UpdateOperation(void)
 	float fLength = m_data.fLength;		// カメラとの距離
 
 	// キーボードのポインタを宣言
-	CInputKeyboard *pInputKeyboard = CManager::GetInputKeyboard();
+	CInputKeyboard *pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
 
 	// キーボードの情報取得の成功を判定
 	if (pInputKeyboard == NULL)
@@ -278,7 +287,7 @@ void CCamera::UpdateFollowing(void)
 	D3DXVECTOR3 rot = m_data.rot;				// 向き
 
 	// プレイヤーの情報取得
-	CPlayer *pPlayer = CPlayer::GetInstance();
+	CPlayer *pPlayer = CGame::GetPlayer();
 
 	// プレイヤーの情報取得の成功を判定
 	if (pPlayer == NULL)
@@ -294,9 +303,9 @@ void CCamera::UpdateFollowing(void)
 
 	//注視点とプレイヤーの距離
 	D3DXVECTOR3 cameraPlayer = D3DXVECTOR3(
-		sinf(playerRot.y) * -50.0f,
+		sinf(playerRot.y),
 		0.0f,
-		cosf(playerRot.y) * -50.0f);
+		cosf(playerRot.y));
 
 	//視点の位置を更新
 	posV.x = posR.x + sinf(rot.y) * -fLength;
@@ -311,12 +320,12 @@ void CCamera::UpdateFollowing(void)
 	posRDest.z = playerPos.z + cameraPlayer.z;
 
 	//視点の補正
-	posV.x += (posVDest.x - posV.x) * 0.1f;
-	posV.z += (posVDest.z - posV.z) * 0.1f;
+	posV.x += (posVDest.x - posV.x) * FOLL_POS_DEST_SPEED;
+	posV.z += (posVDest.z - posV.z) * FOLL_POS_DEST_SPEED;
 
 	//注視点の補正
-	posR.x += (posRDest.x - posR.x) * 0.1f;
-	posR.z += (posRDest.z - posR.z) * 0.1f;
+	posR.x += (posRDest.x - posR.x) * FOLL_POS_DEST_SPEED;
+	posR.z += (posRDest.z - posR.z) * FOLL_POS_DEST_SPEED;
 
 	// 情報更新
 	m_data.posV = posV;				// 視点
@@ -326,14 +335,13 @@ void CCamera::UpdateFollowing(void)
 	m_data.rot = rot;				// 向き
 	m_data.fLength = fLength;		// カメラとの距離
 }
-
 //-------------------------------------
 //-	カメラの向き追尾処理
 //-------------------------------------
 void CCamera::UpdateRot(void)
 {
 	// キーボードのポインタを宣言
-	CInputKeyboard *pInputKeyboard = CManager::GetInputKeyboard();
+	CInputKeyboard *pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
 
 	// キーボードの情報取得の成功を判定
 	if (pInputKeyboard == NULL)
@@ -393,61 +401,46 @@ void CCamera::UpdateRot(void)
 //-------------------------------------
 void CCamera::UpdateTitle(void)
 {
-	//// 変数宣言（情報取得）
-	//D3DXVECTOR3 posV = m_data.posV;				// 視点
-	//D3DXVECTOR3 posVDest = m_data.posVDest;		// 目的の視点
-	//D3DXVECTOR3 posR = m_data.posR;				// 注視点
-	//D3DXVECTOR3 posRDest = m_data.posRDest;		// 目的の注視点
-	//D3DXVECTOR3 rot = m_data.rot;				// 向き
-	//D3DXVECTOR3 rotDest = m_data.rotDest;		// 目的の向き
-	//float fLength = m_data.fLength;				// カメラとの距離
+	// 変数宣言（情報取得）
+	D3DXVECTOR3 posV = m_data.posV;				// 視点
+	D3DXVECTOR3 posVDest = m_data.posVDest;		// 目的の視点
+	D3DXVECTOR3 posR = m_data.posR;				// 注視点
+	D3DXVECTOR3 posRDest = m_data.posRDest;		// 目的の注視点
+	D3DXVECTOR3 rot = m_data.rot;				// 向き
+	D3DXVECTOR3 rotDest = m_data.rotDest;		// 目的の向き
+	float fLength = m_data.fLength;				// カメラとの距離
 
-	//// カメラの回転
-	//rotDest.y += 0.002f;
+	//視点の位置を更新
+	posV.x = posR.x + sinf(rot.y) * -fLength;
+	posV.z = posR.z + cosf(rot.y) * -fLength;
 
-	////角度の修正
-	//if (rot.y > D3DX_PI)
-	//{
-	//	rot.y = -D3DX_PI;
-	//	rotDest.y = -D3DX_PI + (rotDest.y - D3DX_PI);
-	//}
-	//else if (rot.y < -D3DX_PI)
-	//{
-	//	rot.y = D3DX_PI;
-	//	rotDest.y = D3DX_PI + (rotDest.y + D3DX_PI);
-	//}
+	//目的の視点の位置
+	posVDest.x = 0.0f + (sinf(rot.y) * -fLength) + 0.0f;
+	posVDest.z = 0.0f + (cosf(rot.y) * -fLength) + 0.0f;
 
-	////視点の位置を更新
-	//posV.x = posR.x + sinf(rot.y) * -fLength;
-	//posV.z = posR.z + cosf(rot.y) * -fLength;
+	//目的の注視点の位置
+	posRDest.x = 400.0f + 0.0f;
+	posRDest.z = 0.0f + 0.0f;
 
-	////目的の視点の位置
-	//posVDest.x = 0.0f + (sinf(rot.y) * -fLength) + 0.0f;
-	//posVDest.z = 0.0f + (cosf(rot.y) * -fLength) + 0.0f;
+	//視点の補正
+	posV.x += (posVDest.x - posV.x) * 0.3f;
+	posV.z += (posVDest.z - posV.z) * 0.3f;
 
-	////目的の注視点の位置
-	//posRDest.x = 0.0f + 0.0f;
-	//posRDest.z = 0.0f + 0.0f;
+	//注視点の補正
+	posR.x += (posRDest.x - posR.x) * 0.3f;
+	posR.z += (posRDest.z - posR.z) * 0.3f;
 
-	////視点の補正
-	//posV.x += (posVDest.x - posV.x) * 0.3f;
-	//posV.z += (posVDest.z - posV.z) * 0.3f;
+	//角度の補正
+	rot.y += (rotDest.y - rot.y) * 0.3f;
 
-	////注視点の補正
-	//posR.x += (posRDest.x - posR.x) * 0.3f;
-	//posR.z += (posRDest.z - posR.z) * 0.3f;
-
-	////角度の補正
-	//rot.y += (rotDest.y - rot.y) * 0.3f;
-
-	//// 情報更新
-	//m_data.posV = posV;			// 視点
-	//m_data.posVDest = posV;		// 目的の視点
-	//m_data.posR = posR;			// 注視点
-	//m_data.posRDest = posR;		// 目的の注視点
-	//m_data.rot = rot;			// 向き
-	//m_data.rotDest = rot;		// 目的の向き
-	//m_data.fLength = fLength;	// カメラとの長さ
+	// 情報更新
+	m_data.posV = posV;			// 視点
+	m_data.posVDest = posV;		// 目的の視点
+	m_data.posR = posR;			// 注視点
+	m_data.posRDest = posR;		// 目的の注視点
+	m_data.rot = rot;			// 向き
+	m_data.rotDest = rot;		// 目的の向き
+	m_data.fLength = fLength;	// カメラとの長さ
 }
 
 //-------------------------------------
@@ -461,7 +454,7 @@ void CCamera::SetCamera(void)
 	D3DXVECTOR3 vecU = m_data.vecU;		// 上方向のベクトル
 
 	// デバイスを取得
-	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
+	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// デバイスの情報取得の成功を判定
 	if (pDevice == NULL)
@@ -485,14 +478,6 @@ void CCamera::SetCamera(void)
 		(float)SCREEN_HEIGHT,
 		10.0f,
 		40000.0f);
-
-	//// プロジェションマトリックスを生成（平行投影）
-	//D3DXMatrixOrthoLH(
-	//	&m_mtxProjectien,
-	//	(float)SCREEN_WIDTH,
-	//	(float)SCREEN_HEIGHT,
-	//	10.0f,
-	//	40000.0f);
 
 	// プロジェクションマトリックスの設定
 	pDevice->SetTransform(
@@ -550,21 +535,21 @@ void CCamera::SetMode(CCamera::MODE mode)
 	case MODE_FOLLOWING:
 
 		// 情報設定
-		posV = D3DXVECTOR3(0.0f, 500.0f, 1500.0f);	// 視点
-		posR = D3DXVECTOR3(0.0f, 0.0f, 0.0f);		// 注視点
-		vecU = D3DXVECTOR3(0.0f, 1.0f, 0.0f);		// 上方向のベクトル
-		rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);		// 向き
-		fLength = 1500.0f;							// カメラとの長さ
+		posV = FOLL_POS_V;						// 視点
+		posR = FOLL_POS_R;						// 注視点
+		vecU = D3DXVECTOR3(0.0f, 1.0f, 0.0f);	// 上方向のベクトル
+		rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// 向き
+		fLength = FOLL_LENGTH;					// カメラとの長さ
 
 		break;
-
+		
 	case MODE_TITLE:
 
 		// 情報設定
-		posV = D3DXVECTOR3(0.0f, 3000.0f, -5000.0f);	// 視点
-		posR = D3DXVECTOR3(0.0f, 0.0f, 0.0f);			// 注視点
-		fLength = 12500.0f;								// カメラとの長さ
-		rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);			// 向き
+		posV = D3DXVECTOR3(0.0f, 100.0f, 0.0f);			// 視点
+		posR = D3DXVECTOR3(400.0f, 100.0f, 0.0f);		// 注視点
+		fLength = 800.0f;								// カメラとの長さ
+		rot = D3DXVECTOR3(0.0f, 0.9f, 0.0f);			// 向き
 
 		break;
 	}
@@ -578,12 +563,4 @@ void CCamera::SetMode(CCamera::MODE mode)
 	m_data.rot = rot;			// 向き
 	m_data.rotDest = rot;		// 目的の向き
 	m_data.fLength = fLength;	// カメラとの長さ
-}
-
-//-------------------------------------
-//-	カメラの値の取得処理
-//-------------------------------------
-CCamera::Data CCamera::GetData(void)
-{
-	return m_data;
 }

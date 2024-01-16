@@ -19,7 +19,6 @@
 
 #define _CRT_SECURE_NO_WARNINGS
 
-
 #include <windows.h>
 #include <time.h>
 
@@ -33,6 +32,8 @@
 #include <Xinput.h>						// XINPUT
 
 #include <xaudio2.h>					// サウンド処理に必要
+
+#include <assert.h>						// 警告
 
 // メモリリーク出力用マクロ
 #define _CRTDBG_MAP_ALLOC

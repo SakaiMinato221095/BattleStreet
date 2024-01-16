@@ -36,7 +36,7 @@ public:
 	// モデルの種類
 	typedef enum
 	{
-		MODEL_TYPE_PLAYER = 0,	// プレイヤー
+		MODEL_TYPE_PLAYER_AONOA = 0,	// プレイヤー（アオノア）
 		MODEL_TYPE_MAX
 	}MODEL_TYPE;
 
@@ -81,13 +81,14 @@ public:
 
 	void SetParent(CModel ** pModel, MODEL_TYPE modelType, int nCount);
 
-	D3DXMATRIX GetMtxWorld(void);
-
-	void SetData(CModel::Data data);
-	Data GetData(void);
-
 	static void SetFile(MODEL_TYPE modelType);
-	static int GetPartsNum(MODEL_TYPE modelType);
+
+	D3DXMATRIX GetMtxWorld(void) { return m_mtxWorld; }
+
+	void SetData(CModel::Data data) { m_data = data; }
+	Data GetData(void) { return m_data; }
+
+	static int GetPartsNum(MODEL_TYPE modelType) { return m_model[modelType].nPartsNum; }
 
 	static int m_nModelNldx[MODEL_TYPE_MAX][MODEL_PARTS_MAX];	// モデルの番号
 

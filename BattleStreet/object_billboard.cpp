@@ -47,7 +47,7 @@ CObjectBillboard::~CObjectBillboard()
 HRESULT CObjectBillboard::Init(void)
 {
 	// デバイスを取得
-	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
+	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// デバイスの情報取得の成功を判定
 	if (pDevice == NULL)
@@ -115,7 +115,7 @@ void CObjectBillboard::Draw(void)
 	D3DXVECTOR3 pos = m_vtxData.pos;	// 位置
 
 	// デバイスを取得
-	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
+	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// デバイスの情報取得の成功を判定
 	if (pDevice == NULL)
@@ -126,7 +126,7 @@ void CObjectBillboard::Draw(void)
 	}
 
 	// テクスチャ管理の取得
-	CManagerTexture *pManagerTexture = CManager::GetManagerTexture();
+	CManagerTexture *pManagerTexture = CManager::GetInstance()->GetManagerTexture();
 
 	// テクスチャ管理の情報取得の成功を判定
 	if (pManagerTexture == NULL)
@@ -246,56 +246,44 @@ void CObjectBillboard::SetVtx(void)
 	D3DXVECTOR3 size = m_vtxData.size;		// 大きさ
 	D3DXCOLOR color = m_vtxData.color;		// 色
 
-	// 3D頂点情報のポインタを宣言
-	VERTEX_3D *pVtx = NULL;
+	if (m_pVtxBuff)
+	{
+		// 3D頂点情報のポインタを宣言
+		VERTEX_3D* pVtx = nullptr;
 
-	// 頂点バッファをロックし、頂点情報のポインタを取得
-	m_pVtxBuff->Lock(
-		0,
-		0,
-		(void**)&pVtx,
-		0);
+		// 頂点バッファをロックし、頂点情報のポインタを取得
+		m_pVtxBuff->Lock(
+			0,
+			0,
+			(void**)&pVtx,
+			0);
 
-	//頂点座標を設定
-	pVtx[0].pos = D3DXVECTOR3(-size.x,  size.y, 0.0f);
-	pVtx[1].pos = D3DXVECTOR3(+size.x,  size.y, 0.0f);
-	pVtx[2].pos = D3DXVECTOR3(-size.x, -size.y, 0.0f);
-	pVtx[3].pos = D3DXVECTOR3(+size.x, -size.y, 0.0f);
+		//頂点座標を設定
+		pVtx[0].pos = D3DXVECTOR3(-size.x, size.y, 0.0f);
+		pVtx[1].pos = D3DXVECTOR3(+size.x, size.y, 0.0f);
+		pVtx[2].pos = D3DXVECTOR3(-size.x, -size.y, 0.0f);
+		pVtx[3].pos = D3DXVECTOR3(+size.x, -size.y, 0.0f);
 
-	//法線ベクトルの設定
-	pVtx[0].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-	pVtx[1].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-	pVtx[2].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-	pVtx[3].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+		//法線ベクトルの設定
+		pVtx[0].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+		pVtx[1].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+		pVtx[2].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+		pVtx[3].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 
-	//頂点カラーを設定
-	pVtx[0].col = color;
-	pVtx[1].col = color;
-	pVtx[2].col = color;
-	pVtx[3].col = color;
+		//頂点カラーを設定
+		pVtx[0].col = color;
+		pVtx[1].col = color;
+		pVtx[2].col = color;
+		pVtx[3].col = color;
 
-	//テクスチャの座標を設定
-	pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
-	pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
-	pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
-	pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
+		//テクスチャの座標を設定
+		pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
+		pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
+		pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
+		pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
 
-	// 頂点バッファをアンロックする
-	m_pVtxBuff->Unlock();
-}
+		// 頂点バッファをアンロックする
+		m_pVtxBuff->Unlock();
+	}
 
-//-------------------------------------
-//- プレイヤーの値設定処理
-//-------------------------------------
-void CObjectBillboard::SetVtxData(CObjectBillboard::VtxData vtxData)
-{
-	m_vtxData = vtxData;
-}
-
-//-------------------------------------
-//- プレイヤーの値取得処理
-//-------------------------------------
-CObjectBillboard::VtxData CObjectBillboard::GetVtxData(void)
-{
-	return m_vtxData;
 }

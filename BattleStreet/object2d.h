@@ -42,33 +42,32 @@ public:
 	CObject2d(int nPriority = 3);
 	~CObject2d();
 
-	HRESULT Init(void);
+	HRESULT Init(D3DXVECTOR3 pos,D3DXVECTOR3 size, D3DXCOLOR color);
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
 
 	void BindTexture(int nTextureNldx);
 
-	static CObject2d* Create(int nPriority = 3);
+	static CObject2d *Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXCOLOR color);
 
 	virtual void SetVtx(void);
 
-	LPDIRECT3DVERTEXBUFFER9 GetVtxBuff(void);
+	LPDIRECT3DVERTEXBUFFER9 GetVtxBuff(void) { return m_pVtxBuff; }
+	VtxData GetVtxData(void) { return m_vtxData; }
 
-	CObject2d::VtxData GetVtxData(void);
-	void SetVtxData(CObject2d::VtxData vtxData);
+	void SetVtxData(VtxData vtxData) { m_vtxData = vtxData; }
 
 private:
 
+	void InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXCOLOR color);
+
+	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;			// 頂点バッファを格納
 	VtxData m_vtxData;							// 頂点値情報
 
 	int m_nTextureNldxUse;						// テクスチャの番号
 
-	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;			// 頂点バッファを格納
 };
 
-//-======================================
-//- プロトタイプ宣言
-//-======================================
 
 #endif	// 二重インクルード防止の終了

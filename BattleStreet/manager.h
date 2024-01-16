@@ -35,6 +35,8 @@ class CManagerModel;
 class CCamera;
 class CLight;
 
+class CMgrColl;
+
 //-======================================
 //-	クラス定義
 //-======================================
@@ -63,8 +65,8 @@ public:
 
 	static CScene *Create(MODE mode,HINSTANCE hInstance = NULL, HWND hWnd = 0, BOOL bWindow = true);
 
-	void SetMode(MODE mode);
-	MODE GetMode(void);
+	void SetMode(MODE mode) { m_mode = mode; }
+	MODE GetMode(void) { return m_mode; }
 
 private:
 
@@ -78,48 +80,55 @@ class CManager
 public:
 
 	CManager();
-	virtual ~CManager();
+	~CManager();
 
 	HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow);
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
 	
-	static void SetMode(CScene::MODE mode);
-	static CScene::MODE GetMode(void);
+	void SetMode(CScene::MODE mode);
+	CScene::MODE GetMode(void);
 
-	static CFade *GetFade(void);
+	CFade* GetFade(void) { return m_pFade; }
 
-	static CRenderer *GetRenderer(void);
-	static CInputKeyboard *GetInputKeyboard(void);
-	static CXInput *GetXInput(void);
-	static CSound *GetSound(void);
-	static CDebugProc *GetDbugProc(void);
+	CRenderer* GetRenderer(void) { return m_pRenderer; }
+	CInputKeyboard* GetInputKeyboard(void) { return m_pInputKeyboard; }
+	CXInput* GetXInput(void) { return m_pXInput; }
+	CSound* GetSound(void) { return m_pSound; }
+	CDebugProc* GetDbugProc(void) { return m_pDbugProc; }
 
-	static CManagerTexture *GetManagerTexture(void);
-	static CManagerModel *GetManagerModel(void);
+	CManagerTexture* GetManagerTexture(void) { return m_pManagerTexture; }
+	CManagerModel *GetManagerModel(void) { return m_pManagerModel; }
 
-	static CCamera *GetCamera(void);
-	static CLight *GetLight(void);
+	CCamera* GetCamera(void) { return m_pCamera; }
+	CLight* GetLight(void) { return m_pLight; }
 
+	CMgrColl* GetMgrColl(void) { return m_pMgrColl; }
+
+	static CManager *GetInstance();
 private:
 
 	void Debug(void);
 
-	static CScene *m_pScene;					// シーンのポインタ
-	static CFade *m_pFade;						// フェードのポインタ
+	CScene *m_pScene;					// シーンのポインタ
+	CFade *m_pFade;						// フェードのポインタ
 
-	static CRenderer *m_pRenderer;				// レンダラーのポインタ
-	static CInputKeyboard *m_pInputKeyboard;	// キーボードのポインタ
-	static CXInput *m_pXInput;					// X入力のポインタ
-	static CSound *m_pSound;					// サウンドのポインタ
-	static CDebugProc *m_pDbugProc;				// デバックのポインタ
+	CRenderer *m_pRenderer;				// レンダラーのポインタ
+	CInputKeyboard *m_pInputKeyboard;	// キーボードのポインタ
+	CXInput *m_pXInput;					// X入力のポインタ
+	CSound *m_pSound;					// サウンドのポインタ
+	CDebugProc *m_pDbugProc;			// デバックのポインタ
 
-	static CManagerTexture *m_pManagerTexture;	// テクスチャ管理のポインタ
-	static CManagerModel *m_pManagerModel;		// モデル管理のポインタ
+	CManagerTexture *m_pManagerTexture;	// テクスチャ管理のポインタ
+	CManagerModel *m_pManagerModel;		// モデル管理のポインタ
 
-	static CCamera *m_pCamera;					// カメラのポインタ
-	static CLight *m_pLight;					// ライトのポインタ
+	CCamera *m_pCamera;					// カメラのポインタ
+	CLight *m_pLight;					// ライトのポインタ
+
+	CMgrColl *m_pMgrColl;				// 当たり判定管理のポインタ
+
+	static CManager *m_pManager;		// 自身のポインタ
 };
 
 #endif	// 二重インクルード防止の終了

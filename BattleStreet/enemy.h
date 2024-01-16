@@ -23,6 +23,12 @@
 //-	マクロ定義
 //-======================================
 
+//=======================================
+//=	前方宣言
+//=======================================
+
+class CColl;
+
 //-======================================
 //-	クラス定義
 //-======================================
@@ -35,10 +41,9 @@ public:
 
 	typedef enum
 	{
-		MODEL_TYPE_ALIEN_000 = 0,			// エイリアン_000
-		MODEL_TYPE_ALIEN_001,				// エイリアン_001
-		MODEL_TYPE_MAX
-	}MODEL_TYPE;
+		MODEL_ALIEN_000 = 0,			// エイリアン_000
+		MODEL_MAX
+	}MODEL;
 
 	// モデル情報
 	typedef struct
@@ -52,26 +57,30 @@ public:
 	static HRESULT Load(void);
 	static void Unload(void);
 
-	HRESULT Init(MODEL_TYPE modelType);
+	HRESULT Init(MODEL modelType, D3DXVECTOR3 pos, D3DXVECTOR3 rot);
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
 
-	int GetModel(void);
-	void SetModel(int nModelNldx);
+	static CEnemy *Create(MODEL modelType,D3DXVECTOR3 pos,D3DXVECTOR3 rot);
 
-	static void SetModelData(int nNum, ModelData modelData);
-	static ModelData GetModelData(int nNum);
+	int GetModelIdx(void) { return m_model; }
 
-	static CDataInt m_nDataModelNldx[MODEL_TYPE_MAX];	// モデルの番号
-	static ModelData m_modelData[MODEL_TYPE_MAX];		// モデルの情報
-
-	CDataD3DXVECTOR3 m_dataMove;	// 移動量
-	CDataInt m_nDataLife;			// 体力
+	static void SetModelData(int nNum, ModelData modelData) { m_modelData[nNum] = modelData; }
+	static ModelData GetModelData(int nNum) { return m_modelData[nNum]; }
 
 private:
 
-	MODEL_TYPE m_model;	// 自身のモデル
+	void InitSet(MODEL modelType, D3DXVECTOR3 pos, D3DXVECTOR3 rot);
+
+	static int m_nModelNldx[MODEL_MAX];			// モデルの番号
+	static ModelData m_modelData[MODEL_MAX];	// モデルの情報
+	
+	MODEL m_model;		// 自身のモデル
+
+	D3DXVECTOR3 m_move;	// 移動量
+
+	CColl *m_pColl;		// 当たり判定の情報
 
 };
 

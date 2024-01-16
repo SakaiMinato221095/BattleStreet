@@ -70,7 +70,7 @@ public:
 
 	void SetMode(CCamera::MODE mode);
 
-	Data GetData(void);
+	Data GetData(void) { return m_data; }
 private:
 	
 	D3DXMATRIX m_mtxProjectien;		// プロジェクションマトリックス

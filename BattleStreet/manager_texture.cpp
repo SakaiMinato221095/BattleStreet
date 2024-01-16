@@ -17,6 +17,8 @@
 
 #include "obj_3d_field.h"
 
+#include "obj_2d_none.h"
+#include "number.h"
 #include "bg.h"
 
 //-------------------------------------
@@ -51,12 +53,34 @@ HRESULT CManagerTexture::Load(HWND hWnd)
 		return E_FAIL;
 	}
 	
+	// 効果なし2D
+	if (FAILED(CObj2dNone::Load()))
+	{// 失敗時
+
+	 // 失敗メッセージ
+		MessageBox(hWnd, "効果なし2Dのデータ", "データ読み込み処理失敗！", MB_ICONWARNING);
+
+		// データ読み込みを抜ける
+		return E_FAIL;
+	}
+
 	// 背景
 	if (FAILED(CBg::Load()))
 	{// 失敗時
 
 	 // 失敗メッセージ
 		MessageBox(hWnd, "背景のデータ", "データ読み込み処理失敗！", MB_ICONWARNING);
+
+		// データ読み込みを抜ける
+		return E_FAIL;
+	}
+
+	// 数字
+	if (FAILED(CNumber::Load()))
+	{// 失敗時
+
+		// 失敗メッセージ
+		MessageBox(hWnd, "数字のデータ", "データ読み込み処理失敗！", MB_ICONWARNING);
 
 		// データ読み込みを抜ける
 		return E_FAIL;
@@ -89,7 +113,7 @@ void CManagerTexture::Unload(void)
 int CManagerTexture::Regist(const char *pFilename)
 {
 	// デバイスを取得
-	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
+	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// デバイスの情報取得の成功を判定
 	if (pDevice == NULL)
@@ -127,13 +151,4 @@ int CManagerTexture::Regist(const char *pFilename)
 	
 	// 失敗を返す
 	return -1;
-}
-
-//-------------------------------------
-//-	テクスチャの取得処理
-//-------------------------------------
-LPDIRECT3DTEXTURE9 CManagerTexture::GetAddress(int nldx)
-{
-	// テクスチャを返す
-	return m_apTexture[nldx];
 }

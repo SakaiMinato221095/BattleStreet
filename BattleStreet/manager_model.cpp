@@ -20,6 +20,8 @@
 #include "model.h"
 
 #include "objectx_none.h"
+#include "enemy.h"
+#include "skybox.h"
 
 //-------------------------------------
 //-	モデル管理のコンストラクタ
@@ -59,6 +61,28 @@ HRESULT CManagerModel::Load(HWND hWnd)
 
 		// 失敗メッセージ
 		MessageBox(hWnd, "効果なしオブジェクトのデータ", "データ読み込み処理失敗！", MB_ICONWARNING);
+
+		// データ読み込みを抜ける
+		return E_FAIL;
+	}
+
+	// 敵オブジェクト
+	if (FAILED(CEnemy::Load()))
+	{// 失敗時
+
+	 // 失敗メッセージ
+		MessageBox(hWnd, "敵のデータ", "データ読み込み処理失敗！", MB_ICONWARNING);
+
+		// データ読み込みを抜ける
+		return E_FAIL;
+	}
+
+	// スカイボックス
+	if (FAILED(CSkybox::Load()))
+	{// 失敗時
+
+		// 失敗メッセージ
+		MessageBox(hWnd, "スカイボックスのデータ", "データ読み込み処理失敗！", MB_ICONWARNING);
 
 		// データ読み込みを抜ける
 		return E_FAIL;
@@ -120,7 +144,7 @@ void CManagerModel::Unload(void)
 int CManagerModel::Regist(const char *pFilename)
 {
 	// デバイスを取得
-	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
+	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// デバイスの情報取得の成功を判定
 	if (pDevice == NULL)
@@ -131,7 +155,7 @@ int CManagerModel::Regist(const char *pFilename)
 	}
 
 	// テクスチャ管理の生成
-	CManagerTexture *pManagerTexture = CManager::GetManagerTexture();
+	CManagerTexture *pManagerTexture = CManager::GetInstance()->GetManagerTexture();
 
 	// テクスチャ管理の有無を判定
 	if (pManagerTexture == NULL)
@@ -224,13 +248,4 @@ int CManagerModel::Regist(const char *pFilename)
 
 	// 失敗を返す
 	return -1;
-}
-
-//-------------------------------------
-//-	モデル管理の取得処理
-//-------------------------------------
-CManagerModel::Model CManagerModel::GetAddress(int nldx)
-{
-	// 番号のモデル管理情報を返す
-	return m_model[nldx];
 }

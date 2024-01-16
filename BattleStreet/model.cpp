@@ -25,7 +25,7 @@
 // モデルテキストのコンスト定義
 const char *pModelText[] =
 {
-	"data\\TXT\\Model\\Player.txt",	// プレイヤーのモデルファイル
+	"data\\TXT\\Model\\ModelPlayerAonoa.txt",	// プレイヤー（アオノア）のモデルファイル
 };
 
 //=======================================
@@ -63,7 +63,7 @@ CModel::~CModel()
 HRESULT CModel::Load(void)
 {
 	// デバイスを取得
-	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
+	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// デバイスの情報取得の成功を判定
 	if (pDevice == NULL)
@@ -74,7 +74,7 @@ HRESULT CModel::Load(void)
 	}
 
 	// モデル管理の生成
-	CManagerModel *pManagerModel = CManager::GetManagerModel();
+	CManagerModel *pManagerModel = CManager::GetInstance()->GetManagerModel();
 
 	// モデル管理の有無を判定
 	if (pManagerModel == NULL)
@@ -115,7 +115,7 @@ HRESULT CModel::Load(void)
 HRESULT CModel::Init(MODEL_TYPE modelType , int nCount)
 {
 	// モデル管理の生成
-	CManagerModel *pManagerModel = CManager::GetManagerModel();
+	CManagerModel *pManagerModel = CManager::GetInstance()->GetManagerModel();
 
 	// モデル管理の有無を判定
 	if (pManagerModel == NULL)
@@ -163,7 +163,7 @@ void CModel::Update(void)
 void CModel::Draw(void)
 {
 	// デバイスを取得
-	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
+	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// デバイスの情報取得の成功を判定
 	if (pDevice == NULL)
@@ -174,7 +174,7 @@ void CModel::Draw(void)
 	}
 
 	// モデル管理の生成
-	CManagerModel *pManagerModel = CManager::GetManagerModel();
+	CManagerModel *pManagerModel = CManager::GetInstance()->GetManagerModel();
 
 	// モデル管理の有無を判定
 	if (pManagerModel == NULL)
@@ -314,31 +314,6 @@ void CModel::SetParent(CModel **pObjectModel, MODEL_TYPE modelType,int nCount)
 	{
 		m_pParent = NULL;
 	}
-}
-
-//-------------------------------------
-//-	階層構造のXファイルオブジェクトのワールドマトリックス取得処理
-//-------------------------------------
-D3DXMATRIX CModel::GetMtxWorld(void)
-{
-	// ワールドマトリックスを返す
-	return m_mtxWorld;
-}
-
-//-------------------------------------
-//- 階層構造のモデル取得処理
-//-------------------------------------
-void CModel::SetData(CModel::Data data)
-{
-	m_data = data;
-}
-
-//-------------------------------------
-//- 階層構造のモデル取得処理
-//-------------------------------------
-CModel::Data CModel::GetData(void)
-{
-	return m_data;
 }
 
 //-------------------------------------
@@ -482,13 +457,4 @@ void CModel::SetFile(MODEL_TYPE modelType)
 	{
 
 	}
-}
-
-//-------------------------------------
-//- 階層構造のXファイルオブジェクトのモデル設定処理
-//-------------------------------------
-int CModel::GetPartsNum(MODEL_TYPE modelType)
-{
-	// パーツ数を返す
-	return m_model[modelType].nPartsNum;
 }

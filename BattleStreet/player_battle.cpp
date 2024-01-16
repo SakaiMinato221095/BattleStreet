@@ -34,9 +34,7 @@
 //-------------------------------------
 CPlayerBattle::CPlayerBattle()
 {
-	// 値をクリア
-	m_stateType = STATE_TYPE_NEUTRAL;
-	m_stateTypeNew = m_stateType;
+
 }
 
 //-------------------------------------
@@ -53,10 +51,10 @@ CPlayerBattle::~CPlayerBattle()
 HRESULT CPlayerBattle::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, CModel::MODEL_TYPE modelType, CMotion::MOTION_TYPE motionType, int nStateMax)
 {
 	// 戦闘プレイヤーの設定処理
-	Set(pos,rot);
+	Set(pos, rot);
 
 	// プレイヤーの初期化処理
-	CPlayer::Init(modelType, motionType,STATE_TYPE_MAX);
+	CPlayer::Init(pos, rot, modelType, motionType, STATE_TYPE_MAX);
 
 	// 成功を返す
 	return S_OK;
@@ -144,12 +142,14 @@ void CPlayerBattle::Set(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 void CPlayerBattle::UpdateMotion(void)
 {
 	// 変数宣言（情報取得）
-	CMotion *pMotion = GetMotion();		// モーション
-	D3DXVECTOR3 move = GetData().move;	// 移動量
-	
+	CMotion *pMotion = GetMotion();					// モーション
+	D3DXVECTOR3 move = GetData().move;				// 移動量
+	STATE_TYPE stateType = GetStateType();			// 状態
+	STATE_TYPE stateTypeNew = GetStateTypeNew();	// 最新の状態
+
 	// 状態を判定
-	if (m_stateTypeNew == STATE_TYPE_NEUTRAL ||
-		m_stateTypeNew == STATE_TYPE_MOVE)
+	if (stateType == STATE_TYPE_NEUTRAL ||
+		stateTypeNew == STATE_TYPE_MOVE)
 	{
 		// 移動量で状態を変更
 		if (move.x >= 0.3f ||
@@ -158,12 +158,12 @@ void CPlayerBattle::UpdateMotion(void)
 			move.z <= -0.3f)
 		{
 			// 移動状態に変更
-			m_stateTypeNew = STATE_TYPE_MOVE;
+			stateTypeNew = STATE_TYPE_MOVE;
 		}
 		else
 		{
 			// 待機状態の変更
-			m_stateTypeNew = STATE_TYPE_NEUTRAL;
+			stateTypeNew = STATE_TYPE_NEUTRAL;
 		}
 	}
 
@@ -176,25 +176,28 @@ void CPlayerBattle::UpdateMotion(void)
 	else
 	{
 		// 待機状態を設定
-		m_stateTypeNew = STATE_TYPE_NEUTRAL;
+		stateTypeNew = STATE_TYPE_NEUTRAL;
 	}
 
 	// モーションの設定処理
-	if (m_stateType != m_stateTypeNew)
+	if (stateType != stateTypeNew)
 	{
 		// 状態の更新
-		m_stateType = m_stateTypeNew;
+		stateType = stateTypeNew;
 
 		// 状態の判定
-		if (m_stateType == STATE_TYPE_NEUTRAL)
+		if (stateType == STATE_TYPE_NEUTRAL)
 		{
 			// 待機モーションの設定
 			pMotion->Set(STATE_TYPE_NEUTRAL);
 		}
-		else if (m_stateType == STATE_TYPE_MOVE)
+		else if (stateType == STATE_TYPE_MOVE)
 		{
 			// 移動モーションの設定
 			pMotion->Set(STATE_TYPE_MOVE);
 		}
 	}
+
+	SetStateType(stateType);			// 状態
+	SetStateTypeNew(stateTypeNew);		// 最新の状態
 }

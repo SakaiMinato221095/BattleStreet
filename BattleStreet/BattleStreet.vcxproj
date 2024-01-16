@@ -18,6 +18,89 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="bg.cpp" />
+    <ClCompile Include="camera.cpp" />
+    <ClCompile Include="coll.cpp" />
+    <ClCompile Include="debugproc.cpp" />
+    <ClCompile Include="enemy.cpp" />
+    <ClCompile Include="fade.cpp" />
+    <ClCompile Include="game.cpp" />
+    <ClCompile Include="Input.cpp" />
+    <ClCompile Include="light.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="manager.cpp" />
+    <ClCompile Include="manager_model.cpp" />
+    <ClCompile Include="manager_texture.cpp" />
+    <ClCompile Include="mgr_coll.cpp" />
+    <ClCompile Include="model.cpp" />
+    <ClCompile Include="motion.cpp" />
+    <ClCompile Include="number.cpp" />
+    <ClCompile Include="object.cpp" />
+    <ClCompile Include="object2d.cpp" />
+    <ClCompile Include="object3d.cpp" />
+    <ClCompile Include="objectx_none.cpp" />
+    <ClCompile Include="object_billboard.cpp" />
+    <ClCompile Include="object_x.cpp" />
+    <ClCompile Include="obj_2d_none.cpp" />
+    <ClCompile Include="obj_3d_field.cpp" />
+    <ClCompile Include="obj_3d_wall.cpp" />
+    <ClCompile Include="pause.cpp" />
+    <ClCompile Include="player.cpp" />
+    <ClCompile Include="player_battle.cpp" />
+    <ClCompile Include="precompile.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="renderer.cpp" />
+    <ClCompile Include="result.cpp" />
+    <ClCompile Include="skybox.cpp" />
+    <ClCompile Include="sound.cpp" />
+    <ClCompile Include="start_count.cpp" />
+    <ClCompile Include="timer.cpp" />
+    <ClCompile Include="title.cpp" />
+    <ClCompile Include="xinput.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="bg.h" />
+    <ClInclude Include="camera.h" />
+    <ClInclude Include="coll.h" />
+    <ClInclude Include="debugproc.h" />
+    <ClInclude Include="enemy.h" />
+    <ClInclude Include="fade.h" />
+    <ClInclude Include="game.h" />
+    <ClInclude Include="Input.h" />
+    <ClInclude Include="light.h" />
+    <ClInclude Include="main.h" />
+    <ClInclude Include="manager.h" />
+    <ClInclude Include="manager_model.h" />
+    <ClInclude Include="manager_texture.h" />
+    <ClInclude Include="mgr_coll.h" />
+    <ClInclude Include="model.h" />
+    <ClInclude Include="motion.h" />
+    <ClInclude Include="number.h" />
+    <ClInclude Include="object.h" />
+    <ClInclude Include="object2d.h" />
+    <ClInclude Include="object3d.h" />
+    <ClInclude Include="objectx_none.h" />
+    <ClInclude Include="object_billboard.h" />
+    <ClInclude Include="object_x.h" />
+    <ClInclude Include="obj_2d_none.h" />
+    <ClInclude Include="obj_3d_field.h" />
+    <ClInclude Include="obj_3d_wall.h" />
+    <ClInclude Include="pause.h" />
+    <ClInclude Include="player.h" />
+    <ClInclude Include="player_battle.h" />
+    <ClInclude Include="precompile.h" />
+    <ClInclude Include="renderer.h" />
+    <ClInclude Include="result.h" />
+    <ClInclude Include="skybox.h" />
+    <ClInclude Include="sound.h" />
+    <ClInclude Include="start_count.h" />
+    <ClInclude Include="timer.h" />
+    <ClInclude Include="title.h" />
+    <ClInclude Include="xinput.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -152,74 +235,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="bg.cpp" />
-    <ClCompile Include="camera.cpp" />
-    <ClCompile Include="debugproc.cpp" />
-    <ClCompile Include="fade.cpp" />
-    <ClCompile Include="game.cpp" />
-    <ClCompile Include="Input.cpp" />
-    <ClCompile Include="kazedama.cpp" />
-    <ClCompile Include="light.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="manager.cpp" />
-    <ClCompile Include="manager_model.cpp" />
-    <ClCompile Include="manager_texture.cpp" />
-    <ClCompile Include="model.cpp" />
-    <ClCompile Include="motion.cpp" />
-    <ClCompile Include="object.cpp" />
-    <ClCompile Include="object2d.cpp" />
-    <ClCompile Include="object3d.cpp" />
-    <ClCompile Include="objectx_none.cpp" />
-    <ClCompile Include="object_billboard.cpp" />
-    <ClCompile Include="object_x.cpp" />
-    <ClCompile Include="obj_3d_field.cpp" />
-    <ClCompile Include="player.cpp" />
-    <ClCompile Include="player_battle.cpp" />
-    <ClCompile Include="precompile.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">precompile.h</PrecompiledHeaderFile>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">precompile.h</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="renderer.cpp" />
-    <ClCompile Include="result.cpp" />
-    <ClCompile Include="sound.cpp" />
-    <ClCompile Include="title.cpp" />
-    <ClCompile Include="xinput.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="bg.h" />
-    <ClInclude Include="camera.h" />
-    <ClInclude Include="debugproc.h" />
-    <ClInclude Include="enemy.h" />
-    <ClInclude Include="fade.h" />
-    <ClInclude Include="game.h" />
-    <ClInclude Include="Input.h" />
-    <ClInclude Include="kazedama.h" />
-    <ClInclude Include="light.h" />
-    <ClInclude Include="main.h" />
-    <ClInclude Include="manager.h" />
-    <ClInclude Include="manager_model.h" />
-    <ClInclude Include="manager_texture.h" />
-    <ClInclude Include="model.h" />
-    <ClInclude Include="motion.h" />
-    <ClInclude Include="object.h" />
-    <ClInclude Include="object2d.h" />
-    <ClInclude Include="object3d.h" />
-    <ClInclude Include="objectx_none.h" />
-    <ClInclude Include="object_billboard.h" />
-    <ClInclude Include="object_x.h" />
-    <ClInclude Include="obj_3d_field.h" />
-    <ClInclude Include="player.h" />
-    <ClInclude Include="player_battle.h" />
-    <ClInclude Include="precompile.h" />
-    <ClInclude Include="renderer.h" />
-    <ClInclude Include="result.h" />
-    <ClInclude Include="sound.h" />
-    <ClInclude Include="title.h" />
-    <ClInclude Include="xinput.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

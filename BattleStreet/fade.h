@@ -65,7 +65,7 @@ public:
 	void SetVtx(void);
 
 	void SetFade(CScene::MODE mode);
-	STATE GetFade(void);
+	STATE GetFadeState(void);
 
 private:
 

@@ -17,9 +17,11 @@
 #include "Input.h"
 #include "xinput.h"
 
-#include "manager.h"
-
 #include "bg.h"
+
+#include "sound.h"
+
+#include "manager.h"
 
 //=======================================
 //=	マクロ定義
@@ -52,6 +54,16 @@ CResult::~CResult()
 //-------------------------------------
 HRESULT CResult::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 {
+	// サウンドのポインタを宣言
+	CSound *pSound = CManager::GetInstance()->GetSound();
+
+	// サウンドの情報取得の成功を判定
+	if (pSound == NULL)
+	{
+		// 処理を抜ける
+		return E_FAIL;
+	}
+
 	// 背景の有無を判定
 	if (m_pBg == NULL)
 	{
@@ -68,6 +80,9 @@ HRESULT CResult::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		// 背景の設定
 		m_pBg->Set();
 	}
+
+	// タイトルの再生
+	pSound->Play(CSound::LABEL_BGM_RESULT);
 
 	// 成功を返す
 	return S_OK;
@@ -93,7 +108,7 @@ void CResult::Uninit(void)
 void CResult::Update(void)
 {
 	// キーボードの情報取得
-	CInputKeyboard *pInputKeyboard = CManager::GetInputKeyboard();
+	CInputKeyboard *pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
 
 	// キーボードの情報取得の成功を判定
 	if (pInputKeyboard == NULL)
@@ -104,7 +119,7 @@ void CResult::Update(void)
 	}
 
 	// X入力のポインタを宣言
-	CXInput *pXInput = CManager::GetXInput();
+	CXInput *pXInput = CManager::GetInstance()->GetXInput();
 
 	// X入力の情報取得の成功を判定
 	if (pXInput == NULL)
@@ -118,7 +133,7 @@ void CResult::Update(void)
 		pXInput->GetTrigger(XINPUT_GAMEPAD_A, CXInput::TYPE_INPUT_BUTTON))
 	{
 		// ゲームモード
-		CManager::GetFade()->SetFade(CScene::MODE_TITEL);
+		CManager::GetInstance()->GetFade()->SetFade(CScene::MODE_TITEL);
 	}
 
 }

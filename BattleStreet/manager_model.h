@@ -48,7 +48,8 @@ public:
 	void Unload(void);
 
 	int Regist(const char *pFilename);
-	Model GetAddress(int nldx);
+
+	Model GetAddress(int nldx) { return m_model[nldx]; }
 
 private:
 

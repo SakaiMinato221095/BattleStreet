@@ -42,7 +42,7 @@ public:
 	void SetZTest(bool bUse);
 	void SetAlphaTest(bool bUse);
 
-	LPDIRECT3DDEVICE9 GetDevice(void);
+	LPDIRECT3DDEVICE9 GetDevice(void) { return m_pD3DDevice; }
 
 private:
 

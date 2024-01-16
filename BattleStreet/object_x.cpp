@@ -73,7 +73,7 @@ void CObjectX::Update(void)
 void CObjectX::Draw(void)
 {
 	// デバイスを取得
-	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
+	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// デバイスの情報取得の成功を判定
 	if (pDevice == NULL)
@@ -84,7 +84,7 @@ void CObjectX::Draw(void)
 	}
 
 	// モデル管理の取得
-	CManagerModel *pManagerModel = CManager::GetManagerModel();
+	CManagerModel *pManagerModel = CManager::GetInstance()->GetManagerModel();
 
 	// モデル管理の情報取得の成功を判定
 	if (pManagerModel == NULL)
@@ -201,22 +201,6 @@ void CObjectX::BindModel(int nModelNldx, int nModelNum)
 
 	// モデルの設定
 	SetModel(nModelNum);
-}
-
-//-------------------------------------
-//- Xファイルオブジェクトの頂点値情報の設定処理
-//-------------------------------------
-void CObjectX::SetVtxData(VtxData vtxData)
-{
-	m_vtxData = vtxData;
-}
-
-//-------------------------------------
-//- Xファイルオブジェクトの頂点値情報の取得処理
-//-------------------------------------
-CObjectX::VtxData CObjectX::GetVtxData(void)
-{
-	return m_vtxData;
 }
 
 //-------------------------------------

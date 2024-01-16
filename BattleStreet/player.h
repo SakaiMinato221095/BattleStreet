@@ -26,12 +26,15 @@
 //=	マクロ定義
 //=======================================
 
+#define INSTANCE_MAX	(8)		// 自身のポインタの最大数
+
 //-======================================
 //-	前方宣言
 //-======================================
 
 class CObjectX;
 class CObject3d;
+class CColl;
 
 //-======================================
 //-	クラス定義
@@ -42,6 +45,32 @@ class CPlayer : public CObject
 
 public:
 
+	// 状態
+	typedef enum
+	{
+		STATE_TYPE_NEUTRAL = 0,		// 待機
+		STATE_TYPE_MOVE,			// 移動
+		STATE_TYPE_JUMP,			// ジャンプ
+		STATE_TYPE_LANDING,			// 着地
+		STATE_TYPE_KAZEDAMA,		// 風だまアクション
+		STATE_TYPE_HAVE_NEUTRAL,	// 敵保持待機
+		STATE_TYPE_HAVE_MOVE,		// 敵保持移動
+		STATE_TYPE_HAVE_JUMP,		// 敵保持ジャンプ
+		STATE_TYPE_HAVE_LANDING,	// 敵保持着地
+		STATE_TYPE_THROW,			// 敵投げアクション
+		STATE_TYPE_DOUBLEJUMP,		// 敵投げジャンプアクション
+		STATE_TYPE_MAX
+	}STATE_TYPE;
+
+	// 追加値の情報
+	typedef struct
+	{
+		float speedRate;	// 速度追加の倍率
+		int sppedPlusTime;	// 速度追加の時間
+
+	}DataPlus;
+
+	// 情報値
 	typedef struct
 	{
 		D3DXVECTOR3 pos;		// 位置
@@ -54,40 +83,60 @@ public:
 		D3DXVECTOR3 moveHold;	// 保持した移動量
 
 		D3DXVECTOR3 size;		// 大きさ
+
+		DataPlus plus;			// 追加値
 	}Data;
 
 	CPlayer();
 	~CPlayer();
 
-	HRESULT Init(CModel::MODEL_TYPE modelType, CMotion::MOTION_TYPE motionType, int nStateMax);
+	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, CModel::MODEL_TYPE modelType, CMotion::MOTION_TYPE motionType, int nStateMax);
 
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
 
-	virtual void Hit(int nDamage);
+	static CPlayer * Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, CModel::MODEL_TYPE modelType, CMotion::MOTION_TYPE motionType);
 
-	void DebugPlayer(void);
+	CMotion* GetMotion(void) { return m_pMotion; }
 
-	CMotion *GetMotion(void);
+	CModel* GetModel(int nNumParts) { return m_apModel[nNumParts]; }
 
-	CModel *GetModel(int nNumParts);
+	void SetData(Data data) { m_data = data; }
+	Data GetData(void) { return m_data; }
 
-	void SetData(Data data);
-	Data GetData(void);
+	void SetStateType(STATE_TYPE stateType) { m_stateType = stateType; }
+	STATE_TYPE GetStateType(void) { return m_stateType; }
 
-	static CPlayer *GetInstance(void);
+	void SetStateTypeNew(STATE_TYPE stateTypeNew) { m_stateTypeNew = stateTypeNew; }
+	STATE_TYPE GetStateTypeNew(void) { return m_stateTypeNew; }
+
+	void SetPlus(float fRate, int nTime) { m_data.plus.speedRate = fRate, m_data.plus.sppedPlusTime = nTime; }
+
 private:
+
+	void InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 rot);
 
 	void UpdatePos(void);
 	void UpdateRot(void);
+	void UpdatePlusData(void);
+	void UpdateMotionNone(void);
 
 	void InputMove(void);
+
 	void InputJump(void);
-	void InputAction(void);
+	void InputNormalJump(void);
+
+	void DebugPlayer(void);
 
 	Data m_data;								// 値を格納
 	bool m_bJump;								// ジャンプ状態の有無
+	bool m_bLanding;							// 着地の有無
+
+	STATE_TYPE m_stateType;						// 状態の種類
+	STATE_TYPE m_stateTypeNew;					// 最新の状態の種類
+
+	CColl *m_pColl;								// 当たり判定情報
 
 	D3DXMATRIX m_mtxWorld;						// ワールドマトリックス
 
@@ -95,8 +144,6 @@ private:
 	int m_nNumModel;							// モデル（パーツ）の総数
 
 	CMotion *m_pMotion;							// モーションのポインタ
-
-	static CPlayer *m_pInstance;				// 自身のポインタ
 };
 
 #endif	// 二重インクルード防止の終了

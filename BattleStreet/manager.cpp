@@ -11,6 +11,7 @@
 //=======================================
 
 #include "manager.h"
+#include "renderer.h"
 
 #include "fade.h"
 
@@ -29,7 +30,7 @@
 #include "camera.h"
 #include "light.h"
 
-#include "renderer.h"
+#include "mgr_coll.h"
 
 //=======================================
 //=	マクロ定義
@@ -39,21 +40,7 @@
 //=	静的変数宣言
 //=======================================
 
-CScene *CManager::m_pScene = NULL;
-CFade *CManager::m_pFade = NULL;
-
-CRenderer *CManager::m_pRenderer = NULL;
-
-CInputKeyboard *CManager::m_pInputKeyboard = NULL;
-CXInput *CManager::m_pXInput = NULL;
-CSound *CManager::m_pSound = NULL;
-CDebugProc *CManager::m_pDbugProc = NULL;
-
-CManagerTexture *CManager::m_pManagerTexture = NULL;
-CManagerModel *CManager::m_pManagerModel = NULL;
-
-CCamera *CManager::m_pCamera = NULL;
-CLight *CManager::m_pLight = NULL;
+CManager *CManager::m_pManager = NULL;
 
 //-------------------------------------------------------------------------
 //- シーン
@@ -163,24 +150,6 @@ CScene *CScene::Create(MODE mode, HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	return pScene;
 }
 
-//-------------------------------------
-//- シーンの設定処理
-//-------------------------------------
-void CScene::SetMode(MODE mode)
-{
-	// モード代入
-	m_mode = mode;
-}
-
-//-------------------------------------
-//- シーンの取得処理
-//-------------------------------------
-CScene::MODE CScene::GetMode(void)
-{
-	// モードを返す
-	return m_mode;
-}
-
 //-------------------------------------------------------------------------
 //- 管理
 //-------------------------------------------------------------------------
@@ -190,6 +159,23 @@ CScene::MODE CScene::GetMode(void)
 //-------------------------------------
 CManager::CManager()
 {
+	m_pScene = NULL;
+	m_pFade = NULL;
+
+	m_pRenderer = NULL;
+
+	m_pInputKeyboard = NULL;
+	m_pXInput = NULL;
+	m_pSound = NULL;
+	m_pDbugProc = NULL;
+
+	m_pManagerTexture = NULL;
+	m_pManagerModel = NULL;
+
+	m_pCamera = NULL;
+	m_pLight = NULL;
+
+	m_pMgrColl = NULL;
 }
 
 //-------------------------------------
@@ -478,6 +464,35 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		}
 	}
 
+	// 当たり判定管理
+	{
+		// 当たり判定管理の有無を判定
+		if (m_pMgrColl == NULL)
+		{
+			// 当たり判定管理の生成
+			m_pMgrColl = CMgrColl::Create();
+
+			// 当たり判定管理の有無を判定
+			if (m_pMgrColl == NULL)
+			{
+				// 失敗メッセージ
+				MessageBox(hWnd, "当たり判定管理の初期化", "初期処理失敗！", MB_ICONWARNING);
+
+				// 初期化を抜ける
+				return E_FAIL;
+			}
+		}
+		else
+		{// ゴミが入っているとき
+
+			// 失敗メッセージ
+			MessageBox(hWnd, "当たり判定管理の初期化", "初期処理失敗！", MB_ICONWARNING);
+
+			// 初期化を抜ける
+			return E_FAIL;
+		}
+	}
+
 	// シーン
 	{
 		// シーンの有無を判定
@@ -611,6 +626,17 @@ void CManager::Uninit(void)
 		m_pLight = NULL;
 	}
 
+	// 当たり判定管理の破棄
+	if (m_pMgrColl != NULL)
+	{
+		// 当たり判定管理の終了処理
+		m_pMgrColl->Uninit();
+
+		// 当たり判定管理の開放処理
+		delete m_pMgrColl;
+		m_pMgrColl = NULL;
+	}
+
 	// シーンの破棄
 	if (m_pScene != NULL)
 	{
@@ -681,6 +707,13 @@ void CManager::Update(void)
 		m_pLight->Update();
 	}
 
+	// 当たり判定管理の有無を判定
+	if (m_pMgrColl != NULL)
+	{
+		// 当たり判定管理の更新処理
+		m_pMgrColl->Update();
+	}
+
 	// デバックプロックの有無を判定
 	if (m_pDbugProc != NULL)
 	{
@@ -704,7 +737,7 @@ void CManager::Update(void)
 	}
 
 	// フェードの有無を判定
-	if (m_pFade->GetFade() == CFade::STATE_NONE)
+	if (m_pFade->GetFadeState() == CFade::STATE_NONE)
 	{
 		// シーンの有無を判定
 		if (m_pScene != NULL)
@@ -732,6 +765,13 @@ void CManager::Draw(void)
 	{
 		// カメラの設定
 		pCamera->SetCamera();
+	}
+
+	// 当たり判定管理の有無を判定
+	if (m_pMgrColl != NULL)
+	{
+		// 当たり判定管理の設定
+		m_pMgrColl->Draw();
 	}
 
 	// レンダラーの有無を判定
@@ -769,95 +809,29 @@ void CManager::SetMode(CScene::MODE mode)
 //-------------------------------------
 CScene::MODE CManager::GetMode(void)
 {
-	// ゲーム状態を返す
-	return m_pScene->GetMode();
+	if (m_pScene != nullptr)
+	{
+		return m_pScene->GetMode();
+	}
+
+	return CScene::MODE(0);
 }
 
 //-------------------------------------
-//- フェードの取得処理
+//- 管理のポインタ設定処理
 //-------------------------------------
-CFade *CManager::GetFade(void)
+CManager * CManager::GetInstance()
 {
-	// フェードのポインタを返す
-	return m_pFade;
-}
-
-//-------------------------------------
-//- レンダラーの情報を取得
-//-------------------------------------
-CRenderer *CManager::GetRenderer(void)
-{
-	// レンダラーのポインタを返す
-	return m_pRenderer;
-}
-
-//-------------------------------------
-//-	キーボードの情報を取得
-//-------------------------------------
-CInputKeyboard *CManager::GetInputKeyboard(void)
-{
-	// キーボードのポインタを返す
-	return m_pInputKeyboard;
-}
-
-//-------------------------------------
-//-	X入力の情報を取得
-//-------------------------------------
-CXInput * CManager::GetXInput(void)
-{
-	return m_pXInput;
-}
-
-//-------------------------------------
-//-	サウンドの情報を取得
-//-------------------------------------
-CSound *CManager::GetSound(void)
-{
-	// キーボードのポインタを返す
-	return m_pSound;
-}
-
-//-------------------------------------
-//-	デバックプロックの情報を取得
-//-------------------------------------
-CDebugProc * CManager::GetDbugProc(void)
-{
-	// デバックプロックを返す
-	return m_pDbugProc;
-}
-
-//-------------------------------------
-//-	テクスチャ管理の情報を取得
-//-------------------------------------
-CManagerTexture *CManager::GetManagerTexture(void)
-{
-	// テクスチャ管理を返す
-	return m_pManagerTexture;
-}
-
-//-------------------------------------
-//-	モデル管理の情報を取得
-//-------------------------------------
-CManagerModel *CManager::GetManagerModel(void)
-{
-	return m_pManagerModel;
-}
-
-//-------------------------------------
-//-	カメラの情報を取得
-//-------------------------------------
-CCamera *CManager::GetCamera(void)
-{
-	// キーボードのポインタを返す
-	return m_pCamera;
-}
-
-//-------------------------------------
-//-	ライトの情報を取得
-//-------------------------------------
-CLight * CManager::GetLight(void)
-{
-	return m_pLight;
+	if (m_pManager == NULL)
+	{
+		// 管理の生成
+		return m_pManager = new CManager;
+	}
+	else
+	{
+		// 現在の管理を返す
+		return m_pManager;
+	}
 }
 
 //-------------------------------------

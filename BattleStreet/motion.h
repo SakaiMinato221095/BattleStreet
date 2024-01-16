@@ -42,7 +42,7 @@ public:
 	// モデルの種類
 	typedef enum
 	{
-		MOTION_TYPE_PLAYER = 0,	// プレイヤー
+		MOTION_TYPE_PLAYER_AONOA = 0,	// プレイヤー（アオノア）
 		MOTION_TYPE_MAX
 	}MOTION_TYPE;
 
@@ -85,18 +85,17 @@ public:
 	void BlendSet(void);
 	void Update(void);
 
-	int GetType(void);
-	bool IsFinsih(void);
-	int GetKey(void);
-
-	void SetInfo(Info info);
-
-	void SetModel(CModel **ppModel,int nNumModel);
-
 	void SetFile(MOTION_TYPE MotionType);
 
-	bool GetBlend(void);
-	bool GetChangeBlend(void);
+	int GetType(void) { return m_nType; }
+	bool IsFinsih(void) { return m_bFinish; }
+	int GetKey(void) { return m_nKey; }
+
+	void SetInfo(Info info) { m_aInfo[m_nType] = info; }
+	void SetModel(CModel** ppModel, int nNumModel) { m_ppModel = &ppModel[nNumModel]; }
+
+	bool GetBlend(void) { return m_bBlend; }
+	bool GetChangeBlend(void) { return m_bChangeBlend; }
 
 private:
 

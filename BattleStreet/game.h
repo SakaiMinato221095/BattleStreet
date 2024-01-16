@@ -27,7 +27,15 @@
 //-	前方宣言
 //-======================================
 
+class CPlayer;
+
+class CTimer;
+
+class CEditMap;
+
 class CPause;
+
+class CStartCount;
 
 //-======================================
 //-	クラス定義
@@ -53,11 +61,19 @@ public:
 	void Update(void);
 	void Draw(void);
 
-	static CPause *GetPause(void);
+	static CPlayer* GetPlayer(void) { return m_pPlayer; }
+	static CStartCount* GetStartCount(void) { return m_pStartCount; }
 
 private:
 
-	static CPause *m_pPause;				// ポーズ
+	static CPlayer* m_pPlayer;				// プレイヤー
+	static CTimer* m_pTimer;				// タイマー
+
+	static CStartCount* m_pStartCount;		// スタートカウント
+
+	static CEditMap* m_pEditMap;			// マップエディット
+
+	static CPause* m_pPause;				// ポーズ
 
 	GAME m_game;							// ゲーム状態
 };

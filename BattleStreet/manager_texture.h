@@ -39,7 +39,7 @@ public:
 	void Unload(void);
 
 	int Regist(const char *pFilename);
-	LPDIRECT3DTEXTURE9 GetAddress(int nldx);
+	LPDIRECT3DTEXTURE9 GetAddress(int nldx) { return m_apTexture[nldx]; }
 
 private:
 
