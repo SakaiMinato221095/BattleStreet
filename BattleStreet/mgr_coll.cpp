@@ -106,92 +106,134 @@ CMgrColl * CMgrColl::Create(void)
 }
 
 //-------------------------------------
-//- 当たり判定管理のタグの相手との接触判定処理
+//- 接触判定（矩形）
 //-------------------------------------
-bool CMgrColl::Hit(int nNldxColl, CMgrColl::TAG hitTag, STATE_HIT stateHit)
+bool CMgrColl::Hit(int nNldxColl, CMgrColl::TAG hitTag)
 {
 	// 変数宣言
-	CColl *pCollMy = m_apColl[nNldxColl];				// 自身の当たり判定情報
-	int nHitNldxMax = pCollMy->GetData().nHitNldxMax;	// 接触最大数
-	bool bHitTgt = false;								// 目的の接触の有無
+	CColl* pCollMy = m_apColl[nNldxColl];	// 自身の当たり判定情報
+	bool bHit = false;						// 接触の有無
 
-	for (int nCount = 0; nCount < nHitNldxMax; nCount++)
+	for (int nCount = 0; nCount < COLLSION_NUM_MAX; nCount++)
 	{
-		int hitNldx = pCollMy->GetData().hitData[nCount].nNldx;		// 接触相手の番号
-		CColl *pCollPair = m_apColl[hitNldx];						// 接触相手の当たり判定情報
-		CColl::Data dataPair = m_apColl[hitNldx]->GetData();		// 接触相手の情報
-		TAG tagPair = dataPair.tag;									// 接触相手のタグ
-
-		if (tagPair == hitTag)
+		if (m_apColl[nCount] != nullptr)
 		{
-			if (pCollMy->GetData().aType[hitTag] == TYPE_RECTANGLE_SIDE)
+
+			CColl* pCollPair = m_apColl[nCount];					// 相手の当たり判定情報
+			CColl::Data dataPair = m_apColl[nCount]->GetData();		// 相手の情報
+			TAG tagPair = dataPair.tag;								// 相手のタグ
+
+
+			if (tagPair == hitTag)
 			{
 				// 変数宣言（情報取得）
 				D3DXVECTOR3 posMy = pCollMy->GetData().pos;			// 自身の位置
-				D3DXVECTOR3 posOldMy = pCollMy->GetData().posOld;	// 自身の前回の位置
 				D3DXVECTOR3 sizeMy = pCollMy->GetData().size;		// 自身の大きさ
 
 				// 変数宣言 (相手の情報取得)
 				D3DXVECTOR3 posPair = pCollPair->GetData().pos;		// 相手の位置
 				D3DXVECTOR3 sizePair = pCollPair->GetData().size;	// 相手の大きさ
 
-				// 変数宣言（自身の当たり判定の情報取得）
-				CColl::Data data = pCollMy->GetData();
-
 				// X軸の当たり判定
-				if (hitRectangleSide(posMy.x, sizeMy.x, posPair.x, sizePair.x) == true &&
-					hitRectangleSide(posOldMy.x, sizeMy.x, posPair.x, sizePair.x) == false)
+				if (hitRectangle(posMy, sizeMy, posPair, sizePair) == true)
 				{
-					data.abHitSxis[CColl::TYPE_SXIS_X] = hitRectangleSide(posOldMy.y, sizeMy.y, posPair.y, sizePair.y);
+					// 接触判定を設定
+					bHit = true;
 
-					if (data.abHitSxis[CColl::TYPE_SXIS_X] == true)
-					{
-						// 自身の前回の位置
-						data.pos.x = posOldMy.x;
-
-						// 接触
-						bHitTgt = true;
-					}
+					// 接触情報設定処理
+					SetHit(
+						pCollMy,
+						nCount,
+						pCollPair->GetData().pObj);
 				}
-
-				if (hitRectangleSide(posMy.y, sizeMy.y, posPair.y, sizePair.y) == true &&
-					hitRectangleSide(posOldMy.y, sizeMy.y, posPair.y, sizePair.y) == false)
-				{
-					data.abHitSxis[CColl::TYPE_SXIS_Y] = hitRectangleSide(posMy.x, sizeMy.x, posPair.x, sizePair.x);
-
-					if (data.abHitSxis[CColl::TYPE_SXIS_Y] == true)
-					{
-						// 自身の前回の位置
-						data.pos.y = posOldMy.y;
-
-						// 接触
-						bHitTgt = true;
-					}
-
-				}
-
-				data.abHitSxis[CColl::TYPE_SXIS_Z] = hitRectangleSide(posMy.z, sizeMy.z, posPair.z, sizePair.z);
-
-				// 情報更新（自身の当たり判定）
-				pCollMy->SetData(data);
 			}
-			else
-			{
-				// 接触判定を設定
-				bHitTgt = true;
 
-				// 接触状態を代入
-				dataPair.stateHit = stateHit;
-
-				// 情報更新（接触相手）
-				m_apColl[hitNldx]->SetData(dataPair);
-			}
 		}
-
 	}
 
-	return bHitTgt;
+	return bHit;
 
+}
+
+//-------------------------------------
+//- 接触判定（矩形の辺）
+//-------------------------------------
+bool CMgrColl::HitSide(int nNldxColl, CMgrColl::TAG hitTag, CMgrColl::TYPE_SXIS typeSxis)
+{
+	// 変数宣言
+	CColl* pCollMy = m_apColl[nNldxColl];	// 自身の当たり判定情報
+	bool bHit = false;						// 接触の有無
+
+	for (int nCount = 0; nCount < COLLSION_NUM_MAX; nCount++)
+	{
+		if (m_apColl[nCount] != nullptr)
+		{
+			CColl* pCollPair = m_apColl[nCount];					// 相手の当たり判定情報
+			CColl::Data dataPair = m_apColl[nCount]->GetData();		// 相手の情報
+			TAG tagPair = dataPair.tag;								// 相手のタグ
+
+
+			if (tagPair == hitTag)
+			{
+				// 変数宣言（情報取得）
+				D3DXVECTOR3 posMy = pCollMy->GetData().pos;			// 自身の位置
+				D3DXVECTOR3 sizeMy = pCollMy->GetData().size;		// 自身の大きさ
+
+				// 変数宣言 (相手の情報取得)
+				D3DXVECTOR3 posPair = pCollPair->GetData().pos;		// 相手の位置
+				D3DXVECTOR3 sizePair = pCollPair->GetData().size;	// 相手の大きさ
+
+				bool bHitColl = false;
+
+				switch (typeSxis)
+				{
+				case CMgrColl::TYPE_SXIS_X:
+
+					// X軸の当たり判定
+					if (hitRectangleSide(posMy.x, sizeMy.x, posPair.x, sizePair.x) == true)
+					{
+						bHitColl = true;
+					}
+
+					break;
+
+				case CMgrColl::TYPE_SXIS_Y:
+
+					// X軸の当たり判定
+					if (hitRectangleSide(posMy.y, sizeMy.y, posPair.y, sizePair.y) == true)
+					{
+						// 接触判定を設定
+						bHitColl = true;
+					}
+
+				case CMgrColl::TYPE_SXIS_Z:
+
+					// Z軸の当たり判定
+					if (hitRectangleSide(posMy.z, sizeMy.z, posPair.z, sizePair.z) == true)
+					{
+						// 接触判定を設定
+						bHitColl = true;
+					}
+
+					break;
+				}
+
+				if (bHitColl)
+				{
+					// 接触判定を設定
+					bHit = true;
+
+					// 接触情報設定処理
+					SetHit(
+						pCollMy,
+						nCount,
+						pCollPair->GetData().pObj);
+				}
+			}
+		}
+	}
+
+	return bHit;
 }
 
 //-------------------------------------
@@ -204,6 +246,8 @@ int CMgrColl::Set(CColl *pColl)
 		if (m_apColl[nCount] == NULL)
 		{
 			m_apColl[nCount] = pColl;
+
+			m_nNldxMax++;
 
 			return nCount;
 		}
@@ -218,6 +262,22 @@ int CMgrColl::Set(CColl *pColl)
 void CMgrColl::Reset(int nNldx)
 {
 	m_apColl[nNldx] = NULL;
+
+	m_nNldxMax--;
+}
+
+//-------------------------------------
+//- 接触情報設定処理
+//-------------------------------------
+void CMgrColl::SetHit(CColl* pCollMy,int nNldx,CObject* pObjPair)
+{
+	// 接触相手の当たり判定情報を設定
+	CColl::HitData hitData = {};
+	hitData.nNldx = nNldx;
+	hitData.pObj = pObjPair;
+
+	// 接触相手の番号を代入
+	pCollMy->SetHitData(hitData);
 }
 
 //-------------------------------------

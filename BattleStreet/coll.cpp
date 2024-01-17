@@ -32,6 +32,12 @@
 CColl::CColl()
 {
 	ZeroMemory(&m_data, sizeof(m_data));
+
+	// 番号の初期値を代入
+	m_data.nNldx = -1;
+
+	// 接触相手番号の初期値を代入
+	memset(&m_data.hitData[0].nNldx,-1,sizeof(m_data.hitData));
 }
 
 //-------------------------------------
@@ -45,7 +51,7 @@ CColl::~CColl()
 //-------------------------------------
 //- 当たり判定の初期化処理
 //-------------------------------------
-HRESULT CColl::Init(CMgrColl::TAG tag, D3DXVECTOR3 pos, D3DXVECTOR3 size)
+HRESULT CColl::Init(CMgrColl::TAG tag, CObject* pObj, D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
 	// 当たり判定のポインタ取得
 	CMgrColl *pMgrColl = CManager::GetInstance()->GetMgrColl();
@@ -61,7 +67,7 @@ HRESULT CColl::Init(CMgrColl::TAG tag, D3DXVECTOR3 pos, D3DXVECTOR3 size)
 	m_data.nNldx = pMgrColl->Set(this);
 
 	// 初期設定処理
-	InitSet(tag, pos, size);
+	InitSet(tag, pObj,pos, size);
 
 	return S_OK;
 }
@@ -100,10 +106,11 @@ void CColl::Draw(void)
 {
 }
 
+
 //-------------------------------------
 //- 当たり判定の生成処理
 //-------------------------------------
-CColl * CColl::Create(CMgrColl::TAG tag, D3DXVECTOR3 pos, D3DXVECTOR3 size)
+CColl* CColl::Create(CMgrColl::TAG tag, CObject* pObj, D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
 	// 当たり判定の生成
 	CColl *pCollision = DBG_NEW CColl;
@@ -112,7 +119,7 @@ CColl * CColl::Create(CMgrColl::TAG tag, D3DXVECTOR3 pos, D3DXVECTOR3 size)
 	if (pCollision != NULL)
 	{
 		// 初期化処理
-		if (FAILED(pCollision->Init(tag,pos,size)))
+		if (FAILED(pCollision->Init(tag, pObj,pos,size)))
 		{// 失敗時
 
 			// 「なし」を返す
@@ -131,30 +138,9 @@ CColl * CColl::Create(CMgrColl::TAG tag, D3DXVECTOR3 pos, D3DXVECTOR3 size)
 }
 
 //-------------------------------------
-//- 当たり判定の情報更新処理
+//- 当たり判定の接触処理（矩形）
 //-------------------------------------
-void CColl::UpdateData(D3DXVECTOR3 pos, D3DXVECTOR3 size)
-{
-	// 当たり判定情報の代入
-	m_data.pos = pos;		// 位置
-	m_data.size = size;		// サイズ
-}
-
-//-------------------------------------
-//- 当たり判定の情報更新処理（posOld）
-//-------------------------------------
-void CColl::UpdateData(D3DXVECTOR3 pos, D3DXVECTOR3 posOld, D3DXVECTOR3 size)
-{
-	// 当たり判定情報の代入
-	m_data.pos = pos;		// 位置
-	m_data.posOld = posOld;	// 前回の位置
-	m_data.size = size;		// サイズ
-}
-
-//-------------------------------------
-//- 当たり判定の接触処理
-//-------------------------------------
-bool CColl::Hit(CMgrColl::TAG hitTag, CMgrColl::STATE_HIT stateHit)
+bool CColl::Hit(CMgrColl::TAG hitTag)
 {
 	// 当たり判定のポインタ取得
 	CMgrColl *pMgrColl = CManager::GetInstance()->GetMgrColl();		
@@ -170,21 +156,33 @@ bool CColl::Hit(CMgrColl::TAG hitTag, CMgrColl::STATE_HIT stateHit)
 	bool bHitTgt = false;	// 目的の接触の有無
 
 	// 当たり判定管理の接触処理
-	bHitTgt = pMgrColl->Hit(m_data.nNldx,hitTag,stateHit);
+	bHitTgt = pMgrColl->Hit(m_data.nNldx, hitTag);
 
 	return bHitTgt;
 }
 
 //-------------------------------------
-//- タグの相手を判定設定処理
+//- 当たり判定の接触処理（矩形の辺）
 //-------------------------------------
-void CColl::SetTagTgt(CMgrColl::TAG hitTag, CMgrColl::TYPE type, bool bIsActive)
+bool CColl::HitSide(CMgrColl::TAG hitTag, CMgrColl::TYPE_SXIS typeSxis)
 {
-	// 設定したタグの当たり判定の有無を設定
-	m_data.abTagTgt[hitTag] = bIsActive;
+	// 当たり判定のポインタ取得
+	CMgrColl* pMgrColl = CManager::GetInstance()->GetMgrColl();
 
-	// 判定の種類を代入
-	m_data.aType[hitTag] = type;
+	// 当たり判定の有無を判定
+	if (pMgrColl == NULL)
+	{
+		// 処理を抜ける
+		return false;
+	}
+
+	// 変数宣言
+	bool bHitTgt = false;	// 目的の接触の有無
+
+	// 当たり判定管理の接触処理
+	bHitTgt = pMgrColl->Hit(m_data.nNldx, hitTag);
+
+	return bHitTgt;
 }
 
 //-------------------------------------
@@ -195,8 +193,8 @@ void CColl::SetHitData(HitData data)
 	// 変数宣言（情報取得）
 	int nHitNum = m_data.nHitNldxMax;	// 現在の最大接触数
 
-	// 接触情報を格納
-	m_data.hitData[nHitNum].nNldx = data.nNldx;	// 当たり判定番号
+	// 接触相手の当たり判定情報を代入
+	m_data.hitData[nHitNum] = data;		
 
 	// 最大接触数を加算
 	m_data.nHitNldxMax++;
@@ -223,9 +221,10 @@ void CColl::ResetHitData(void)
 //-------------------------------------
 //- 当たり判定の初期設定処理
 //-------------------------------------
-void CColl::InitSet(CMgrColl::TAG tag, D3DXVECTOR3 pos, D3DXVECTOR3 size)
+void CColl::InitSet(CMgrColl::TAG tag, CObject* pObj,D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
 	m_data.tag = tag;
+	m_data.pObj = pObj;
 	m_data.pos = pos;
 	m_data.size = size;
 }

@@ -62,6 +62,8 @@ public:
 	void Update(void);
 	void Draw(void);
 
+	virtual void HitDamage(int nDamage);
+
 	static CEnemy *Create(MODEL modelType,D3DXVECTOR3 pos,D3DXVECTOR3 rot);
 
 	int GetModelIdx(void) { return m_model; }

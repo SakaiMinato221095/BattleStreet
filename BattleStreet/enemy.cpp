@@ -155,6 +155,7 @@ HRESULT CEnemy::Init(MODEL modelType, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 		// 当たり判定設定
 		m_pColl = CColl::Create(
 			CMgrColl::TAG_ENEMY,
+			this,
 			GetVtxData().pos,
 			GetVtxData().size);
 	}
@@ -201,15 +202,6 @@ void CEnemy::Update(void)
 
 	// Xファイルオブジェクトの更新処理
 	CObjectX::Update();
-
-	if (m_pColl != nullptr)
-	{
-		if (m_pColl->GetData().stateHit == CMgrColl::STATE_HIT_DEAD)
-		{
-			// 終了処理
-			Uninit();
-		}
-	}
 }
 
 //-------------------------------------
@@ -219,6 +211,14 @@ void CEnemy::Draw(void)
 {
 	// Xファイルオブジェクトの描画処理
 	CObjectX::Draw();
+}
+
+//-------------------------------------
+//- 通常敵のダメージ処理
+//-------------------------------------
+void CEnemy::HitDamage(int nDamage)
+{
+	Uninit();
 }
 
 //-------------------------------------
@@ -262,7 +262,7 @@ void CEnemy::InitSet(MODEL modelType, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	// データの代入
 	vtxData.pos = pos;								// 位置
 	vtxData.rot = rot;								// 向き
-	vtxData.size = m_modelData[modelType].size;		// サイズ
+	vtxData.size = D3DXVECTOR3(100.0f, 100.0f, 100.0f);		// サイズ
 
 	// 情報更新（頂点値情報）
 	SetVtxData(vtxData);

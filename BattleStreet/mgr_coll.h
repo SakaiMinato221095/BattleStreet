@@ -50,14 +50,14 @@ public:
 		TAG_MAX
 	}TAG;
 
-	// “–‚½‚èí—Ş
+	// ²
 	typedef enum
 	{
-		TYPE_NONE = 0,			// Œø‰Ê‚È‚µ
-		TYPE_RECTANGLE,			// ‹éŒ`
-		TYPE_RECTANGLE_SIDE,	// ‹éŒ`‚Ì•Ó“Á’è
-		TYPE_MAX
-	}TYPE;
+		TYPE_SXIS_X = 0,	// X²
+		TYPE_SXIS_Y,		// Y²
+		TYPE_SXIS_Z,		// Z²
+		TYPE_SXIS_MAX,
+	}TYPE_SXIS;
 
 	// ÚG‚Ìí—Ş
 	typedef enum
@@ -78,15 +78,18 @@ public:
 
 	static CMgrColl *Create(void);
 
-	bool Hit(int nNldxColl, TAG hitTag, STATE_HIT stateHit);
+	bool Hit(int nNldxColl, TAG hitTag);
+	bool HitSide(int nNldxColl, CMgrColl::TAG hitTag,  CMgrColl::TYPE_SXIS typeSxis);
 
 	int Set(CColl *pColl);
 	void Reset(int nNldx);
 
+private:
+
+	void SetHit(CColl* pCollMy, int nNldx, CObject* pObjPair);
+
 	bool hitRectangle(D3DXVECTOR3 posMy, D3DXVECTOR3 sizeMy, D3DXVECTOR3 posPair, D3DXVECTOR3 sizePair);
 	bool hitRectangleSide(float fPos, float fSize, float fPosPair, float fSizePair);
-
-private:
 
 	CColl *m_apColl[COLLSION_NUM_MAX];	// “–‚½‚è”»’è‚Ìî•ñ
 	int m_nNldxMax;						// Œ»İ‚Ì”Ô†‚ÌÅ‘å”

@@ -79,6 +79,8 @@ public:
 	static CObject* GetTop(int nPriority);
 	CObject* GetNext(void);
 
+	virtual void HitDamage(int nDamage) {};
+
 	void IsUpdateStop(bool bIsUpdateStop) { m_bIsUpdateStop = bIsUpdateStop; }
 
 	static bool GetIsUpdateAllStop(void) { return m_bIsUpdateAllStop; }

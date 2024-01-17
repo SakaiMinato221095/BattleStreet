@@ -13,12 +13,18 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Collision">
+      <UniqueIdentifier>{e74660d2-64d8-4c72-9411-0e11368ec05e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene">
+      <UniqueIdentifier>{c7db45fd-0944-47e1-b4a0-0e0918205861}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Input">
+      <UniqueIdentifier>{93cf51ad-cbe2-4184-bced-64c8eeb70ffa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="camera.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="coll.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="debugproc.cpp">
@@ -28,12 +34,6 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="fade.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="game.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Input.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="light.cpp">
@@ -49,9 +49,6 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="manager_texture.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="mgr_coll.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="model.cpp">
@@ -102,9 +99,6 @@
     <ClCompile Include="renderer.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="result.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="skybox.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -117,24 +111,36 @@
     <ClCompile Include="timer.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="title.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="xinput.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="bg.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="command.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="coll.cpp">
+      <Filter>Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="mgr_coll.cpp">
+      <Filter>Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="game.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="result.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="title.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="xinput.cpp">
+      <Filter>Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Input.cpp">
+      <Filter>Input</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="coll.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="debugproc.h">
@@ -144,12 +150,6 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="fade.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="game.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Input.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="light.h">
@@ -165,9 +165,6 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="manager_texture.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="mgr_coll.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="model.h">
@@ -218,9 +215,6 @@
     <ClInclude Include="renderer.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="result.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="skybox.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -233,17 +227,32 @@
     <ClInclude Include="timer.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="title.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="xinput.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="bg.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="command.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="coll.h">
+      <Filter>Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="mgr_coll.h">
+      <Filter>Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="game.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="result.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="title.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="xinput.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Input.h">
+      <Filter>Input</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

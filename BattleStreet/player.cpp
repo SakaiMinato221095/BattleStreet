@@ -24,6 +24,7 @@
 #include "camera.h"
 
 #include "coll.h"
+#include "enemy.h"
 
 #include "command.h"
 
@@ -217,7 +218,6 @@ void CPlayer::Update(void)
 	// 通常モーションの更新処理
 	UpdateMotionNone();
 
-
 	if (m_pColl != nullptr)
 	{
 		// 当たり判定の情報更新処理
@@ -225,6 +225,21 @@ void CPlayer::Update(void)
 			m_data.pos,
 			m_data.posOld,
 			m_data.size);
+
+		// 敵との接触判定処理
+		if (m_pColl->Hit(CMgrColl::TAG_ENEMY))
+		{
+			// 
+			CColl::Data data = m_pColl->GetData();
+			int nHitNldxMax = data.nHitNldxMax;
+
+			// 接触した敵のダメージ処理
+			for (int nCount = 0; nCount < nHitNldxMax; nCount++)
+			{
+				// 相手のダメージ処理
+				data.hitData[nCount].pObj->HitDamage(0);
+			}
+		}
 
 		//// プレイヤーの当たり判定
 		//if (m_pColl->Hit(CMgrColl::TAG_BLOCK, CMgrColl::STATE_HIT_NONE) == true)
@@ -353,16 +368,14 @@ void CPlayer::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	m_data.rot = rot;
 	m_data.rotDest = rot;
 
-	m_data.size = D3DXVECTOR3(50.0f, 100.0f, 50.0f);
+	m_data.size = D3DXVECTOR3(100.0f, 100.0f, 100.0f);
 
 	// 当たり判定設定
 	m_pColl = CColl::Create(
 		CMgrColl::TAG_PLAYER,
+		this,
 		m_data.pos,
 		m_data.size);
-
-	//// 相手タグの設定処理
-	//m_pColl->SetTagTgt(CMgrColl::TAG_BLOCK, CMgrColl::TYPE_RECTANGLE_SIDE, true);
 
 	m_data.plus.speedRate = 1.0f;
 }
