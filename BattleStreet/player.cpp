@@ -25,6 +25,8 @@
 
 #include "coll.h"
 
+#include "command.h"
+
 //-======================================
 //-	マクロ定義
 //-======================================
@@ -43,8 +45,7 @@ CPlayer::CPlayer()
 	// 値をクリア
 	ZeroMemory(&m_data, sizeof(m_data));
 
-	m_stateType = STATE_TYPE(0);
-	m_stateTypeNew = m_stateType;
+	m_motionState = MOTION_STATE(0);
 
 	ZeroMemory(m_mtxWorld, sizeof(D3DXMATRIX));
 
@@ -87,6 +88,11 @@ HRESULT CPlayer::Init(D3DXVECTOR3 pos , D3DXVECTOR3 rot,CModel::MODEL_TYPE model
 			// 階層構造Xオブジェクトの生成
 			m_apModel[nCount] = CModel::Create(modelType, nCount);
 
+			if (m_apModel[nCount] == nullptr)
+			{
+				return E_FAIL;
+			}
+
 			// 階層構造Xオブジェクトの設定
 			m_apModel[nCount]->SetParent(m_apModel, modelType, nCount);
 		}
@@ -97,6 +103,11 @@ HRESULT CPlayer::Init(D3DXVECTOR3 pos , D3DXVECTOR3 rot,CModel::MODEL_TYPE model
 		// モーションの生成
 		m_pMotion = CMotion::Create(m_nNumModel, nStateMax);
 
+		if (m_pMotion == nullptr)
+		{
+			return E_FAIL;
+		}
+
 		// ファイルを読み込み
 		m_pMotion->SetFile(motionType);
 
@@ -105,6 +116,18 @@ HRESULT CPlayer::Init(D3DXVECTOR3 pos , D3DXVECTOR3 rot,CModel::MODEL_TYPE model
 
 		// 待機モーションを設定
 		m_pMotion->Set(0);
+	}
+
+	// コマンド
+	if (m_pCommand == nullptr)
+	{
+		// コマンドの生成
+		m_pCommand = CCommand::Create();
+
+		if (m_pCommand == nullptr)
+		{
+			return E_FAIL;
+		}
 	}
 
 	// 成功を返す
@@ -154,6 +177,16 @@ void CPlayer::Uninit(void)
 		m_pMotion = NULL;
 	}
 
+	// コマンドの終了処理
+	if (m_pCommand != NULL)
+	{
+		// モーションの開放
+		m_pCommand->Uninit();
+
+		delete m_pCommand;
+		m_pCommand = NULL;
+	}
+
 	// 自分自身のポインタの開放
 	Release();
 }
@@ -168,6 +201,9 @@ void CPlayer::Update(void)
 
 	// 移動の入力処理
 	InputMove();
+
+	// コンボ入力処理
+	InputCombo();
 
 	// 向きの更新処理
 	UpdateRot();
@@ -289,7 +325,7 @@ CPlayer *CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, CModel::MODEL_TYPE mo
 	if (pPlayer != NULL)
 	{
 		// 初期化処理
-		if (FAILED(pPlayer->Init(pos, rot, modelType, motionType, STATE_TYPE_MAX)))
+		if (FAILED(pPlayer->Init(pos, rot, modelType, motionType, MOTION_STATE_MAX)))
 		{// 失敗時
 
 		 // 「なし」を返す
@@ -428,8 +464,8 @@ void CPlayer::UpdateMotionNone(void)
 	D3DXVECTOR3 move = GetData().move;	// 移動量
 
 	// 状態を判定
-	if (m_stateTypeNew == STATE_TYPE_NEUTRAL ||
-		m_stateTypeNew == STATE_TYPE_MOVE )
+	if (m_motionState == MOTION_STATE_NEUTRAL ||
+		m_motionState == MOTION_STATE_MOVE )
 	{
 		// 移動量で状態を変更
 		if (move.x >= 0.3f ||
@@ -438,28 +474,24 @@ void CPlayer::UpdateMotionNone(void)
 			move.z <= -0.3f)
 		{
 			// 移動状態に変更
-			m_stateTypeNew = STATE_TYPE_MOVE;
+			m_motionState = MOTION_STATE_MOVE;
 		}
 		else
 		{
 			// 待機状態の変更
-			m_stateTypeNew = STATE_TYPE_NEUTRAL;
+			m_motionState = MOTION_STATE_NEUTRAL;
 		}
 	}
 
-	if (m_stateTypeNew == STATE_TYPE_JUMP || 
-		m_stateTypeNew == STATE_TYPE_DOUBLEJUMP)
+	if (m_motionState != pMotion->GetType())
 	{
-		if (m_data.move.y <= 0.0f)
-		{
-			//m_stateTypeNew = STATE_TYPE_LANDING;
-		}
+		pMotion->Set(m_motionState);
 	}
 
 	if (m_pMotion != nullptr)
 	{
 		// モーションの終了状況を判定
-		if (pMotion->IsFinsih() == true)
+		if (pMotion->IsFinsih())
 		{
 			// モーションの更新
 			pMotion->Update();
@@ -467,17 +499,7 @@ void CPlayer::UpdateMotionNone(void)
 		else
 		{
 			// 待機状態を設定
-			m_stateTypeNew = STATE_TYPE_NEUTRAL;
-		}
-
-		// モーションの設定処理
-		if (m_stateType != m_stateTypeNew)
-		{
-			// 現在のモーションの設定
-			pMotion->Set(m_stateTypeNew);
-
-			// 状態の更新
-			m_stateType = m_stateTypeNew;
+			m_motionState = MOTION_STATE_NEUTRAL;
 		}
 	}
 
@@ -615,6 +637,110 @@ void CPlayer::InputMove(void)
 	// 情報更新
 	m_data.move = move;			// 移動量
 	m_data.rotDest = rotDest;	// 目的の向き
+}
+
+//-------------------------------------
+//- プレイヤーのコンボ入力処理
+//-------------------------------------
+void CPlayer::InputCombo(void)
+{
+	// キーボードのポインタを宣言
+	CInputKeyboard* pInputKeyboard = CManager::GetInstance()->GetInstance()->GetInputKeyboard();
+
+	// キーボードの情報取得の成功を判定
+	if (pInputKeyboard == NULL)
+	{// 失敗時
+
+	 // 移動処理を抜ける
+		return;
+	}
+
+	// X入力のポインタを宣言
+	CXInput* pXInput = CManager::GetInstance()->GetXInput();
+
+	// X入力の情報取得の成功を判定
+	if (pXInput == NULL)
+	{
+		// 処理を抜ける
+		return;
+	}
+
+	// 入力種類情報を格納
+	CCommand::INPUT_TYPE inputType = CCommand::INPUT_TYPE_NONE;
+
+	if (
+		pInputKeyboard->GetTrigger(DIK_J) == true ||
+		pXInput->GetTrigger(XINPUT_GAMEPAD_A,CXInput::TYPE_INPUT_BUTTON) == true)
+	{
+		// パンチ
+		inputType = CCommand::INPUT_TYPE_PUNCH;
+	}
+	else if (
+		pInputKeyboard->GetTrigger(DIK_K) == true ||
+		pXInput->GetTrigger(XINPUT_GAMEPAD_B, CXInput::TYPE_INPUT_BUTTON) == true)
+	{
+		// キック
+		inputType = CCommand::INPUT_TYPE_KICK;
+	}
+
+	if (m_pCommand != nullptr &&
+		inputType != CCommand::INPUT_TYPE_NONE)
+	{
+		// コマンドの入力処理を設定｛フィニッシュの有無を取得｝
+		bool bFinish = m_pCommand->SetInput(inputType);
+
+		if (bFinish)
+		{
+			// フィニッシュを実行
+		}
+		else
+		{
+			// 入力の設定処理
+			SetInput(inputType);
+		}
+	}
+}
+
+//-------------------------------------
+//- プレイヤーの入力設定処理
+//-------------------------------------
+void CPlayer::SetInput(CCommand::INPUT_TYPE inputType)
+{
+	switch (inputType)
+	{
+	case CCommand::INPUT_TYPE_NONE:
+		break;
+	case CCommand::INPUT_TYPE_PUNCH:
+
+		// パンチ攻撃の設定
+		SetAttackPunch();
+
+		break;
+	case CCommand::INPUT_TYPE_KICK:
+
+		// キック攻撃
+		SetAttackKick();
+
+		break;
+	}
+}
+
+//-------------------------------------
+//- プレイヤーのパンチ攻撃設定処理
+//-------------------------------------
+void CPlayer::SetAttackPunch(void)
+{
+	// モーションの設定（パンチ）
+	m_motionState = MOTION_STATE_PUNCH;
+}
+
+//-------------------------------------
+//- プレイヤーのキック攻撃設定処理
+//-------------------------------------
+void CPlayer::SetAttackKick(void)
+{
+	// モーションの設定（キック）
+	m_motionState = MOTION_STATE_KICK;
 }
 
 //-------------------------------------

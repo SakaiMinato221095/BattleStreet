@@ -22,6 +22,7 @@
     <ClCompile Include="bg.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="coll.cpp" />
+    <ClCompile Include="command.cpp" />
     <ClCompile Include="debugproc.cpp" />
     <ClCompile Include="enemy.cpp" />
     <ClCompile Include="fade.cpp" />
@@ -47,7 +48,6 @@
     <ClCompile Include="obj_3d_wall.cpp" />
     <ClCompile Include="pause.cpp" />
     <ClCompile Include="player.cpp" />
-    <ClCompile Include="player_battle.cpp" />
     <ClCompile Include="precompile.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -65,6 +65,7 @@
     <ClInclude Include="bg.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="coll.h" />
+    <ClInclude Include="command.h" />
     <ClInclude Include="debugproc.h" />
     <ClInclude Include="enemy.h" />
     <ClInclude Include="fade.h" />
@@ -90,7 +91,6 @@
     <ClInclude Include="obj_3d_wall.h" />
     <ClInclude Include="pause.h" />
     <ClInclude Include="player.h" />
-    <ClInclude Include="player_battle.h" />
     <ClInclude Include="precompile.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="result.h" />

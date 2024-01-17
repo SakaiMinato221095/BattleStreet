@@ -22,6 +22,8 @@
 #include "model.h"
 #include "motion.h"
 
+#include "command.h"
+
 //=======================================
 //=	マクロ定義
 //=======================================
@@ -45,22 +47,15 @@ class CPlayer : public CObject
 
 public:
 
-	// 状態
+	// モーション状態
 	typedef enum
 	{
-		STATE_TYPE_NEUTRAL = 0,		// 待機
-		STATE_TYPE_MOVE,			// 移動
-		STATE_TYPE_JUMP,			// ジャンプ
-		STATE_TYPE_LANDING,			// 着地
-		STATE_TYPE_KAZEDAMA,		// 風だまアクション
-		STATE_TYPE_HAVE_NEUTRAL,	// 敵保持待機
-		STATE_TYPE_HAVE_MOVE,		// 敵保持移動
-		STATE_TYPE_HAVE_JUMP,		// 敵保持ジャンプ
-		STATE_TYPE_HAVE_LANDING,	// 敵保持着地
-		STATE_TYPE_THROW,			// 敵投げアクション
-		STATE_TYPE_DOUBLEJUMP,		// 敵投げジャンプアクション
-		STATE_TYPE_MAX
-	}STATE_TYPE;
+		MOTION_STATE_NEUTRAL = 0,	// 待機
+		MOTION_STATE_MOVE,			// 移動
+		MOTION_STATE_PUNCH,			// パンチ
+		MOTION_STATE_KICK,			// キック
+		MOTION_STATE_MAX
+	}MOTION_STATE;
 
 	// 追加値の情報
 	typedef struct
@@ -105,11 +100,8 @@ public:
 	void SetData(Data data) { m_data = data; }
 	Data GetData(void) { return m_data; }
 
-	void SetStateType(STATE_TYPE stateType) { m_stateType = stateType; }
-	STATE_TYPE GetStateType(void) { return m_stateType; }
-
-	void SetStateTypeNew(STATE_TYPE stateTypeNew) { m_stateTypeNew = stateTypeNew; }
-	STATE_TYPE GetStateTypeNew(void) { return m_stateTypeNew; }
+	void SetMotionState(MOTION_STATE motionState) { m_motionState = motionState; }
+	MOTION_STATE GetMotionState(void) { return m_motionState; }
 
 	void SetPlus(float fRate, int nTime) { m_data.plus.speedRate = fRate, m_data.plus.sppedPlusTime = nTime; }
 
@@ -123,13 +115,18 @@ private:
 	void UpdateMotionNone(void);
 
 	void InputMove(void);
+	void InputCombo(void);
+
+	void SetInput(CCommand::INPUT_TYPE inputType);
+
+	void SetAttackPunch(void);
+	void SetAttackKick(void);
 
 	void DebugPlayer(void);
 
 	Data m_data;								// 値を格納
 
-	STATE_TYPE m_stateType;						// 状態の種類
-	STATE_TYPE m_stateTypeNew;					// 最新の状態の種類
+	MOTION_STATE m_motionState;					// 状態の種類
 
 	CColl *m_pColl;								// 当たり判定情報
 
@@ -139,6 +136,8 @@ private:
 	int m_nNumModel;							// モデル（パーツ）の総数
 
 	CMotion *m_pMotion;							// モーションのポインタ
+
+	CCommand* m_pCommand;							// コマンドのポインタ
 };
 
 #endif	// 二重インクルード防止の終了

@@ -66,82 +66,6 @@ void CMgrColl::Uninit(void)
 //-------------------------------------
 void CMgrColl::Update(void)
 {
-	for (int nCountMy = 0; nCountMy < COLLSION_NUM_MAX; nCountMy++)
-	{
-		if (m_apColl[nCountMy] != NULL)
-		{
-			// 変数宣言
-			CColl *pCollMy = m_apColl[nCountMy];	// 自身の当たり判定情報
-			pCollMy->ResetHitData();				// 接触情報の初期化
-
-			for (int nCountPair = 0; nCountPair < COLLSION_NUM_MAX; nCountPair++)
-			{
-				if (m_apColl[nCountPair] != NULL)
-				{
-					CColl *pCollPair = m_apColl[nCountPair];			// 相手の当たり判定情報
-
-					TAG tagTgt = pCollPair->GetData().tag;				// 相手のタグ情報
-					bool bTgt = pCollMy->GetData().abTagTgt[tagTgt];	// タグの接触の有無
-					TYPE type = pCollMy->GetData().aType[tagTgt];		// 相手との接触種類
-
-					// 当たり判定タグの判定
-					if (bTgt == true)
-					{
-						// 変数宣言（情報取得）
-						D3DXVECTOR3 posMy = pCollMy->GetData().pos;			// 自身の位置
-						D3DXVECTOR3 sizeMy = pCollMy->GetData().size;		// 自身の大きさ
-
-						// 変数宣言 (相手の情報取得)
-						D3DXVECTOR3 posPair = pCollPair->GetData().pos;		// 相手の位置
-						D3DXVECTOR3 sizePair = pCollPair->GetData().size;	// 相手の大きさ
-
-						// 変数宣言
-						bool bIsHit = false;	// 接触の有無
-					
-						bool bIsHitX = false;	// X軸の判定
-						bool bIsHitY = false;	// Y軸の判定
-						bool bIsHitZ = false;	// Z軸の判定
-
-						switch (type)
-						{
-
-						case TYPE_RECTANGLE:
-
-							// 矩形の当たり判定
-							if (hitRectangle(posMy, sizeMy, posPair, sizePair) == true)
-							{
-								// 接触
-								bIsHit = true;
-							}
-
-							break;
-
-						case TYPE_RECTANGLE_SIDE:
-
-							// 接触
-							bIsHit = true;
-							
-							break;
-						}
-
-						// 接触の有無
-						if (bIsHit == true)
-						{
-							// 接触相手の情報設定
-							CColl::HitData hitData;
-
-							// 相手の番号を代入
-							hitData.nNldx = nCountPair;
-
-							// 接触相手の情報を設定
-							pCollMy->SetHitData(hitData);
-						}
-					}
-				}
-			}
-		}
-
-	}
 }
 
 //-------------------------------------
@@ -269,8 +193,6 @@ bool CMgrColl::Hit(int nNldxColl, CMgrColl::TAG hitTag, STATE_HIT stateHit)
 	return bHitTgt;
 
 }
-
-//}
 
 //-------------------------------------
 //- 当たり判定管理の設定処理

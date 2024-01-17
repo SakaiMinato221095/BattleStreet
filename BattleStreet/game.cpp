@@ -26,6 +26,8 @@
 
 #include "player.h"
 
+#include "enemy.h"
+
 #include "obj_3d_field.h"
 #include "obj_3d_wall.h"
 #include "objectx_none.h"
@@ -105,7 +107,7 @@ HRESULT CGame::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		if (pField != nullptr)
 		{
 			pField->InitSet(
-				D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+				D3DXVECTOR3(0.0f, 0.0f, 3000.0f),
 				D3DXVECTOR3(4000.0f, 0.0f, 5000.0f),
 				D3DXVECTOR3(0.0f, 0.0f, 0.0f),
 				D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f),
@@ -120,7 +122,7 @@ HRESULT CGame::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		if (pField != nullptr)
 		{
 			pField->InitSet(
-				D3DXVECTOR3(0.0f, 1.0f, 0.0f),
+				D3DXVECTOR3(0.0f, 1.0f, 3000.0f),
 				D3DXVECTOR3(1250.0f, 0.0f, 5000.0f),
 				D3DXVECTOR3(0.0f, 0.0f, 0.0f),
 				D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f),
@@ -139,13 +141,19 @@ HRESULT CGame::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 			D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 	}
 
+	// 敵の生成
+	CEnemy::Create(
+		CEnemy::MODEL_ALIEN_000,
+		D3DXVECTOR3(0.0f, 0.0f, 400.0f),
+		D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+
 	if (m_pPlayer == NULL)
 	{
 		// プレイヤーの生成
 		m_pPlayer = CPlayer::Create(
 			D3DXVECTOR3(0.0f, 0.0f, 0.0f),				// 位置
 			D3DXVECTOR3(0.0f, -D3DX_PI * 0.5f, 0.0f),	// 向き
-			CModel::MODEL_TYPE_PLAYER_AONOA,			// モデル
+			CModel::MODEL_TYPE_PLAYER,					// モデル
 			CMotion::MOTION_TYPE_PLAYER);				// モーション
 	}
 
