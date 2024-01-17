@@ -29,9 +29,7 @@
 //-	マクロ定義
 //-======================================
 
-#define PLAYER_SPEED		(4.0f)	// プレイヤーの速度
-#define PLAYER_JUMP			(30.0f)	// プレイヤーのジャンプ力
-#define PLAYER_DOUBLE_JUMP	(35.0f)	// プレイヤーの二段ジャンプ力
+#define PLAYER_SPEED		(3.0f)	// プレイヤーの速度
 
 //-======================================
 //-	静的変数宣言
@@ -44,9 +42,6 @@ CPlayer::CPlayer()
 {
 	// 値をクリア
 	ZeroMemory(&m_data, sizeof(m_data));
-
-	m_bJump = false;
-	m_bLanding = false;
 
 	m_stateType = STATE_TYPE(0);
 	m_stateTypeNew = m_stateType;
@@ -171,14 +166,8 @@ void CPlayer::Update(void)
 	// 前回の位置を更新
 	m_data.posOld = m_data.pos;
 
-	if (CManager::GetInstance()->GetMode() == CScene::MODE_GAME)
-	{
-		// 移動の入力処理
-		InputMove();
-
-		// ジャンプの入力処理
-		InputJump();
-	}
+	// 移動の入力処理
+	InputMove();
 
 	// 向きの更新処理
 	UpdateRot();
@@ -192,19 +181,6 @@ void CPlayer::Update(void)
 	// 通常モーションの更新処理
 	UpdateMotionNone();
 
-	//縦幅の処理
-	if (m_data.pos.y <= 0.0f)
-	{
-		m_bJump = false;
-
-		if (m_bLanding == false)
-		{
-			m_bLanding = true;
-		}
-
-		m_data.pos.y = 0.0f;
-		m_data.move.y = 0.0f;
-	}
 
 	if (m_pColl != nullptr)
 	{
@@ -363,9 +339,6 @@ void CPlayer::UpdatePos(void)
 	// 変数宣言（情報取得）
 	D3DXVECTOR3 pos = m_data.pos;	// 位置
 	D3DXVECTOR3 move = m_data.move;	// 移動量
-
-	// 重力の処理
-	move.y -= 1.0f;
 
 	// 位置情報に移動量を加算
 	pos += move;
@@ -558,8 +531,8 @@ void CPlayer::InputMove(void)
 			pXInput->GetPress(CXInput::TYPE_STICK_LEFT, CXInput::TYPE_INPUT_STICK_L) == true)
 		{//左上移動
 
-			move.x -= sinf((D3DX_PI * 0.75f) + rotCamera.y);
-			move.z -= cosf((D3DX_PI * 0.75f) + rotCamera.y);
+			move.x -= sinf((D3DX_PI * 0.75f) + rotCamera.y) * speed.x;
+			move.z -= cosf((D3DX_PI * 0.75f) + rotCamera.y) * speed.z;
 
 			rotDest.y = (D3DX_PI * 0.75f) + rotCamera.y;
 		}
@@ -568,16 +541,16 @@ void CPlayer::InputMove(void)
 			pXInput->GetPress(CXInput::TYPE_STICK_RIGHT, CXInput::TYPE_INPUT_STICK_L) == true)
 		{//右上移動
 
-			move.x += sinf((D3DX_PI * 0.25f) + rotCamera.y);
-			move.z += cosf((D3DX_PI * 0.25f) + rotCamera.y);
+			move.x += sinf((D3DX_PI * 0.25f) + rotCamera.y) * speed.x;
+			move.z += cosf((D3DX_PI * 0.25f) + rotCamera.y) * speed.z;
 
 			rotDest.y = -(D3DX_PI * 0.75f) + rotCamera.y;
 		}
 		else
 		{
 
-			move.x += sinf((D3DX_PI * 0.0f) + rotCamera.y);
-			move.z += cosf((D3DX_PI * 0.0f) + rotCamera.y);
+			move.x += sinf((D3DX_PI * 0.0f) + rotCamera.y) * speed.x;
+			move.z += cosf((D3DX_PI * 0.0f) + rotCamera.y) * speed.z;
 
 			rotDest.y = D3DX_PI + rotCamera.y;
 
@@ -593,8 +566,8 @@ void CPlayer::InputMove(void)
 			pXInput->GetPress(CXInput::TYPE_STICK_LEFT, CXInput::TYPE_INPUT_STICK_L) == true)
 		{//左下移動
 
-			move.x -= sinf((D3DX_PI * 0.25f) + rotCamera.y);
-			move.z -= cosf((D3DX_PI * 0.25f) + rotCamera.y);
+			move.x -= sinf((D3DX_PI * 0.25f) + rotCamera.y) * speed.x;
+			move.z -= cosf((D3DX_PI * 0.25f) + rotCamera.y) * speed.z;
 
 			rotDest.y = (D3DX_PI * 0.25f) + rotCamera.y;
 		}
@@ -603,16 +576,16 @@ void CPlayer::InputMove(void)
 			pXInput->GetPress(CXInput::TYPE_STICK_RIGHT, CXInput::TYPE_INPUT_STICK_L) == true)
 		{//右下移動
 
-			move.x += sinf((D3DX_PI * 0.75f) + rotCamera.y);
-			move.z += cosf((D3DX_PI * 0.75f) + rotCamera.y);
+			move.x += sinf((D3DX_PI * 0.75f) + rotCamera.y) * speed.x;
+			move.z += cosf((D3DX_PI * 0.75f) + rotCamera.y) * speed.z;
 
 			rotDest.y = -(D3DX_PI * 0.25f) + rotCamera.y;
 		}
 		else
 		{
 			//移動量
-			move.x += sinf((D3DX_PI * 1.0f) + rotCamera.y);
-			move.z += cosf((D3DX_PI * 1.0f) + rotCamera.y);
+			move.x += sinf((D3DX_PI * 1.0f) + rotCamera.y) * speed.x;
+			move.z += cosf((D3DX_PI * 1.0f) + rotCamera.y) * speed.z;
 
 			rotDest.y = (D3DX_PI * 0.0f) + rotCamera.y;
 		}
@@ -623,8 +596,8 @@ void CPlayer::InputMove(void)
 		pXInput->GetPress(CXInput::TYPE_STICK_LEFT, CXInput::TYPE_INPUT_STICK_L) == true)
 	{//Aキーが押されたとき
 
-		move.x -= sinf((D3DX_PI * 0.5f) + rotCamera.y);
-		move.z -= cosf((D3DX_PI * 0.5f) + rotCamera.y);
+		move.x -= sinf((D3DX_PI * 0.5f) + rotCamera.y) * speed.x;
+		move.z -= cosf((D3DX_PI * 0.5f) + rotCamera.y) * speed.z;
 
 		rotDest.y = (D3DX_PI * 0.5f) + rotCamera.y;
 	}
@@ -633,8 +606,8 @@ void CPlayer::InputMove(void)
 		pXInput->GetPress(CXInput::TYPE_STICK_RIGHT, CXInput::TYPE_INPUT_STICK_L) == true)
 	{//Dキーが押されたとき
 
-		move.x += sinf((D3DX_PI * 0.5f) + rotCamera.y);
-		move.z += cosf((D3DX_PI * 0.5f) + rotCamera.y);
+		move.x += sinf((D3DX_PI * 0.5f) + rotCamera.y) * speed.x;
+		move.z += cosf((D3DX_PI * 0.5f) + rotCamera.y) * speed.z;
 
 		rotDest.y = -(D3DX_PI * 0.5f) + rotCamera.y;
 	}
@@ -642,78 +615,6 @@ void CPlayer::InputMove(void)
 	// 情報更新
 	m_data.move = move;			// 移動量
 	m_data.rotDest = rotDest;	// 目的の向き
-}
-
-//-------------------------------------
-//- プレイヤーのジャンプ入力処理
-//-------------------------------------
-void CPlayer::InputJump(void)
-{
-	if (m_bJump == false)
-	{
-		// 通常ジャンプ処理
-		InputNormalJump();
-	}
-}
-
-//-------------------------------------
-//- プレイヤーの通常ジャンプ入力処理
-//-------------------------------------
-void CPlayer::InputNormalJump(void)
-{
-	// キーボードのポインタを宣言
-	CInputKeyboard *pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
-
-	// キーボードの情報取得の成功を判定
-	if (pInputKeyboard == NULL)
-	{// 失敗時
-
-	 // 移動処理を抜ける
-		return;
-	}
-
-	// X入力のポインタを宣言
-	CXInput *pXInput = CManager::GetInstance()->GetXInput();
-
-	// X入力の情報取得の成功を判定
-	if (pXInput == NULL)
-	{
-		// 処理を抜ける
-		return;
-	}
-
-	// サウンドのポインタを宣言
-	CSound *pSound = CManager::GetInstance()->GetSound();
-	
-	// サウンドの情報取得の成功を判定
-	if (pSound == NULL)
-	{
-		// 処理を抜ける
-		return;
-	}
-
-	// 変数宣言
-	D3DXVECTOR3 move = m_data.move;			// 移動量を取得
-
-	// 入力処理（SPACEキー / Aボタン）
-	if (pInputKeyboard->GetTrigger(DIK_SPACE) != NULL && m_bJump == false ||
-		pXInput->GetTrigger(XINPUT_GAMEPAD_A, CXInput::TYPE_INPUT_BUTTON) && m_bJump == false)
-	{
-		// ジャンプ状態に変更
-		m_bJump = true;
-
-		// ジャンプSEの再生
-		pSound->Play(CSound::LABEL_SE_JUMP);
-
-		// ジャンプ量を設定
-		move.y = PLAYER_JUMP;
-
-		// 状態をジャンプに変更
-		m_stateTypeNew = STATE_TYPE_JUMP;
-	}
-
-	// 情報更新
-	m_data.move = move;			// 移動量
 }
 
 //-------------------------------------

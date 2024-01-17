@@ -109,13 +109,13 @@ void CObj3dWall::Unload(void)
 //-------------------------------------
 //- 3D壁の初期化処理（3Dオブジェクト設定）
 //-------------------------------------
-HRESULT CObj3dWall::Init(TEX tex, D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 rot, D3DXCOLOR color)
+HRESULT CObj3dWall::Init(TEX tex)
 {
 	// テクスチャ割当
 	BindTexture(m_nTextureNldx[tex]);
 
 	// 3Dオブジェクトの初期化
-	CObject3d::Init(CObject3d::TYPE_CREATE_WALL,pos,size,rot,color);
+	CObject3d::Init(CObject3d::TYPE_CREATE_WALL);
 
 	// 成功を返す
 	return S_OK;
@@ -151,7 +151,7 @@ void CObj3dWall::Draw(void)
 //-------------------------------------
 //- 3D壁の生成処理
 //-------------------------------------
-CObj3dWall * CObj3dWall::Create(TEX tex, D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 rot, D3DXCOLOR color)
+CObj3dWall * CObj3dWall::Create(TEX tex)
 {
 	// フィールドのポインタを宣言
 	CObj3dWall *pCObj3dWall = new CObj3dWall(5);
@@ -160,7 +160,7 @@ CObj3dWall * CObj3dWall::Create(TEX tex, D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DX
 	if (pCObj3dWall != NULL)
 	{
 		// 初期化処理
-		if (FAILED(pCObj3dWall->Init(tex,pos,size,rot,color)))
+		if (FAILED(pCObj3dWall->Init(tex)))
 		{// 失敗時
 
 			// 「なし」を返す

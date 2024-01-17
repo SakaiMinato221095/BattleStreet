@@ -50,12 +50,12 @@ public:
 	static HRESULT Load(void);
 	static void Unload(void);
 
-	HRESULT Init(TEX tex ,D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 rot, D3DXCOLOR color);
+	HRESULT Init(TEX tex);
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
 
-	static CObj3dField * Create(TEX tex ,D3DXVECTOR3 pos,D3DXVECTOR3 size ,D3DXVECTOR3 rot, D3DXCOLOR color);
+	static CObj3dField * Create(TEX tex);
 
 private:
 

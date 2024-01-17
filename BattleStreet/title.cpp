@@ -87,18 +87,17 @@ HRESULT CTitle::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 
-	for (int nCutColu = 0; nCutColu < 16; nCutColu++)
+	// フィールドの生成
+	CObj3dField* pField = CObj3dField::Create(CObj3dField::TEX_GLASS_000);
+
+	if (pField != nullptr)
 	{
-		for (int nCutLine = 0; nCutLine < 64; nCutLine++)
-		{
-			// フィールドの生成
-			CObj3dField::Create(
-				CObj3dField::TEX_GLASS_000,
-				D3DXVECTOR3(-15000.0f + (1000.0f * nCutLine), 0.0f, 10000.0f - (1000.0f * nCutColu)),
-				D3DXVECTOR3(500.0f, 0.0f, 500.0f),
-				D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-				D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-		}
+		pField->InitSet(
+			D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+			D3DXVECTOR3(5000.0f, 0.0f, 5000.0f),
+			D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+			D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f),
+			D3DXVECTOR2(10.0f, 10.0f));
 	}
 
 	if (m_pPlayer == NULL)
@@ -108,7 +107,7 @@ HRESULT CTitle::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 			D3DXVECTOR3(0.0f, 0.0f, 0.0f),				// 位置
 			D3DXVECTOR3(0.0f, -D3DX_PI * 0.5f, 0.0f),	// 向き
 			CModel::MODEL_TYPE_PLAYER_AONOA,			// モデル
-			CMotion::MOTION_TYPE_PLAYER_AONOA);			// モーション
+			CMotion::MOTION_TYPE_PLAYER);			// モーション
 	}
 
 	// オブジェクト管理の生成

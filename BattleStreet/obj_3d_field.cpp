@@ -111,13 +111,13 @@ void CObj3dField::Unload(void)
 //-------------------------------------
 //- 3D地面の初期化処理（3Dオブジェクト設定）
 //-------------------------------------
-HRESULT CObj3dField::Init(TEX tex ,D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 rot, D3DXCOLOR color)
+HRESULT CObj3dField::Init(TEX tex)
 {
 	// テクスチャ割当
 	BindTexture(m_nTextureNldx[tex]);
 
 	// 3Dオブジェクトの初期化
-	CObject3d::Init(CObject3d::TYPE_CREATE_FIELD,pos,size,rot,color);
+	CObject3d::Init(CObject3d::TYPE_CREATE_FIELD);
 
 	// 成功を返す
 	return S_OK;
@@ -150,11 +150,10 @@ void CObj3dField::Draw(void)
 	CObject3d::Draw();
 }
 
-
 //-------------------------------------
 //- 3D地面の生成処理
 //-------------------------------------
-CObj3dField *CObj3dField::Create(TEX tex, D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 rot, D3DXCOLOR color)
+CObj3dField *CObj3dField::Create(TEX tex)
 {
 	// フィールドのポインタを宣言
 	CObj3dField *pCObj3dField = new CObj3dField(2);
@@ -163,7 +162,7 @@ CObj3dField *CObj3dField::Create(TEX tex, D3DXVECTOR3 pos, D3DXVECTOR3 size, D3D
 	if (pCObj3dField != NULL)
 	{
 		// 初期化処理
-		if (FAILED(pCObj3dField->Init(tex,pos,size,rot,color)))
+		if (FAILED(pCObj3dField->Init(tex)))
 		{// 失敗時
 
 			// 「なし」を返す

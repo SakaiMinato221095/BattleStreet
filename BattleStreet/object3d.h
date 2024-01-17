@@ -45,28 +45,32 @@ public:
 		D3DXVECTOR3 rot;	// 向き
 		D3DXVECTOR3 size;	// 大きさ
 		D3DXCOLOR color;	// 色
+		D3DXVECTOR2 texPos;	// テクスチャ位置
 	}VtxData;
 
-	CObject3d(int nPriority = 3);;
+	CObject3d(int nPriority = 3);
 	~CObject3d();
 
-	HRESULT Init(TYPE_CREATE type,D3DXVECTOR3 pos,D3DXVECTOR3 size ,D3DXVECTOR3 rot ,D3DXCOLOR color);
+	HRESULT Init(TYPE_CREATE type);
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
 
-	static CObject3d *Create(TYPE_CREATE type, D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 rot, D3DXCOLOR color);
+	void InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 rot, D3DXCOLOR color, D3DXVECTOR2 texPos);
+
+	static CObject3d *Create(TYPE_CREATE type);
+
+	virtual void SetVtx(void);
+
+	void SetVtxTex(D3DXVECTOR2 texPos) { m_vtxData.texPos = texPos; }
 
 	void BindTexture(int nTextureNldx) { m_nTextureNldxUse = nTextureNldx; }
 
 	void SetVtxData(VtxData vtxData) { m_vtxData = vtxData; }
 	VtxData GetVtxData(void) { return m_vtxData; }
 
-	virtual void SetVtx(void);
-
 private:
 
-	void InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 rot, D3DXCOLOR color);
 
 	VtxData m_vtxData;					// 頂点値情報
 

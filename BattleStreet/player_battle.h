@@ -39,8 +39,6 @@ class CPlayerBattle : public CPlayer
 
 public:
 
-
-
 	CPlayerBattle();
 	~CPlayerBattle();
 

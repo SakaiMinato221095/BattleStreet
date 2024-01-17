@@ -25,7 +25,7 @@
 // モデルテキストのコンスト定義
 const char *pModelText[] =
 {
-	"data\\TXT\\Model\\ModelPlayerAonoa.txt",	// プレイヤー（アオノア）のモデルファイル
+	"data\\TXT\\Model\\PlayerBattle.txt",	// プレイヤー（アオノア）のモデルファイル
 };
 
 //=======================================

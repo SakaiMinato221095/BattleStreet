@@ -28,7 +28,7 @@ CObject3d::CObject3d(int nPriority) : CObject(nPriority)
 {
 	// 値をクリア
 	m_pVtxBuff = NULL;
-	ZeroMemory(m_mtxWorld, sizeof(D3DXMATRIX));
+	ZeroMemory(m_mtxWorld, sizeof(m_mtxWorld));
 	ZeroMemory(&m_vtxData, sizeof(m_vtxData));
 
 	m_nTextureNldxUse = 0;
@@ -45,7 +45,7 @@ CObject3d::~CObject3d()
 //-------------------------------------
 //-	3Dオブジェクトの初期化
 //-------------------------------------
-HRESULT CObject3d::Init(TYPE_CREATE type, D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 rot, D3DXCOLOR color)
+HRESULT CObject3d::Init(TYPE_CREATE type)
 {
 	// デバイスを取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
@@ -76,9 +76,6 @@ HRESULT CObject3d::Init(TYPE_CREATE type, D3DXVECTOR3 pos, D3DXVECTOR3 size, D3D
 
 	// 生成種類を設定
 	m_typeCreate = type;
-
-	// 初期設定
-	InitSet(pos,size,rot,color);
 
 	// 頂点バッファ設定
 	SetVtx();
@@ -182,13 +179,24 @@ void CObject3d::Draw(void)
 		D3DPT_TRIANGLESTRIP,	// プリミティブの種類
 		0,						// 描画する最初の頂点インデックス
 		2);						// プリミティブの（ポリゴン）数
+}
 
+//-------------------------------------
+//-	3Dオブジェクトの設定処理
+//-------------------------------------
+void CObject3d::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 rot, D3DXCOLOR color,D3DXVECTOR2 texPos)
+{
+	m_vtxData.pos = pos;
+	m_vtxData.size = size;
+	m_vtxData.rot = rot;
+	m_vtxData.color = color;
+	m_vtxData.texPos = texPos;
 }
 
 //-------------------------------------
 //-	3Dオブジェクトの生成処理
 //-------------------------------------
-CObject3d * CObject3d::Create(TYPE_CREATE type, D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 rot, D3DXCOLOR color)
+CObject3d * CObject3d::Create(TYPE_CREATE type)
 {
 	// 3Dオブジェクトの生成
 	CObject3d *pObject3d = new CObject3d;
@@ -197,7 +205,7 @@ CObject3d * CObject3d::Create(TYPE_CREATE type, D3DXVECTOR3 pos, D3DXVECTOR3 siz
 	if (pObject3d != NULL)
 	{
 		// 初期化処理
-		if (FAILED(pObject3d->Init(type,pos,size,rot,color)))
+		if (FAILED(pObject3d->Init(type)))
 		{// 失敗時
 
 			// 「なし」を返す
@@ -290,22 +298,13 @@ void CObject3d::SetVtx(void)
 
 		//テクスチャの座標を設定
 		pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
-		pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
-		pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
-		pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
+		pVtx[1].tex = D3DXVECTOR2(m_vtxData.texPos.x, 0.0f);
+		pVtx[2].tex = D3DXVECTOR2(0.0f, m_vtxData.texPos.y);
+		pVtx[3].tex = D3DXVECTOR2(m_vtxData.texPos.x, m_vtxData.texPos.y);
 
 		//頂点バッファをアンロックする
 		m_pVtxBuff->Unlock();
 	}
 }
 
-//-------------------------------------
-//-	3Dオブジェクトの設定処理
-//-------------------------------------
-void CObject3d::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 rot, D3DXCOLOR color)
-{
-	m_vtxData.pos = pos;
-	m_vtxData.size = size;
-	m_vtxData.rot = rot;
-	m_vtxData.color = color;
-}
+

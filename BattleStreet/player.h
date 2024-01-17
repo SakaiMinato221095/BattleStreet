@@ -124,14 +124,9 @@ private:
 
 	void InputMove(void);
 
-	void InputJump(void);
-	void InputNormalJump(void);
-
 	void DebugPlayer(void);
 
 	Data m_data;								// 値を格納
-	bool m_bJump;								// ジャンプ状態の有無
-	bool m_bLanding;							// 着地の有無
 
 	STATE_TYPE m_stateType;						// 状態の種類
 	STATE_TYPE m_stateTypeNew;					// 最新の状態の種類
