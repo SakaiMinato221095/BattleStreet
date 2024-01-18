@@ -26,9 +26,9 @@
 //=	コンスト定義
 //=======================================
 
-const D3DXVECTOR3 FOLL_POS_V = (D3DXVECTOR3(0.0f, 500.0f, 500.0f));		// 追尾状態の初期視点
-const D3DXVECTOR3 FOLL_POS_R = (D3DXVECTOR3(0.0f, 200.0f, 0.0f));		// 追尾状態の初期注視点
-const float FOLL_LENGTH = (1000.0f);									// 追尾状態の視点と注視点の距離
+const D3DXVECTOR3 FOLL_POS_V = (D3DXVECTOR3(0.0f, 500.0f, 0.0f));		// 追尾状態の初期視点
+const D3DXVECTOR3 FOLL_POS_R = (D3DXVECTOR3(0.0f, 150.0f, 0.0f));		// 追尾状態の初期注視点
+const float FOLL_LENGTH = (700.0f);										// 追尾状態の視点と注視点の距離
 const float FOLL_POS_DEST_SPEED = (0.3f);								// 追尾状態の位置補正速度
 
 //=======================================

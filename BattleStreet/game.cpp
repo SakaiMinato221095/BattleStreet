@@ -36,8 +36,6 @@
 
 #include "timer.h"
 
-#include "start_count.h"
-
 //=======================================
 //=	マクロ定義
 //=======================================
@@ -48,8 +46,6 @@
 
 CPlayer *CGame::m_pPlayer = NULL;
 CTimer *CGame::m_pTimer = NULL;
-CStartCount *CGame::m_pStartCount = NULL;
-CEditMap *CGame::m_pEditMap = NULL;
 CPause *CGame::m_pPause = NULL;
 
 //-------------------------------------
@@ -157,15 +153,6 @@ HRESULT CGame::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 			CMotion::MOTION_TYPE_PLAYER);				// モーション
 	}
 
-	if (m_pStartCount == NULL)
-	{
-		// スタートカウント
-		m_pStartCount = CStartCount::Create(
-			D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f),
-			D3DXVECTOR3(100.0f, 100.0f, 0.0f),
-			D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-	}
-
 	// ゲームの再生
 	pSound->Play(CSound::LABEL_BGM_GAME);
 
@@ -192,16 +179,6 @@ void CGame::Uninit(void)
 		// 時間管理の開放処理
 		delete m_pTimer;
 		m_pTimer = NULL;
-	}
-
-	if (m_pStartCount != NULL)
-	{
-		// スタートカウント
-		m_pStartCount->Uninit();
-
-		// スタートカウントの開放処理
-		delete m_pStartCount;
-		m_pStartCount = NULL;
 	}
 
 	// オブジェクトの全開放処理
@@ -265,32 +242,23 @@ void CGame::Update(void)
 
 	if (m_game == GAME_NONE)
 	{
-		if (m_pEditMap == NULL)
+		if (m_pTimer != NULL &&
+			CObject::GetIsUpdateAllStop() == true)
 		{
-			if (m_pTimer != NULL &&
-				CObject::GetIsUpdateAllStop() == true)
-			{
-				// 時間の更新処理
-				m_pTimer->Update();
-			}
-
-			if (m_pStartCount != NULL)
-			{
-				// スタートカウントの更新処理
-				m_pStartCount->Update();
-			}
+			// 時間の更新処理
+			m_pTimer->Update();
+		}
 
 #if _DEBUG
-			if (pInputKeyboard->GetTrigger(DIK_F1) == true)
+		if (pInputKeyboard->GetTrigger(DIK_F1) == true)
+		{
+			if (m_pPlayer != NULL)
 			{
-				if (m_pPlayer != NULL)
-				{
-					// プレイヤーの更新停止
-					m_pPlayer->IsUpdateStop(false);
-				}
+				// プレイヤーの更新停止
+				m_pPlayer->IsUpdateStop(false);
 			}
-#endif
 		}
+#endif
 		else
 		{
 			if (pInputKeyboard->GetTrigger(DIK_F1) == true)
@@ -307,8 +275,8 @@ void CGame::Update(void)
 	{
 		if (m_pPause != NULL)
 		{
-			// ポーズの更新処理
-			m_pPause->Update();
+			//// ポーズの更新処理
+			//m_pPause->Update();
 
 			if (m_pPause->GetOk() == true)
 			{

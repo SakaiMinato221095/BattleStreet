@@ -108,24 +108,44 @@ CMgrColl * CMgrColl::Create(void)
 //-------------------------------------
 //- 接触判定（矩形）
 //-------------------------------------
-bool CMgrColl::Hit(int nNldxColl, CMgrColl::TAG hitTag)
+bool CMgrColl::Hit(int nNldxColl, TAG hitTag, EVENT_TYPE eventType)
 {
 	// 変数宣言
-	CColl* pCollMy = m_apColl[nNldxColl];	// 自身の当たり判定情報
-	bool bHit = false;						// 接触の有無
+	CColl* pCollMy = m_apColl[nNldxColl];					// 自身の当たり判定情報
+	CColl::Data dataMy = m_apColl[nNldxColl]->GetData();	// 自身の情報
+	int nHitNldxMax = dataMy.nHitNldxMax;					// 接触相手の最大数
+
+	bool bHit = false;									// 接触の有無
 
 	for (int nCount = 0; nCount < COLLSION_NUM_MAX; nCount++)
 	{
 		if (m_apColl[nCount] != nullptr)
 		{
-
 			CColl* pCollPair = m_apColl[nCount];					// 相手の当たり判定情報
 			CColl::Data dataPair = m_apColl[nCount]->GetData();		// 相手の情報
 			TAG tagPair = dataPair.tag;								// 相手のタグ
 
-
 			if (tagPair == hitTag)
 			{
+				if (eventType == EVENT_TYPE_TRIGGER)
+				{
+					bool bHitTrigger = false;
+
+					for (int nCntHitNldx = 0; nCntHitNldx < nHitNldxMax; nCntHitNldx++)
+					{
+						if (nCount == dataMy.hitData->nNldx)
+						{
+							bHitTrigger = true;
+							break;
+						}
+					}
+
+					if (bHitTrigger)
+					{
+						continue;
+					}
+				}
+
 				// 変数宣言（情報取得）
 				D3DXVECTOR3 posMy = pCollMy->GetData().pos;			// 自身の位置
 				D3DXVECTOR3 sizeMy = pCollMy->GetData().size;		// 自身の大きさ
@@ -158,7 +178,7 @@ bool CMgrColl::Hit(int nNldxColl, CMgrColl::TAG hitTag)
 //-------------------------------------
 //- 接触判定（矩形の辺）
 //-------------------------------------
-bool CMgrColl::HitSide(int nNldxColl, CMgrColl::TAG hitTag, CMgrColl::TYPE_SXIS typeSxis)
+bool CMgrColl::HitSide(int nNldxColl, CMgrColl::TAG hitTag, EVENT_TYPE eventType,CMgrColl::TYPE_SXIS typeSxis)
 {
 	// 変数宣言
 	CColl* pCollMy = m_apColl[nNldxColl];	// 自身の当たり判定情報
@@ -171,7 +191,6 @@ bool CMgrColl::HitSide(int nNldxColl, CMgrColl::TAG hitTag, CMgrColl::TYPE_SXIS 
 			CColl* pCollPair = m_apColl[nCount];					// 相手の当たり判定情報
 			CColl::Data dataPair = m_apColl[nCount]->GetData();		// 相手の情報
 			TAG tagPair = dataPair.tag;								// 相手のタグ
-
 
 			if (tagPair == hitTag)
 			{

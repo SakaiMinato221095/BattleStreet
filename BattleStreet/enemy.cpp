@@ -19,6 +19,8 @@
 
 #include "coll.h"
 
+#include "particle.h"
+
 //-======================================
 //-	マクロ定義
 //-======================================
@@ -158,6 +160,11 @@ HRESULT CEnemy::Init(MODEL modelType, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 			this,
 			GetVtxData().pos,
 			GetVtxData().size);
+
+		if (m_pColl != nullptr)
+		{
+			m_pColl->SetIsVisualDrawStop(false);
+		}
 	}
 	else
 	{
@@ -218,7 +225,17 @@ void CEnemy::Draw(void)
 //-------------------------------------
 void CEnemy::HitDamage(int nDamage)
 {
-	Uninit();
+	// 
+	CObjectX::VtxData vtxData = GetVtxData();
+
+	// パーティクルの設定
+	SetParticle(
+		32,
+		vtxData.pos,
+		D3DXVECTOR3(20.0f,20.0f,0.0f),
+		D3DXVECTOR3(50.0f,50.0f,0.0f),
+		D3DXCOLOR(1.0f,0.0,0.0f,1.0f),
+		60);
 }
 
 //-------------------------------------
@@ -260,9 +277,9 @@ void CEnemy::InitSet(MODEL modelType, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	CObjectX::VtxData vtxData = GetVtxData();
 
 	// データの代入
-	vtxData.pos = pos;								// 位置
-	vtxData.rot = rot;								// 向き
-	vtxData.size = D3DXVECTOR3(100.0f, 100.0f, 100.0f);		// サイズ
+	vtxData.pos = pos;										// 位置
+	vtxData.rot = rot;										// 向き
+	vtxData.size = D3DXVECTOR3(60.0f, 150.0f, 50.0f);		// サイズ
 
 	// 情報更新（頂点値情報）
 	SetVtxData(vtxData);

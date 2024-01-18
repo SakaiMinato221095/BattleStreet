@@ -28,6 +28,9 @@
 
 #include "command.h"
 
+#include "attack.h"
+#include "punch.h"
+
 //-======================================
 //-	マクロ定義
 //-======================================
@@ -55,6 +58,9 @@ CPlayer::CPlayer()
 	m_nNumModel = 0;
 
 	m_pMotion = NULL;
+
+	m_pAttack = nullptr;
+	m_pCommand = nullptr;
 }
 
 //-------------------------------------
@@ -188,6 +194,13 @@ void CPlayer::Uninit(void)
 		m_pCommand = NULL;
 	}
 
+	// 攻撃の終了処理
+	if (m_pAttack != nullptr)
+	{
+		m_pAttack->Uninit();
+		m_pAttack = nullptr;
+	}
+
 	// 自分自身のポインタの開放
 	Release();
 }
@@ -218,6 +231,36 @@ void CPlayer::Update(void)
 	// 通常モーションの更新処理
 	UpdateMotionNone();
 
+	// 攻撃の情報更新処理
+	if (m_pAttack != nullptr)
+	{
+		D3DXVECTOR3 posParts = {};
+
+		if (m_motionState == MOTION_STATE_PUNCH)
+		{
+			// 手の位置
+			posParts = D3DXVECTOR3(
+				GetModel(7)->GetMtxWorld()._41,
+				GetModel(7)->GetMtxWorld()._42,
+				GetModel(7)->GetMtxWorld()._43);
+		}
+		else if (m_motionState == MOTION_STATE_KICK)
+		{
+			// 脛の位置
+			posParts = D3DXVECTOR3(
+				GetModel(10)->GetMtxWorld()._41,
+				GetModel(10)->GetMtxWorld()._42,
+				GetModel(10)->GetMtxWorld()._43);
+		}
+
+		if (m_pAttack->GetColl() != nullptr)
+		{
+			D3DXVECTOR3 size = m_pAttack->GetData().size;
+
+			m_pAttack->UpdateData(posParts,size);
+		}
+	}
+
 	if (m_pColl != nullptr)
 	{
 		// 当たり判定の情報更新処理
@@ -225,21 +268,6 @@ void CPlayer::Update(void)
 			m_data.pos,
 			m_data.posOld,
 			m_data.size);
-
-		// 敵との接触判定処理
-		if (m_pColl->Hit(CMgrColl::TAG_ENEMY))
-		{
-			// 
-			CColl::Data data = m_pColl->GetData();
-			int nHitNldxMax = data.nHitNldxMax;
-
-			// 接触した敵のダメージ処理
-			for (int nCount = 0; nCount < nHitNldxMax; nCount++)
-			{
-				// 相手のダメージ処理
-				data.hitData[nCount].pObj->HitDamage(0);
-			}
-		}
 
 		//// プレイヤーの当たり判定
 		//if (m_pColl->Hit(CMgrColl::TAG_BLOCK, CMgrColl::STATE_HIT_NONE) == true)
@@ -496,6 +524,17 @@ void CPlayer::UpdateMotionNone(void)
 		}
 	}
 
+	if (pMotion->GetType() == MOTION_STATE_PUNCH && m_motionState != MOTION_STATE_PUNCH ||
+		pMotion->GetType() == MOTION_STATE_KICK && m_motionState != MOTION_STATE_KICK)
+	{
+		if (m_pAttack != nullptr)
+		{
+			// 終了処理
+			m_pAttack->Uninit();
+			m_pAttack = nullptr;
+		}
+	}
+
 	if (m_motionState != pMotion->GetType())
 	{
 		pMotion->Set(m_motionState);
@@ -743,8 +782,28 @@ void CPlayer::SetInput(CCommand::INPUT_TYPE inputType)
 //-------------------------------------
 void CPlayer::SetAttackPunch(void)
 {
-	// モーションの設定（パンチ）
-	m_motionState = MOTION_STATE_PUNCH;
+	if (m_pAttack == nullptr)
+	{
+		m_pAttack = CPunch::Create();
+
+		if (m_pAttack != nullptr)
+		{
+			// 手の位置
+			D3DXVECTOR3 posHand = D3DXVECTOR3(
+				GetModel(7)->GetMtxWorld()._41,
+				GetModel(7)->GetMtxWorld()._42,
+				GetModel(7)->GetMtxWorld()._43);
+
+			// 攻撃の初期設定処理
+			m_pAttack->InitSet(
+				posHand,
+				D3DXVECTOR3(20.0f,20.0f,20.0f),
+				5);
+		}
+
+		// モーションの設定（パンチ）
+		m_motionState = MOTION_STATE_PUNCH;
+	}
 }
 
 //-------------------------------------
@@ -752,8 +811,28 @@ void CPlayer::SetAttackPunch(void)
 //-------------------------------------
 void CPlayer::SetAttackKick(void)
 {
-	// モーションの設定（キック）
-	m_motionState = MOTION_STATE_KICK;
+	if (m_pAttack == nullptr)
+	{
+		m_pAttack = CPunch::Create();
+
+		if (m_pAttack != nullptr)
+		{
+			// 脛の位置
+			D3DXVECTOR3 posShin = D3DXVECTOR3(
+				GetModel(10)->GetMtxWorld()._41,
+				GetModel(10)->GetMtxWorld()._42,
+				GetModel(10)->GetMtxWorld()._43);
+
+			// 攻撃の初期設定処理
+			m_pAttack->InitSet(
+				posShin,
+				D3DXVECTOR3(20.0f, 20.0f, 20.0f),
+				5);
+		}
+
+		// モーションの設定（キック）
+		m_motionState = MOTION_STATE_KICK;
+	}
 }
 
 //-------------------------------------

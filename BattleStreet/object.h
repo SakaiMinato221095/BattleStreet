@@ -82,12 +82,13 @@ public:
 	virtual void HitDamage(int nDamage) {};
 
 	void IsUpdateStop(bool bIsUpdateStop) { m_bIsUpdateStop = bIsUpdateStop; }
-
-	static bool GetIsUpdateAllStop(void) { return m_bIsUpdateAllStop; }
-	static void SetIsUpdateAllStop(bool bIsUpdateAllStop) { m_bIsUpdateAllStop = bIsUpdateAllStop; }
+	void IsDrawStop(bool bIsDrawStop) { m_bIsDrawStop = bIsDrawStop; }
 
 	virtual CObject2d* GetObject2d(void) { return nullptr; }
 	virtual CBgMulti* GetBgMulti(void) { return nullptr; }
+
+	static bool GetIsUpdateAllStop(void) { return m_bIsUpdateAllStop; }
+	static void SetIsUpdateAllStop(bool bIsUpdateAllStop) { m_bIsUpdateAllStop = bIsUpdateAllStop; }
 
 protected:
 
@@ -96,22 +97,24 @@ protected:
 private:
 
 	void ReleaseObj(void);
+	static void DeathAllCheckRelease(void);
 
 	static void Debug(void);
-
-	static CObject* m_apTop[OBJECT_PRIORITY_MAX];	// 先頭のオブジェクトへのポインタ
-	static CObject* m_apCur[OBJECT_PRIORITY_MAX];	// 最後尾のオブジェクトへのポインタ
-
-	static int m_nNumAll;				// オブジェクトの総数
-	static bool m_bIsUpdateAllStop;		// 全更新の有無
 
 	CObject* m_pPrev;		// 前のオブジェクトへのポインタ
 	CObject* m_pNext;		// 次のオブジェクトへのポインタ
 
+	static CObject* m_apTop[OBJECT_PRIORITY_MAX];	// 先頭のオブジェクトへのポインタ
+	static CObject* m_apCur[OBJECT_PRIORITY_MAX];	// 最後尾のオブジェクトへのポインタ
+
 	int m_nPriority;		// 自身の優先順位
 
 	bool m_bIsUpdateStop;		// 更新の有無
+	bool m_bIsDrawStop;			// 描画の有無
 	bool m_bIsDeath;			// 死亡の有無
+
+	static int m_nNumAll;				// オブジェクトの総数
+	static bool m_bIsUpdateAllStop;		// 全更新の有無
 };
 
 #endif	// 二重インクルード防止の終了

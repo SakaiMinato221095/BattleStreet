@@ -61,9 +61,9 @@ public:
 	// モデルの値情報
 	typedef struct
 	{
-		D3DXVECTOR3 pos;			// モデル本体の位置情報
+		D3DXVECTOR3 pos;		// モデル本体の位置情報
 		D3DXVECTOR3 posMotion;	// モーションの位置情報
-		D3DXVECTOR3 rot;			// モデル本体の向き情報
+		D3DXVECTOR3 rot;		// モデル本体の向き情報
 		D3DXVECTOR3 rotMotion;	// モーションの位置情報
 	}Data;
 

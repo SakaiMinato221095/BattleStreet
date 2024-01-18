@@ -51,7 +51,7 @@ public:
 	void SetVtx(void);
 
 	void SetVtxData(VtxData vtxData) { m_vtxData = vtxData; }
-	VtxData GetVtxData(void) { m_vtxData; }
+	VtxData GetVtxData(void) { return m_vtxData; }
 
 private:
 

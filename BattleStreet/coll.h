@@ -28,6 +28,13 @@
 #define COLLSION_NUM_MAX		(1024)	// 当たり判定の最大数
 
 //-======================================
+//-	前方宣言
+//-======================================
+
+class CObj3dField;
+class CObj3dWall;
+
+//-======================================
 //-	クラス定義
 //-======================================
 
@@ -44,6 +51,13 @@ public:
 		CObject* pObj;	// オブジェクトのポインタ
 	}HitData;
 
+	// 見た目情報
+	struct DataVisual
+	{
+		CObj3dField* pField;
+		CObj3dWall* pWall;
+	};
+
 	// 当たり判定情報
 	typedef struct
 	{
@@ -58,6 +72,8 @@ public:
 		D3DXVECTOR3 posOld;					// 前回の位置
 		D3DXVECTOR3 size;					// 大きさ
 		D3DXVECTOR2 collVec;				// 接触方向ベクトル
+
+		DataVisual dataVisual;				// 見た目情報
 	}Data;
 
 	CColl();
@@ -70,19 +86,23 @@ public:
 
 	static CColl *Create(CMgrColl::TAG tag, CObject* pObj,D3DXVECTOR3 pos, D3DXVECTOR3 size);
 
-	void UpdateData(D3DXVECTOR3 pos, D3DXVECTOR3 size) { m_data.pos = pos,m_data.size = size ; }
-	void UpdateData(D3DXVECTOR3 pos, D3DXVECTOR3 posOld, D3DXVECTOR3 size) { m_data.pos = pos, m_data.posOld = posOld, m_data.size = size; }
-
-	bool Hit(CMgrColl::TAG hitTag);
-	bool HitSide(CMgrColl::TAG hitTag, CMgrColl::TYPE_SXIS typeSxis);
+	bool Hit(CMgrColl::TAG hitTag, CMgrColl::EVENT_TYPE eventType);
+	bool HitSide(CMgrColl::TAG hitTag, CMgrColl::EVENT_TYPE eventType, CMgrColl::TYPE_SXIS typeSxis);
 
 	void SetHitData(HitData data);
 	void ResetHitData(void);
+
+	void SetIsVisualDrawStop(bool bDrawStop);
+
+	void UpdateData(D3DXVECTOR3 pos, D3DXVECTOR3 size) { m_data.pos = pos, m_data.size = size, SetDataVisual(pos, size); }
+	void UpdateData(D3DXVECTOR3 pos, D3DXVECTOR3 posOld, D3DXVECTOR3 size) { m_data.pos = pos, m_data.posOld = posOld, m_data.size = size, SetDataVisual(pos, size); }
 
 	void SetData(Data data) { m_data = data; }
 	Data GetData(void) { return m_data; }
 
 private:
+
+	void SetDataVisual(D3DXVECTOR3 pos, D3DXVECTOR3 size);
 
 	void InitSet(CMgrColl::TAG tag, CObject* pObj,D3DXVECTOR3 pos,  D3DXVECTOR3 size);
 

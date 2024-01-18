@@ -14,6 +14,9 @@
 
 #include "manager.h"
 
+#include "obj_3d_field.h"
+#include "obj_3d_wall.h"
+
 //=======================================
 //=	マクロ定義
 //=======================================
@@ -63,6 +66,36 @@ HRESULT CColl::Init(CMgrColl::TAG tag, CObject* pObj, D3DXVECTOR3 pos, D3DXVECTO
 		return false;
 	}
 
+	// 当たり判定の床を生成
+	m_data.dataVisual.pField = CObj3dField::Create(CObj3dField::TEX_NULL);
+
+	if (m_data.dataVisual.pField != nullptr)
+	{
+		m_data.dataVisual.pField->InitSet(
+			pos + D3DXVECTOR3(0.0f, 3.0f, 0.0f),
+			size,
+			D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+			D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f),
+			D3DXVECTOR2(1.0f, 1.0f));
+
+		m_data.dataVisual.pField->IsDrawStop(true);
+	}
+
+	// 当たり判定の壁を生成
+	m_data.dataVisual.pWall = CObj3dWall::Create(CObj3dWall::TEX_NULL);
+
+	if (m_data.dataVisual.pWall != nullptr)
+	{
+		m_data.dataVisual.pWall->InitSet(
+			pos + D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+			size,
+			D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+			D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f),
+			D3DXVECTOR2(1.0f, 1.0f));
+
+		m_data.dataVisual.pWall->IsDrawStop(true);
+	}
+
 	// 当たり判定管理に設定処理
 	m_data.nNldx = pMgrColl->Set(this);
 
@@ -85,6 +118,18 @@ void CColl::Uninit(void)
 	{
 		// 処理を抜ける
 		return;
+	}
+
+	if (m_data.dataVisual.pField != nullptr)
+	{
+		m_data.dataVisual.pField->Uninit();
+		m_data.dataVisual.pField = nullptr;
+	}
+
+	if (m_data.dataVisual.pWall != nullptr)
+	{
+		m_data.dataVisual.pWall->Uninit();
+		m_data.dataVisual.pWall = nullptr;
 	}
 
 	// 当たり判定管理に設定処理
@@ -140,7 +185,7 @@ CColl* CColl::Create(CMgrColl::TAG tag, CObject* pObj, D3DXVECTOR3 pos, D3DXVECT
 //-------------------------------------
 //- 当たり判定の接触処理（矩形）
 //-------------------------------------
-bool CColl::Hit(CMgrColl::TAG hitTag)
+bool CColl::Hit(CMgrColl::TAG hitTag,CMgrColl::EVENT_TYPE eventType)
 {
 	// 当たり判定のポインタ取得
 	CMgrColl *pMgrColl = CManager::GetInstance()->GetMgrColl();		
@@ -156,7 +201,7 @@ bool CColl::Hit(CMgrColl::TAG hitTag)
 	bool bHitTgt = false;	// 目的の接触の有無
 
 	// 当たり判定管理の接触処理
-	bHitTgt = pMgrColl->Hit(m_data.nNldx, hitTag);
+	bHitTgt = pMgrColl->Hit(m_data.nNldx, hitTag, eventType);
 
 	return bHitTgt;
 }
@@ -164,7 +209,7 @@ bool CColl::Hit(CMgrColl::TAG hitTag)
 //-------------------------------------
 //- 当たり判定の接触処理（矩形の辺）
 //-------------------------------------
-bool CColl::HitSide(CMgrColl::TAG hitTag, CMgrColl::TYPE_SXIS typeSxis)
+bool CColl::HitSide(CMgrColl::TAG hitTag,CMgrColl::EVENT_TYPE eventType, CMgrColl::TYPE_SXIS typeSxis)
 {
 	// 当たり判定のポインタ取得
 	CMgrColl* pMgrColl = CManager::GetInstance()->GetMgrColl();
@@ -180,7 +225,7 @@ bool CColl::HitSide(CMgrColl::TAG hitTag, CMgrColl::TYPE_SXIS typeSxis)
 	bool bHitTgt = false;	// 目的の接触の有無
 
 	// 当たり判定管理の接触処理
-	bHitTgt = pMgrColl->Hit(m_data.nNldx, hitTag);
+	bHitTgt = pMgrColl->Hit(m_data.nNldx, hitTag, eventType);
 
 	return bHitTgt;
 }
@@ -216,6 +261,44 @@ void CColl::ResetHitData(void)
 
 	// 接触最大数の初期化
 	m_data.nHitNldxMax = 0;
+}
+
+//-------------------------------------
+//- 当たり判定の見た目の描画設定
+//-------------------------------------
+void CColl::SetIsVisualDrawStop(bool bDrawStop)
+{
+	if (m_data.dataVisual.pField != nullptr)
+	{
+		m_data.dataVisual.pField->IsDrawStop(bDrawStop);
+	}
+
+	if (m_data.dataVisual.pWall != nullptr)
+	{
+		m_data.dataVisual.pWall->IsDrawStop(bDrawStop);
+	}
+}
+
+//-------------------------------------
+//- 当たり判定の見た目設定処理
+//-------------------------------------
+void CColl::SetDataVisual(D3DXVECTOR3 pos, D3DXVECTOR3 size)
+{
+	if (m_data.dataVisual.pField != nullptr)
+	{
+		CObject3d::VtxData vtxData = m_data.dataVisual.pField->GetVtxData();
+		vtxData.pos = pos + D3DXVECTOR3(0.0f, size.y * 0.5f, 0.0f);
+		vtxData.size = size;
+		m_data.dataVisual.pField->SetVtxData(vtxData);
+	}
+
+	if (m_data.dataVisual.pWall != nullptr)
+	{
+		CObject3d::VtxData vtxData = m_data.dataVisual.pWall->GetVtxData();
+		vtxData.pos = pos;
+		vtxData.size = size;
+		m_data.dataVisual.pWall->SetVtxData(vtxData);
+	}
 }
 
 //-------------------------------------

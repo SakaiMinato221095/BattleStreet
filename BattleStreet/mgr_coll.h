@@ -47,8 +47,17 @@ public:
 		TAG_NONE = 0,		// 効果なし
 		TAG_PLAYER,			// プレイヤー
 		TAG_ENEMY,			// 敵
+		TAG_ATTACK,			// 攻撃
 		TAG_MAX
 	}TAG;
+
+	// 当たり方の種類
+	enum EVENT_TYPE
+	{
+		EVENT_TYPE_TRIGGER = 0,		// トリガー
+		EVENT_TYPE_PRESS,			// プレス
+		EVENT_TYPE_MAX
+	};
 
 	// 軸
 	typedef enum
@@ -58,15 +67,6 @@ public:
 		TYPE_SXIS_Z,		// Z軸
 		TYPE_SXIS_MAX,
 	}TYPE_SXIS;
-
-	// 接触の種類
-	typedef enum
-	{
-		STATE_HIT_NONE = 0,		// 何もなし（初期）状態
-		STATE_HIT_NORMAL,		// 通常接触の状態
-		STATE_HIT_DEAD,			// 死亡接触の状態
-		STATE_HIT_MAX
-	}STATE_HIT;
 
 	CMgrColl();
 	~CMgrColl();
@@ -78,8 +78,8 @@ public:
 
 	static CMgrColl *Create(void);
 
-	bool Hit(int nNldxColl, TAG hitTag);
-	bool HitSide(int nNldxColl, CMgrColl::TAG hitTag,  CMgrColl::TYPE_SXIS typeSxis);
+	bool Hit(int nNldxColl, TAG hitTag, EVENT_TYPE eventType);
+	bool HitSide(int nNldxColl, CMgrColl::TAG hitTag, EVENT_TYPE eventType,  CMgrColl::TYPE_SXIS typeSxis);
 
 	int Set(CColl *pColl);
 	void Reset(int nNldx);

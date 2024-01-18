@@ -73,7 +73,8 @@ CObject::CObject(int nPriority)
 	}
 
 	m_nPriority = nPriority;	// 自身の優先順位を保存
-	m_bIsUpdateStop = false;			// 更新の有無
+	m_bIsUpdateStop = false;	// 更新の有無
+	m_bIsDrawStop = false;		// 描画の有無
 	m_bIsDeath = false;			// 死亡の有無
 }
 
@@ -106,25 +107,8 @@ void CObject::ReleaseAll(void)
 		}
 	}
 
-	for (int nCount = 0; nCount < OBJECT_PRIORITY_MAX; nCount++)
-	{
-		// 先頭のオブジェクトポインタを代入
-		CObject* pObject = m_apTop[nCount];
-
-		while (pObject != nullptr)
-		{
-			CObject* pObjectNext = pObject->m_pNext;
-
-			// 死亡の有無
-			if (pObject->m_bIsDeath)
-			{
-				pObject->ReleaseObj();
-			}
-
-			// 次のオブジェクトを代入
-			pObject = pObjectNext;
-		}
-	}
+	// 全死亡フラグ確認開放処理
+	DeathAllCheckRelease();
 }
 
 //-------------------------------------
@@ -141,33 +125,19 @@ void CObject::UpdateAll(void)
 		{
 			CObject* pObjectNext = pObject->m_pNext;
 
-			// オブジェクトの更新処理
-			pObject->Update();
-
-			// 次のオブジェクトを代入
-			pObject = pObjectNext;
-		}
-	}
-
-	for (int nCount = 0; nCount < OBJECT_PRIORITY_MAX; nCount++)
-	{
-		// 先頭のオブジェクトポインタを代入
-		CObject* pObject = m_apTop[nCount];
-
-		while (pObject != nullptr)
-		{
-			CObject* pObjectNext = pObject->m_pNext;
-
-			// 死亡の有無
-			if (pObject->m_bIsDeath)
+			if (pObject->m_bIsUpdateStop == false)
 			{
-				pObject->ReleaseObj();
+				// オブジェクトの更新処理
+				pObject->Update();
 			}
 
 			// 次のオブジェクトを代入
 			pObject = pObjectNext;
 		}
 	}
+
+	// 全死亡フラグ確認開放処理
+	DeathAllCheckRelease();
 
 	// デバック表示
 	Debug();
@@ -187,8 +157,11 @@ void CObject::DrawAll(void)
 		{
 			CObject* pObjectNext = pObject->m_pNext;
 
-			// オブジェクトの更新処理
-			pObject->Draw();
+			if (pObject->m_bIsDrawStop == false)
+			{
+				// オブジェクトの更新処理
+				pObject->Draw();
+			}
 
 			// 次のオブジェクトを代入
 			pObject = pObjectNext;
@@ -251,6 +224,32 @@ void CObject::ReleaseObj(void)
 
 	delete this;
 
+}
+
+//-------------------------------------
+//-	オブジェクトの全死亡フラグ確認開放処理
+//-------------------------------------
+void CObject::DeathAllCheckRelease(void)
+{
+	for (int nCount = 0; nCount < OBJECT_PRIORITY_MAX; nCount++)
+	{
+		// 先頭のオブジェクトポインタを代入
+		CObject* pObject = m_apTop[nCount];
+
+		while (pObject != nullptr)
+		{
+			CObject* pObjectNext = pObject->m_pNext;
+
+			// 死亡の有無
+			if (pObject->m_bIsDeath)
+			{
+				pObject->ReleaseObj();
+			}
+
+			// 次のオブジェクトを代入
+			pObject = pObjectNext;
+		}
+	}
 }
 
 //-------------------------------------
