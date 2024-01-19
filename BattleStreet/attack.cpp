@@ -57,11 +57,6 @@ HRESULT CAttack::Init(void)
 			this,
 			m_data.pos,
 			m_data.size);
-
-		if (m_pColl != nullptr)
-		{
-			m_pColl->SetIsVisualDrawStop(false);
-		}
 	}
 	else
 	{

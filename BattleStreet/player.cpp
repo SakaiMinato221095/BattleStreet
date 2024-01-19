@@ -477,6 +477,14 @@ void CPlayer::UpdateAttack(void)
 				GetModel(11)->GetMtxWorld()._42,
 				GetModel(11)->GetMtxWorld()._43);
 		}
+		else if (m_data.motionState == MOTION_STATE_PUNCH_FINISH)
+		{
+			// 手の位置
+			posParts = D3DXVECTOR3(
+				GetModel(7)->GetMtxWorld()._41,
+				GetModel(7)->GetMtxWorld()._42,
+				GetModel(7)->GetMtxWorld()._43);
+		}
 
 		if (m_pAttack->GetColl() != nullptr)
 		{
@@ -579,7 +587,8 @@ void CPlayer::UpdateMotionNone(void)
 	}
 
 	if (pMotion->GetType() == MOTION_STATE_PUNCH && m_data.motionState != MOTION_STATE_PUNCH ||
-		pMotion->GetType() == MOTION_STATE_KICK && m_data.motionState != MOTION_STATE_KICK)
+		pMotion->GetType() == MOTION_STATE_KICK && m_data.motionState != MOTION_STATE_KICK ||
+		pMotion->GetType() == MOTION_STATE_PUNCH_FINISH && m_data.motionState != MOTION_STATE_PUNCH_FINISH)
 	{
 		if (m_pAttack != nullptr)
 		{
@@ -821,8 +830,10 @@ void CPlayer::InputCombo(void)
 			// 状態設定
 			//m_data.state = STATE_FINISH;
 
-			// フィニッシュを実行
-			m_data.motionState = MOTION_STATE_PUNCH_FINISH;
+			// 状態設定
+			m_data.state = STATE_BATTLE;
+
+			SetAttackFinish();
 		}
 		else
 		{
@@ -914,6 +925,35 @@ void CPlayer::SetAttackKick(void)
 
 		// モーションの設定（キック）
 		m_data.motionState = MOTION_STATE_KICK;
+	}
+}
+
+//-------------------------------------
+//- プレイヤーのフィニッシュ攻撃（偽装フィニッシュ）
+//-------------------------------------
+void CPlayer::SetAttackFinish(void)
+{
+	if (m_pAttack == nullptr)
+	{
+		m_pAttack = CPunch::Create();
+
+		if (m_pAttack != nullptr)
+		{
+			// 手の位置
+			D3DXVECTOR3 posHand = D3DXVECTOR3(
+				GetModel(7)->GetMtxWorld()._41,
+				GetModel(7)->GetMtxWorld()._42,
+				GetModel(7)->GetMtxWorld()._43);
+
+			// 攻撃の初期設定処理
+			m_pAttack->InitSet(
+				posHand,
+				D3DXVECTOR3(20.0f, 20.0f, 20.0f),
+				20);
+		}
+
+		// フィニッシュを実行
+		m_data.motionState = MOTION_STATE_PUNCH_FINISH;
 	}
 }
 

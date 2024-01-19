@@ -160,11 +160,6 @@ HRESULT CEnemy::Init(MODEL modelType, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 			this,
 			GetVtxData().pos,
 			GetVtxData().size);
-
-		if (m_pColl != nullptr)
-		{
-			m_pColl->SetIsVisualDrawStop(false);
-		}
 	}
 	else
 	{
@@ -228,14 +223,29 @@ void CEnemy::HitDamage(int nDamage)
 	// 
 	CObjectX::VtxData vtxData = GetVtxData();
 
-	// パーティクルの設定
-	SetParticle(
-		32,
-		vtxData.pos,
-		D3DXVECTOR3(20.0f,20.0f,0.0f),
-		D3DXVECTOR3(50.0f,50.0f,0.0f),
-		D3DXCOLOR(1.0f,0.0,0.0f,1.0f),
-		60);
+	if (nDamage == 20)
+	{
+		// パーティクルの設定
+		SetParticle(
+			64,
+			vtxData.pos,
+			D3DXVECTOR3(10.0f, 10.0f, 0.0f),
+			D3DXVECTOR3(30.0f, 30.0f, 0.0f),
+			D3DXCOLOR(1.0f, 0.0, 0.0f, 1.0f),
+			45);
+	}
+	else
+	{
+		// パーティクルの設定
+		SetParticle(
+			8,
+			vtxData.pos,
+			D3DXVECTOR3(10.0f, 10.0f, 0.0f),
+			D3DXVECTOR3(10.0f, 10.0f, 0.0f),
+			D3DXCOLOR(1.0f, 0.0, 0.0f, 1.0f),
+			30);
+	}
+
 }
 
 //-------------------------------------

@@ -142,6 +142,7 @@ private:
 
 	void SetAttackPunch(void);
 	void SetAttackKick(void);
+	void SetAttackFinish(void);
 
 	void DebugPlayer(void);
 
