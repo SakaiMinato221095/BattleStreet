@@ -55,8 +55,18 @@ public:
 		MOTION_STATE_MOVE,			// 移動
 		MOTION_STATE_PUNCH,			// パンチ
 		MOTION_STATE_KICK,			// キック
+		MOTION_STATE_PUNCH_FINISH,	// パンチ基本フィニッシュ
 		MOTION_STATE_MAX
 	}MOTION_STATE;
+
+	// モーション状態
+	typedef enum
+	{
+		STATE_NEUTRAL = 0,	// 待機
+		STATE_BATTLE,		// 戦闘中
+		STATE_FINISH,		// フィニッシュ
+		STATE_MAX
+	}STATE;
 
 	// 追加値の情報
 	typedef struct
@@ -81,6 +91,12 @@ public:
 		D3DXVECTOR3 size;		// 大きさ
 
 		DataPlus plus;			// 追加値
+
+		STATE state;				// 情報の種類
+		MOTION_STATE motionState;	// モーション状態の種類
+
+		int stateTimeCnt;			// 状態カウント
+
 	}Data;
 
 	CPlayer();
@@ -101,8 +117,8 @@ public:
 	void SetData(Data data) { m_data = data; }
 	Data GetData(void) { return m_data; }
 
-	void SetMotionState(MOTION_STATE motionState) { m_motionState = motionState; }
-	MOTION_STATE GetMotionState(void) { return m_motionState; }
+	void SetMotionState(MOTION_STATE motionState) { m_data.motionState = motionState; }
+	MOTION_STATE GetMotionState(void) { return m_data.motionState; }
 
 	void SetPlus(float fRate, int nTime) { m_data.plus.speedRate = fRate, m_data.plus.sppedPlusTime = nTime; }
 
@@ -113,7 +129,11 @@ private:
 	void UpdatePos(void);
 	void UpdateRot(void);
 	void UpdatePlusData(void);
+	void UpdateAttack(void);
+	void UpdateCommand(void);
+	void UpdateCollision(void);
 	void UpdateMotionNone(void);
+	void UpdateState(void);
 
 	void InputMove(void);
 	void InputCombo(void);
@@ -125,21 +145,19 @@ private:
 
 	void DebugPlayer(void);
 
-	Data m_data;								// 値を格納
+	Data m_data;							// 値を格納
 
-	MOTION_STATE m_motionState;					// 状態の種類
+	CColl *m_pColl;							// 当たり判定情報
 
-	CColl *m_pColl;								// 当たり判定情報
+	D3DXMATRIX m_mtxWorld;					// ワールドマトリックス
 
-	D3DXMATRIX m_mtxWorld;						// ワールドマトリックス
+	CModel *m_apModel[MODEL_PARTS_MAX];		// モデル（パーツ）のポインタ
+	int m_nNumModel;						// モデル（パーツ）の総数
 
-	CModel *m_apModel[MODEL_PARTS_MAX];			// モデル（パーツ）のポインタ
-	int m_nNumModel;							// モデル（パーツ）の総数
+	CMotion *m_pMotion;						// モーションのポインタ
 
-	CMotion *m_pMotion;							// モーションのポインタ
-
-	CAttack* m_pAttack;							// 攻撃のポインタ
-	CCommand* m_pCommand;						// コマンドのポインタ
+	CAttack* m_pAttack;						// 攻撃のポインタ
+	CCommand* m_pCommand;					// コマンドのポインタ
 };
 
 #endif	// 二重インクルード防止の終了

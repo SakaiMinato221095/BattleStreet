@@ -117,9 +117,6 @@
     <ClCompile Include="bg.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="command.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="coll.cpp">
       <Filter>Collision</Filter>
     </ClCompile>
@@ -161,6 +158,9 @@
     </ClCompile>
     <ClCompile Include="particle.cpp">
       <Filter>Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="command.cpp">
+      <Filter>Attack</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -245,9 +245,6 @@
     <ClInclude Include="bg.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="command.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="coll.h">
       <Filter>Collision</Filter>
     </ClInclude>
@@ -289,6 +286,9 @@
     </ClInclude>
     <ClInclude Include="particle.h">
       <Filter>Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="command.h">
+      <Filter>Attack</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -41,6 +41,18 @@
 //-	静的変数宣言
 //-======================================
 
+//-======================================
+//-	コンスト定義
+//-======================================
+
+// 状態の時間
+const int STATE_TIME[CPlayer::STATE_MAX]
+{
+	0,
+	180,
+	0,
+};
+
 //-------------------------------------
 //-	コンストラクタ
 //-------------------------------------
@@ -48,8 +60,6 @@ CPlayer::CPlayer()
 {
 	// 値をクリア
 	ZeroMemory(&m_data, sizeof(m_data));
-
-	m_motionState = MOTION_STATE(0);
 
 	ZeroMemory(m_mtxWorld, sizeof(D3DXMATRIX));
 
@@ -231,77 +241,17 @@ void CPlayer::Update(void)
 	// 通常モーションの更新処理
 	UpdateMotionNone();
 
-	// 攻撃の情報更新処理
-	if (m_pAttack != nullptr)
-	{
-		D3DXVECTOR3 posParts = {};
+	// 攻撃の更新処理
+	UpdateAttack();
 
-		if (m_motionState == MOTION_STATE_PUNCH)
-		{
-			// 手の位置
-			posParts = D3DXVECTOR3(
-				GetModel(7)->GetMtxWorld()._41,
-				GetModel(7)->GetMtxWorld()._42,
-				GetModel(7)->GetMtxWorld()._43);
-		}
-		else if (m_motionState == MOTION_STATE_KICK)
-		{
-			// 脛の位置
-			posParts = D3DXVECTOR3(
-				GetModel(10)->GetMtxWorld()._41,
-				GetModel(10)->GetMtxWorld()._42,
-				GetModel(10)->GetMtxWorld()._43);
-		}
+	// コマンドの更新処理
+	UpdateCommand();
 
-		if (m_pAttack->GetColl() != nullptr)
-		{
-			D3DXVECTOR3 size = m_pAttack->GetData().size;
+	// 当たり判定の更新処理
+	UpdateCollision();
 
-			m_pAttack->UpdateData(posParts,size);
-		}
-	}
-
-	if (m_pColl != nullptr)
-	{
-		// 当たり判定の情報更新処理
-		m_pColl->UpdateData(
-			m_data.pos,
-			m_data.posOld,
-			m_data.size);
-
-		//// プレイヤーの当たり判定
-		//if (m_pColl->Hit(CMgrColl::TAG_BLOCK, CMgrColl::STATE_HIT_NONE) == true)
-		//{
-		//	bool bHitSxisX = m_pColl->GetData().abHitSxis[CColl::TYPE_SXIS_X];
-		//	bool bHitSxisY = m_pColl->GetData().abHitSxis[CColl::TYPE_SXIS_Y];
-
-		//	if (bHitSxisX == true)
-		//	{
-		//		// 移動量をなくす
-		//		m_data.move.x = 0.0f;
-
-		//		// プレイヤーのX座標移動を停止
-		//		m_data.pos.x = m_pColl->GetData().pos.x;
-		//	}
-
-		//	if (bHitSxisY == true)
-		//	{
-		//		// 移動量をなくす
-		//		m_data.move.y = 0.0f;
-
-		//		// プレイヤーのY座標移動を停止
-		//		m_data.pos.y = m_pColl->GetData().pos.y;
-
-		//		// ジャンプを使用可
-		//		m_bJump = false;
-
-		//		if (m_bLanding == false)
-		//		{
-		//			m_bLanding = true;
-		//		}
-		//	}
-		//}
-	}
+	// 状態更新処理
+	UpdateState();
 
 	// デバック表示
 	DebugPlayer();
@@ -353,6 +303,12 @@ void CPlayer::Draw(void)
 		{
 			m_apModel[nCount]->Draw();
 		}
+	}
+
+	if (m_pCommand != NULL)
+	{
+		// コマンドの描画処理
+		m_pCommand->Draw();
 	}
 }
 
@@ -496,17 +452,115 @@ void CPlayer::UpdatePlusData(void)
 }
 
 //-------------------------------------
+//- 通常状態プレイヤーの攻撃の更新処理
+//-------------------------------------
+void CPlayer::UpdateAttack(void)
+{
+	// 攻撃の情報更新処理
+	if (m_pAttack != nullptr)
+	{
+		D3DXVECTOR3 posParts = {};
+
+		if (m_data.motionState == MOTION_STATE_PUNCH)
+		{
+			// 手の位置
+			posParts = D3DXVECTOR3(
+				GetModel(7)->GetMtxWorld()._41,
+				GetModel(7)->GetMtxWorld()._42,
+				GetModel(7)->GetMtxWorld()._43);
+		}
+		else if (m_data.motionState == MOTION_STATE_KICK)
+		{
+			// 足の位置
+			posParts = D3DXVECTOR3(
+				GetModel(11)->GetMtxWorld()._41,
+				GetModel(11)->GetMtxWorld()._42,
+				GetModel(11)->GetMtxWorld()._43);
+		}
+
+		if (m_pAttack->GetColl() != nullptr)
+		{
+			D3DXVECTOR3 size = m_pAttack->GetData().size;
+
+			m_pAttack->UpdateData(posParts, size);
+		}
+	}
+}
+
+//-------------------------------------
+//- 通常状態プレイヤーのコマンドの更新処理
+//-------------------------------------
+void CPlayer::UpdateCommand(void)
+{
+	if (m_pCommand != NULL)
+	{
+		// コマンドの更新処理
+		m_pCommand->Update();
+
+		
+	}
+}
+
+//-------------------------------------
+//- 通常状態プレイヤーの当たり判定の更新処理
+//-------------------------------------
+void CPlayer::UpdateCollision(void)
+{
+	if (m_pColl != nullptr)
+	{
+		// 当たり判定の情報更新処理
+		m_pColl->UpdateData(
+			m_data.pos,
+			m_data.posOld,
+			m_data.size);
+
+		//// プレイヤーの当たり判定
+		//if (m_pColl->Hit(CMgrColl::TAG_BLOCK, CMgrColl::STATE_HIT_NONE) == true)
+		//{
+		//	bool bHitSxisX = m_pColl->GetData().abHitSxis[CColl::TYPE_SXIS_X];
+		//	bool bHitSxisY = m_pColl->GetData().abHitSxis[CColl::TYPE_SXIS_Y];
+
+		//	if (bHitSxisX == true)
+		//	{
+		//		// 移動量をなくす
+		//		m_data.move.x = 0.0f;
+
+		//		// プレイヤーのX座標移動を停止
+		//		m_data.pos.x = m_pColl->GetData().pos.x;
+		//	}
+
+		//	if (bHitSxisY == true)
+		//	{
+		//		// 移動量をなくす
+		//		m_data.move.y = 0.0f;
+
+		//		// プレイヤーのY座標移動を停止
+		//		m_data.pos.y = m_pColl->GetData().pos.y;
+
+		//		// ジャンプを使用可
+		//		m_bJump = false;
+
+		//		if (m_bLanding == false)
+		//		{
+		//			m_bLanding = true;
+		//		}
+		//	}
+		//}
+	}
+}
+
+//-------------------------------------
 //- 通常状態プレイヤーのモーション更新処理
 //-------------------------------------
 void CPlayer::UpdateMotionNone(void)
 {
 	// 変数宣言（情報取得）
-	CMotion *pMotion = GetMotion();		// モーション
+	CMotion* pMotion = GetMotion();		// モーション
 	D3DXVECTOR3 move = GetData().move;	// 移動量
 
 	// 状態を判定
-	if (m_motionState == MOTION_STATE_NEUTRAL ||
-		m_motionState == MOTION_STATE_MOVE )
+	if (m_data.motionState == MOTION_STATE_NEUTRAL ||
+		m_data.motionState == MOTION_STATE_MOVE)
 	{
 		// 移動量で状態を変更
 		if (move.x >= 0.3f ||
@@ -515,17 +569,17 @@ void CPlayer::UpdateMotionNone(void)
 			move.z <= -0.3f)
 		{
 			// 移動状態に変更
-			m_motionState = MOTION_STATE_MOVE;
+			m_data.motionState = MOTION_STATE_MOVE;
 		}
 		else
 		{
 			// 待機状態の変更
-			m_motionState = MOTION_STATE_NEUTRAL;
+			m_data.motionState = MOTION_STATE_NEUTRAL;
 		}
 	}
 
-	if (pMotion->GetType() == MOTION_STATE_PUNCH && m_motionState != MOTION_STATE_PUNCH ||
-		pMotion->GetType() == MOTION_STATE_KICK && m_motionState != MOTION_STATE_KICK)
+	if (pMotion->GetType() == MOTION_STATE_PUNCH && m_data.motionState != MOTION_STATE_PUNCH ||
+		pMotion->GetType() == MOTION_STATE_KICK && m_data.motionState != MOTION_STATE_KICK)
 	{
 		if (m_pAttack != nullptr)
 		{
@@ -535,9 +589,9 @@ void CPlayer::UpdateMotionNone(void)
 		}
 	}
 
-	if (m_motionState != pMotion->GetType())
+	if (m_data.motionState != pMotion->GetType())
 	{
-		pMotion->Set(m_motionState);
+		pMotion->Set(m_data.motionState);
 	}
 
 	if (m_pMotion != nullptr)
@@ -551,10 +605,27 @@ void CPlayer::UpdateMotionNone(void)
 		else
 		{
 			// 待機状態を設定
-			m_motionState = MOTION_STATE_NEUTRAL;
+			m_data.motionState = MOTION_STATE_NEUTRAL;
 		}
 	}
+}
 
+//-------------------------------------
+//- 通常状態プレイヤーの状態更新処理
+//-------------------------------------
+void CPlayer::UpdateState(void)
+{
+	if (STATE_TIME[m_data.state] != 0)
+	{
+		m_data.stateTimeCnt++;
+
+		if (m_data.stateTimeCnt >= STATE_TIME[m_data.state])
+		{
+			m_data.state = STATE_NEUTRAL;
+
+			m_data.stateTimeCnt = 0;
+		}
+	}
 }
 
 //-------------------------------------
@@ -720,19 +791,23 @@ void CPlayer::InputCombo(void)
 	// 入力種類情報を格納
 	CCommand::INPUT_TYPE inputType = CCommand::INPUT_TYPE_NONE;
 
-	if (
-		pInputKeyboard->GetTrigger(DIK_J) == true ||
-		pXInput->GetTrigger(XINPUT_GAMEPAD_A,CXInput::TYPE_INPUT_BUTTON) == true)
+	if (m_data.motionState == MOTION_STATE_NEUTRAL ||
+		m_data.motionState == MOTION_STATE_MOVE)
 	{
-		// パンチ
-		inputType = CCommand::INPUT_TYPE_PUNCH;
-	}
-	else if (
-		pInputKeyboard->GetTrigger(DIK_K) == true ||
-		pXInput->GetTrigger(XINPUT_GAMEPAD_B, CXInput::TYPE_INPUT_BUTTON) == true)
-	{
-		// キック
-		inputType = CCommand::INPUT_TYPE_KICK;
+		if (
+			pInputKeyboard->GetTrigger(DIK_J) == true ||
+			pXInput->GetTrigger(XINPUT_GAMEPAD_A, CXInput::TYPE_INPUT_BUTTON) == true)
+		{
+			// パンチ
+			inputType = CCommand::INPUT_TYPE_PUNCH;
+		}
+		else if (
+			pInputKeyboard->GetTrigger(DIK_K) == true ||
+			pXInput->GetTrigger(XINPUT_GAMEPAD_B, CXInput::TYPE_INPUT_BUTTON) == true)
+		{
+			// キック
+			inputType = CCommand::INPUT_TYPE_KICK;
+		}
 	}
 
 	if (m_pCommand != nullptr &&
@@ -743,10 +818,17 @@ void CPlayer::InputCombo(void)
 
 		if (bFinish)
 		{
+			// 状態設定
+			//m_data.state = STATE_FINISH;
+
 			// フィニッシュを実行
+			m_data.motionState = MOTION_STATE_PUNCH_FINISH;
 		}
 		else
 		{
+			// 状態設定
+			m_data.state = STATE_BATTLE;
+
 			// 入力の設定処理
 			SetInput(inputType);
 		}
@@ -802,7 +884,7 @@ void CPlayer::SetAttackPunch(void)
 		}
 
 		// モーションの設定（パンチ）
-		m_motionState = MOTION_STATE_PUNCH;
+		m_data.motionState = MOTION_STATE_PUNCH;
 	}
 }
 
@@ -817,11 +899,11 @@ void CPlayer::SetAttackKick(void)
 
 		if (m_pAttack != nullptr)
 		{
-			// 脛の位置
+			// 足の位置
 			D3DXVECTOR3 posShin = D3DXVECTOR3(
-				GetModel(10)->GetMtxWorld()._41,
-				GetModel(10)->GetMtxWorld()._42,
-				GetModel(10)->GetMtxWorld()._43);
+				GetModel(11)->GetMtxWorld()._41,
+				GetModel(11)->GetMtxWorld()._42,
+				GetModel(11)->GetMtxWorld()._43);
 
 			// 攻撃の初期設定処理
 			m_pAttack->InitSet(
@@ -831,7 +913,7 @@ void CPlayer::SetAttackKick(void)
 		}
 
 		// モーションの設定（キック）
-		m_motionState = MOTION_STATE_KICK;
+		m_data.motionState = MOTION_STATE_KICK;
 	}
 }
 

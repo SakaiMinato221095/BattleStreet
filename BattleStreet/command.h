@@ -23,7 +23,7 @@
 
 namespace COMMAND
 {
-	const int INPUT_NUM_MAX = 5;	// コマンド入力の最大数
+	const int COMBO_NUM_MAX = 5;	// コンボの最大数
 }
 
 //-======================================
@@ -55,23 +55,30 @@ public:
 	// コマンドの資料情報
 	struct DataCommand
 	{
-		int nInputNumFinish;							// フィニッシュまでの時間
-		INPUT_TYPE aInputType[COMMAND::INPUT_NUM_MAX];	// 入力の種類
+		int nInputNumFinish;							// フィニッシュまでの回数
+		INPUT_TYPE aInputType[COMMAND::COMBO_NUM_MAX];	// 入力の種類
 	};
 
 	// コマンドの情報
 	struct InfoCommand
 	{
-		DataCommand dataCommand;	// 資料情報
-
-		bool bPossible;				// 可能の有無
+		bool bIsCombo;				// コンボの有無
+		int nNumCombo;				// 現在のコンボ数
 	};
 
 	// コンボの情報
 	struct InfoCombo
 	{
-		int nNum;					// 現在のコマンド回数
-		COMMAND_TYPE finish;		// フィニッシュの種類を格納
+		int nNum;										// 現在のコマンド回数
+		int nWindowTimeCnt;								// 受付時間
+
+		InfoCommand InfoCommand[COMMAND_TYPE_MAX];		// コマンド情報
+	};
+
+	// フィニッシュの情報
+	struct InfoFinish
+	{
+		COMMAND_TYPE type;			// 種類を格納
 	};
 
 	CCommand();
@@ -86,15 +93,22 @@ public:
 
 	static CCommand* Create();
 
-	void SetInfoCommand(int nNum, InfoCommand infoCommand) { m_InfoCommand[nNum] = infoCommand; }
-	InfoCommand GetInfoCommand(int nNum) { return m_InfoCommand[nNum]; }
+	void SetInfoCommand(int nNum, InfoCommand infoCommand) { m_InfoCombo.InfoCommand[nNum] = infoCommand; }
+	InfoCommand GetInfoCommand(int nNum) { return m_InfoCombo.InfoCommand[nNum]; }
 
 	void SetInfoCombo(InfoCombo infoCombo) { m_InfoCombo = infoCombo; }
 	InfoCombo GetInfoCombo(void) { return m_InfoCombo; }
 private:
 
-	InfoCommand m_InfoCommand[COMMAND_TYPE_MAX];	// コマンド情報
+	void SetInitData(void);
+
+	void ReSetCombo(void);
+
+	void Debug(void);
+
+	DataCommand m_dataCommand[COMMAND_TYPE_MAX];	// 資料情報
 	InfoCombo m_InfoCombo;							// コンボ情報
+	InfoFinish m_InfoFinish;						// フィニッシュの情報
 
 };
 
