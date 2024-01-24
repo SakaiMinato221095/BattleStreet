@@ -36,6 +36,8 @@
 
 #include "timer.h"
 
+#include "map_manager.h"
+
 //=======================================
 //=	マクロ定義
 //=======================================
@@ -125,6 +127,73 @@ HRESULT CGame::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 				D3DXVECTOR2(1.0f, 1.0f));
 		}
 	}
+
+
+	// 前の壁
+	{
+		// フィールドの生成
+		CObj3dWall* pWall = CObj3dWall::Create(CObj3dWall::TEX_BLOCKADE_WALL_000);
+
+		if (pWall != nullptr)
+		{
+			pWall->InitSet(
+				D3DXVECTOR3(0.0f, 0.0f, 8000.0f),
+				D3DXVECTOR3(1300.0f, 100.0f, 0.0f),
+				D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+				D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f),
+				D3DXVECTOR2(1.0f, 1.0f));
+		}
+	}
+
+	// 後ろの壁
+	{
+		// フィールドの生成
+		CObj3dWall* pWall = CObj3dWall::Create(CObj3dWall::TEX_BLOCKADE_WALL_000);
+
+		if (pWall != nullptr)
+		{
+			pWall->InitSet(
+				D3DXVECTOR3(0.0f, 0.0f, -1000.0f),
+				D3DXVECTOR3(1300.0f, 100.0f, 0.0f),
+				D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+				D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f),
+				D3DXVECTOR2(1.0f, 1.0f));
+		}
+	}
+
+	// 右の壁
+	{
+		// フィールドの生成
+		CObj3dWall* pWall = CObj3dWall::Create(CObj3dWall::TEX_BLOCKADE_WALL_000);
+
+		if (pWall != nullptr)
+		{
+			pWall->InitSet(
+				D3DXVECTOR3(1300.0f, 0.0f, 3000.0f),
+				D3DXVECTOR3(0.0f, 100.0f, 6000.0f),
+				D3DXVECTOR3(0.0f, D3DX_PI * 0.5f, 0.0f),
+				D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f),
+				D3DXVECTOR2(1.0f, 1.0f));
+		}
+	}
+
+	// 左の壁
+	{
+		// フィールドの生成
+		CObj3dWall* pWall = CObj3dWall::Create(CObj3dWall::TEX_BLOCKADE_WALL_000);
+
+		if (pWall != nullptr)
+		{
+			pWall->InitSet(
+				D3DXVECTOR3(-1300.0f, 0.0f, 3000.0f),
+				D3DXVECTOR3(0.0f, 100.0f, 6000.0f),
+				D3DXVECTOR3(0.0f, D3DX_PI * 0.5f, 0.0f),
+				D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f),
+				D3DXVECTOR2(1.0f, 1.0f));
+		}
+	}
+
+	CMapManager::GameLoad();
 
 	if (m_pTimer == NULL)
 	{

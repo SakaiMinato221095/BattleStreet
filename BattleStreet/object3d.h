@@ -31,14 +31,6 @@ class CObject3d : public CObject
 {
 public:
 
-	// 生成種類
-	typedef enum
-	{
-		TYPE_CREATE_FIELD = 0,
-		TYPE_CREATE_WALL,
-		TYPE_CREATE_MAX
-	}TYPE_CREATE;
-
 	typedef struct
 	{
 		D3DXVECTOR3 pos;	// 位置
@@ -51,14 +43,14 @@ public:
 	CObject3d(int nPriority = 3);
 	~CObject3d();
 
-	HRESULT Init(TYPE_CREATE type);
+	HRESULT Init(void);
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
 
 	void InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 rot, D3DXCOLOR color, D3DXVECTOR2 texPos);
 
-	static CObject3d *Create(TYPE_CREATE type);
+	static CObject3d *Create(void);
 
 	virtual void SetVtx(void);
 
@@ -69,8 +61,9 @@ public:
 	void SetVtxData(VtxData vtxData) { m_vtxData = vtxData; }
 	VtxData GetVtxData(void) { return m_vtxData; }
 
-private:
+	LPDIRECT3DVERTEXBUFFER9 GetVtxBuff(void) { return m_pVtxBuff; }
 
+private:
 
 	VtxData m_vtxData;					// 頂点値情報
 
@@ -78,8 +71,6 @@ private:
 	D3DXMATRIX m_mtxWorld;				// ワールドマトリックス
 
 	int m_nTextureNldxUse;				// テクスチャの番号
-
-	TYPE_CREATE m_typeCreate;			// 生成種類
 };
 
 #endif	// 二重インクルード防止の終了

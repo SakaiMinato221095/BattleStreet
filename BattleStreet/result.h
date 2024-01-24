@@ -27,7 +27,7 @@
 //-	‘O•ûéŒ¾
 //-======================================
 
-class CBg;
+class CMapManager;
 
 //-======================================
 //-	ƒNƒ‰ƒX’è‹`
@@ -48,7 +48,7 @@ public:
 
 private:
 
-	static CBg *m_pBg;	// ”wŒi
+	static CMapManager *m_pBg;	// ”wŒi
 
 };
 

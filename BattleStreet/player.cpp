@@ -522,38 +522,26 @@ void CPlayer::UpdateCollision(void)
 			m_data.posOld,
 			m_data.size);
 
-		//// プレイヤーの当たり判定
-		//if (m_pColl->Hit(CMgrColl::TAG_BLOCK, CMgrColl::STATE_HIT_NONE) == true)
-		//{
-		//	bool bHitSxisX = m_pColl->GetData().abHitSxis[CColl::TYPE_SXIS_X];
-		//	bool bHitSxisY = m_pColl->GetData().abHitSxis[CColl::TYPE_SXIS_Y];
+		// プレイヤーの当たり判定
+		if (m_pColl->HitSide(CMgrColl::TAG_WALL_X, CMgrColl::EVENT_TYPE_PRESS, CMgrColl::TYPE_SXIS_X) == true)
+		{
+			// 移動量をなくす
+			m_data.move.x = 0.0f;
 
-		//	if (bHitSxisX == true)
-		//	{
-		//		// 移動量をなくす
-		//		m_data.move.x = 0.0f;
+			// プレイヤーのY座標移動を停止
+			m_data.pos.x = m_data.posOld.x;
+		}
 
-		//		// プレイヤーのX座標移動を停止
-		//		m_data.pos.x = m_pColl->GetData().pos.x;
-		//	}
+		// プレイヤーの当たり判定
+		if (m_pColl->HitSide(CMgrColl::TAG_WALL_Z, CMgrColl::EVENT_TYPE_PRESS, CMgrColl::TYPE_SXIS_Z) == true)
+		{
+			// 移動量をなくす
+			m_data.move.z = 0.0f;
 
-		//	if (bHitSxisY == true)
-		//	{
-		//		// 移動量をなくす
-		//		m_data.move.y = 0.0f;
+			// プレイヤーのY座標移動を停止
+			m_data.pos.z = m_data.posOld.z;
+		}
 
-		//		// プレイヤーのY座標移動を停止
-		//		m_data.pos.y = m_pColl->GetData().pos.y;
-
-		//		// ジャンプを使用可
-		//		m_bJump = false;
-
-		//		if (m_bLanding == false)
-		//		{
-		//			m_bLanding = true;
-		//		}
-		//	}
-		//}
 	}
 }
 

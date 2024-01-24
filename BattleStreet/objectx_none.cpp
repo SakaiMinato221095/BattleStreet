@@ -28,7 +28,7 @@
 // 効果なしオブジェクトのモデルのコンスト定義
 const char *pModelObjectXNone[] =
 {
-	"data\\MODEL\\NoneObj\\Block_000.x",			// ブロック
+	"data\\MODEL\\NoneObj\\obarafood.x",			// 商店街（食堂）
 };
 
 //-======================================
@@ -36,7 +36,6 @@ const char *pModelObjectXNone[] =
 //-======================================
 
 CObjectXNone::ModelData CObjectXNone::m_modelData[MODEL_MAX] = {};	// モデル情報
-int CObjectXNone::m_nModelNldx[MODEL_MAX] = {};						// モデルの番号
 
 //-------------------------------------
 //-	効果なしオブジェクトのコンストラクタ
@@ -83,21 +82,15 @@ HRESULT CObjectXNone::Load(void)
 	// モデル設定
 	for (int nCount = 0; nCount < MODEL_MAX; nCount++)
 	{
-		// モデル番号を取得
-		int nModelNldx = m_nModelNldx[nCount];
-
 		// モデル番号の取得（モデルの割当）
-		nModelNldx = pManagerModel->Regist(pModelObjectXNone[nCount]);
+		m_modelData[nCount].nModelNldx = pManagerModel->Regist(pModelObjectXNone[nCount]);
 
 		// モデルの読み込み成功の有無を確認
-		if (nModelNldx == -1)
+		if (m_modelData[nCount].nModelNldx == -1)
 		{
 			// 失敗時に初期化処理を抜ける
 			return E_FAIL;
 		}
-
-		// モデル番号を設定
-		m_nModelNldx[nCount] = nModelNldx;
 	}
 
 	m_modelData[MODEL_BLOCK_000].size = D3DXVECTOR3(75.0f, 75.0f, 75.0f);
@@ -130,10 +123,10 @@ HRESULT CObjectXNone::Init(MODEL model, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	}
 
 	// モデル番号を取得
-	int nModelNldx = m_nModelNldx[model];
+	int nModelNldx = m_modelData[model].nModelNldx;
 
 	// 効果なしオブジェクトのモデル割当
-	BindModel(nModelNldx,model);
+	BindModel(nModelNldx, model);
 
 	// 初期設定処理
 	InitSet(model,pos,rot);

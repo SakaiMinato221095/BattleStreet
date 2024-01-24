@@ -32,7 +32,6 @@ CObject3d::CObject3d(int nPriority) : CObject(nPriority)
 	ZeroMemory(&m_vtxData, sizeof(m_vtxData));
 
 	m_nTextureNldxUse = 0;
-	m_typeCreate = TYPE_CREATE(0);
 }
 
 //-------------------------------------
@@ -45,7 +44,7 @@ CObject3d::~CObject3d()
 //-------------------------------------
 //-	3Dオブジェクトの初期化
 //-------------------------------------
-HRESULT CObject3d::Init(TYPE_CREATE type)
+HRESULT CObject3d::Init(void)
 {
 	// デバイスを取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
@@ -73,9 +72,6 @@ HRESULT CObject3d::Init(TYPE_CREATE type)
 		// 初期化を抜ける
 		return E_FAIL;
 	}
-
-	// 生成種類を設定
-	m_typeCreate = type;
 
 	// 頂点バッファ設定
 	SetVtx();
@@ -196,7 +192,7 @@ void CObject3d::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 rot, D3DX
 //-------------------------------------
 //-	3Dオブジェクトの生成処理
 //-------------------------------------
-CObject3d * CObject3d::Create(TYPE_CREATE type)
+CObject3d * CObject3d::Create(void)
 {
 	// 3Dオブジェクトの生成
 	CObject3d *pObject3d = new CObject3d;
@@ -205,7 +201,7 @@ CObject3d * CObject3d::Create(TYPE_CREATE type)
 	if (pObject3d != NULL)
 	{
 		// 初期化処理
-		if (FAILED(pObject3d->Init(type)))
+		if (FAILED(pObject3d->Init()))
 		{// 失敗時
 
 			// 「なし」を返す
@@ -255,40 +251,17 @@ void CObject3d::SetVtx(void)
 			(void**)&pVtx,
 			0);
 
-		switch (m_typeCreate)
-		{
-		case TYPE_CREATE_FIELD:
+		//頂点座標
+		pVtx[0].pos = D3DXVECTOR3(-size.x, 0.0f, size.z);
+		pVtx[1].pos = D3DXVECTOR3(size.x, 0.0f, size.z);
+		pVtx[2].pos = D3DXVECTOR3(-size.x, 0.0f, -size.z);
+		pVtx[3].pos = D3DXVECTOR3(size.x, 0.0f, -size.z);
 
-			//頂点座標
-			pVtx[0].pos = D3DXVECTOR3(-size.x, 0.0f, size.z);
-			pVtx[1].pos = D3DXVECTOR3(size.x, 0.0f, size.z);
-			pVtx[2].pos = D3DXVECTOR3(-size.x, 0.0f, -size.z);
-			pVtx[3].pos = D3DXVECTOR3(size.x, 0.0f, -size.z);
-
-			//法線ベクトルの設定
-			pVtx[0].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-			pVtx[1].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-			pVtx[2].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-			pVtx[3].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-
-			break;
-
-		case TYPE_CREATE_WALL:
-
-			//頂点座標
-			pVtx[0].pos = D3DXVECTOR3(-size.x, size.y, 0.0f);
-			pVtx[1].pos = D3DXVECTOR3(size.x, size.y, 0.0f);
-			pVtx[2].pos = D3DXVECTOR3(-size.x, -size.y, 0.0f);
-			pVtx[3].pos = D3DXVECTOR3(size.x, -size.y, 0.0f);
-
-			//法線ベクトルの設定
-			pVtx[0].nor = D3DXVECTOR3(0.0f, 0.0f, 1.0f);
-			pVtx[1].nor = D3DXVECTOR3(0.0f, 0.0f, 1.0f);
-			pVtx[2].nor = D3DXVECTOR3(0.0f, 0.0f, 1.0f);
-			pVtx[3].nor = D3DXVECTOR3(0.0f, 0.0f, 1.0f);
-
-			break;
-		}
+		//法線ベクトルの設定
+		pVtx[0].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+		pVtx[1].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+		pVtx[2].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+		pVtx[3].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 
 		//頂点カラーを設定
 		pVtx[0].col = color;

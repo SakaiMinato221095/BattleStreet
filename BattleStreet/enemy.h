@@ -48,6 +48,7 @@ public:
 	// モデル情報
 	typedef struct
 	{
+		int nModelNldx;		// モデル番号
 		D3DXVECTOR3 size;	// 大きさ
 	}ModelData;
 
@@ -75,7 +76,6 @@ private:
 
 	void InitSet(MODEL modelType, D3DXVECTOR3 pos, D3DXVECTOR3 rot);
 
-	static int m_nModelNldx[MODEL_MAX];			// モデルの番号
 	static ModelData m_modelData[MODEL_MAX];	// モデルの情報
 	
 	MODEL m_model;		// 自身のモデル

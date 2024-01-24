@@ -17,6 +17,8 @@
 
 #include "manager_texture.h"
 
+#include "coll.h"
+
 //-======================================
 //-	マクロ定義
 //-======================================
@@ -44,7 +46,7 @@ int CObj3dWall::m_nTextureNldx[TEX_MAX] = {};
 //-------------------------------------
 CObj3dWall::CObj3dWall(int nPriority) : CObject3d(nPriority)
 {
-
+	m_pColl = nullptr;
 }
 
 //-------------------------------------
@@ -115,7 +117,21 @@ HRESULT CObj3dWall::Init(TEX tex)
 	BindTexture(m_nTextureNldx[tex]);
 
 	// 3Dオブジェクトの初期化
-	CObject3d::Init(CObject3d::TYPE_CREATE_WALL);
+	CObject3d::Init();
+
+	if (m_pColl == NULL)
+	{
+		// 当たり判定設定
+		m_pColl = CColl::Create(
+			CMgrColl::TAG_WALL_X,
+			this,
+			GetVtxData().pos,
+			GetVtxData().size);
+	}
+	else
+	{
+		return E_FAIL;
+	}
 
 	// 成功を返す
 	return S_OK;
@@ -126,6 +142,16 @@ HRESULT CObj3dWall::Init(TEX tex)
 //-------------------------------------
 void CObj3dWall::Uninit(void)
 {
+	if (m_pColl != NULL)
+	{
+		// 当たり判定の終了処理
+		m_pColl->Uninit();
+
+		// 当たり判定の開放処理
+		delete m_pColl;
+		m_pColl = NULL;
+	}
+
 	// 3Dオブジェクトの終了
 	CObject3d::Uninit();
 }
@@ -135,6 +161,14 @@ void CObj3dWall::Uninit(void)
 //-------------------------------------
 void CObj3dWall::Update(void)
 {
+	if (m_pColl != nullptr)
+	{
+		// 当たり判定の情報更新処理
+		m_pColl->UpdateData(
+			GetVtxData().pos,
+			GetVtxData().size);
+	}
+
 	// 3Dオブジェクトの更新処理
 	CObject3d::Update();
 }
@@ -146,6 +180,30 @@ void CObj3dWall::Draw(void)
 {
 	// 3Dオブジェクトの描画処理
 	CObject3d::Draw();
+}
+
+
+//-------------------------------------
+//-	3Dオブジェクトの頂点情報設定処理
+//-------------------------------------
+void CObj3dWall::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 rot, D3DXCOLOR color, D3DXVECTOR2 texPos)
+{
+	CObject3d::InitSet(pos,size,rot,color,texPos);
+
+	if (rot.y == 0.0f)
+	{
+		CColl::Data data = m_pColl->GetData();
+		data.tag = CMgrColl::TAG_WALL_Z;
+
+		m_pColl->SetData(data);
+	}
+	else if (rot.y == (D3DX_PI * 0.5f))
+	{
+		CColl::Data data = m_pColl->GetData();
+		data.tag = CMgrColl::TAG_WALL_X;
+
+		m_pColl->SetData(data);
+	}
 }
 
 //-------------------------------------
@@ -176,4 +234,79 @@ CObj3dWall * CObj3dWall::Create(TEX tex)
 
 	// フィールドのポインタを返す
 	return pCObj3dWall;
+}
+
+//-------------------------------------
+//-	3Dオブジェクトの頂点情報設定処理
+//-------------------------------------
+void CObj3dWall::SetVtx(void)
+{
+	// 変数宣言（情報取得）
+	D3DXVECTOR3 size = GetVtxData().size;		// サイズ
+	D3DXCOLOR color = GetVtxData().color;		// 色
+	D3DXVECTOR2 texPos = GetVtxData().texPos;	// テクスチャ位置
+
+	D3DXVECTOR3 rot = GetVtxData().rot;			// テクスチャ位置
+
+	// デバイスを取得
+	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
+
+	// デバイスの情報取得の成功を判定
+	if (pDevice == NULL)
+	{// 失敗時
+
+	 // 初期化処理を抜ける
+		return;
+	}
+
+	if (GetVtxBuff() != nullptr)
+	{
+		// 3D頂点情報のポインタを宣言
+		VERTEX_3D* pVtx;
+
+		//頂点バッファをロックし、頂点データのポインタを取得
+		GetVtxBuff()->Lock(
+			0,
+			0,
+			(void**)&pVtx,
+			0);
+
+		if (rot.y == 0.0f)
+		{
+			//頂点座標
+			pVtx[0].pos = D3DXVECTOR3(-size.x,	size.y, 0.0f);
+			pVtx[1].pos = D3DXVECTOR3( size.x,	size.y, 0.0f);
+			pVtx[2].pos = D3DXVECTOR3(-size.x, -size.y, 0.0f);
+			pVtx[3].pos = D3DXVECTOR3( size.x, -size.y, 0.0f);
+		}
+		else if (rot.y == (D3DX_PI * 0.5f))
+		{
+			//頂点座標
+			pVtx[0].pos = D3DXVECTOR3(-size.z,  size.y, 0.0f);
+			pVtx[1].pos = D3DXVECTOR3( size.z,  size.y, 0.0f);
+			pVtx[2].pos = D3DXVECTOR3(-size.z, -size.y, 0.0f);
+			pVtx[3].pos = D3DXVECTOR3( size.z, -size.y, 0.0f);
+		}
+
+		//法線ベクトルの設定
+		pVtx[0].nor = D3DXVECTOR3(0.0f, 0.0f, 1.0f);
+		pVtx[1].nor = D3DXVECTOR3(0.0f, 0.0f, 1.0f);
+		pVtx[2].nor = D3DXVECTOR3(0.0f, 0.0f, 1.0f);
+		pVtx[3].nor = D3DXVECTOR3(0.0f, 0.0f, 1.0f);
+
+		//頂点カラーを設定
+		pVtx[0].col = color;
+		pVtx[1].col = color;
+		pVtx[2].col = color;
+		pVtx[3].col = color;
+
+		//テクスチャの座標を設定
+		pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
+		pVtx[1].tex = D3DXVECTOR2(texPos.x, 0.0f);
+		pVtx[2].tex = D3DXVECTOR2(0.0f, texPos.y);
+		pVtx[3].tex = D3DXVECTOR2(texPos.x, texPos.y);
+
+		//頂点バッファをアンロックする
+		GetVtxBuff()->Unlock();
+	}
 }

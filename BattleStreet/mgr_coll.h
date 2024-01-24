@@ -48,6 +48,8 @@ public:
 		TAG_PLAYER,			// ƒvƒŒƒCƒ„[
 		TAG_ENEMY,			// “G
 		TAG_ATTACK,			// UŒ‚
+		TAG_WALL_X,			// XŽ²‚Ì•Ç
+		TAG_WALL_Z,			// ZŽ²‚Ì•Ç
 		TAG_MAX
 	}TAG;
 

@@ -14,8 +14,8 @@
 
 #include "manager.h"
 
-#include "obj_3d_field.h"
-#include "obj_3d_wall.h"
+#include "box_field.h"
+#include "box_wall.h"
 
 //=======================================
 //=	É}ÉNÉçíËã`
@@ -67,7 +67,7 @@ HRESULT CColl::Init(CMgrColl::TAG tag, CObject* pObj, D3DXVECTOR3 pos, D3DXVECTO
 	}
 
 	// ìñÇΩÇËîªíËÇÃè∞Çê∂ê¨
-	m_data.dataVisual.pField = CObj3dField::Create(CObj3dField::TEX_NULL);
+	m_data.dataVisual.pField = CBoxField::Create();
 
 	if (m_data.dataVisual.pField != nullptr)
 	{
@@ -82,7 +82,7 @@ HRESULT CColl::Init(CMgrColl::TAG tag, CObject* pObj, D3DXVECTOR3 pos, D3DXVECTO
 	}
 
 	// ìñÇΩÇËîªíËÇÃï«Çê∂ê¨
-	m_data.dataVisual.pWall = CObj3dWall::Create(CObj3dWall::TEX_NULL);
+	m_data.dataVisual.pWall = CBoxWall::Create();
 
 	if (m_data.dataVisual.pWall != nullptr)
 	{

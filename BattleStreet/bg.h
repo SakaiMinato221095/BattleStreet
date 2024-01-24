@@ -29,7 +29,7 @@
 //-	クラス定義
 //-======================================
 
-class CBg : public CObject2d
+class CMapManager : public CObject2d
 {
 
 public:
@@ -49,8 +49,8 @@ public:
 		D3DXVECTOR2 m_texMove;		// テクスチャの移動量
 	}VtxTexData;
 
-	CBg(int nPriority = 0);
-	~CBg();
+	CMapManager(int nPriority = 0);
+	~CMapManager();
 
 	static HRESULT Load(void);
 	static void Unload(void);
@@ -60,7 +60,7 @@ public:
 	void Update(void);
 	void Draw(void);
 
-	static CBg * Create(TEX tex);
+	static CMapManager * Create(TEX tex);
 
 	void Set(
 		D3DXVECTOR3 pos = D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f),

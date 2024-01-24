@@ -24,6 +24,12 @@
 //-======================================
 
 //-======================================
+//-	前方定義
+//-======================================
+
+class CColl;
+
+//-======================================
 //-	クラス定義
 //-======================================
 
@@ -53,9 +59,15 @@ public:
 	void Update(void);
 	void Draw(void);
 
+	void InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 rot, D3DXCOLOR color, D3DXVECTOR2 texPos);
+
 	static CObj3dWall * Create(TEX tex);
 
+	virtual void SetVtx(void);
+
 private:
+
+	CColl* m_pColl;		// 当たり判定の情報
 
 	static int m_nTextureNldx[TEX_MAX];		// テクスチャの番号
 

@@ -66,7 +66,7 @@ HRESULT CManagerTexture::Load(HWND hWnd)
 	}
 
 	// ”wŒi
-	if (FAILED(CBg::Load()))
+	if (FAILED(CMapManager::Load()))
 	{// ¸”s
 
 	 // ¸”sƒƒbƒZ[ƒW

@@ -54,7 +54,7 @@ typedef struct
 //-======================================
 
 class CObject2d;
-class CBgMulti;
+class CMapManagerMulti;
 
 //-======================================
 //-	ƒNƒ‰ƒX’è‹`
@@ -85,7 +85,7 @@ public:
 	void IsDrawStop(bool bIsDrawStop) { m_bIsDrawStop = bIsDrawStop; }
 
 	virtual CObject2d* GetObject2d(void) { return nullptr; }
-	virtual CBgMulti* GetBgMulti(void) { return nullptr; }
+	virtual CMapManagerMulti* GetBgMulti(void) { return nullptr; }
 
 	static bool GetIsUpdateAllStop(void) { return m_bIsUpdateAllStop; }
 	static void SetIsUpdateAllStop(bool bIsUpdateAllStop) { m_bIsUpdateAllStop = bIsUpdateAllStop; }

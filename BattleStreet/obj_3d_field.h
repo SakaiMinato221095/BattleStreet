@@ -44,7 +44,7 @@ public:
 		TEX_MAX
 	}TEX;
 
-	CObj3dField(int nPriority = 3);;
+	CObj3dField(int nPriority = 3);
 	~CObj3dField();
 
 	static HRESULT Load(void);
@@ -56,6 +56,8 @@ public:
 	void Draw(void);
 
 	static CObj3dField * Create(TEX tex);
+
+	virtual void SetVtx(void);
 
 private:
 

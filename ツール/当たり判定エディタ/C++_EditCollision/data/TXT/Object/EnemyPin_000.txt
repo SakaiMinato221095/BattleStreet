@@ -1,0 +1,431 @@
+#==============================================================================
+#=
+#= [エネミーピン] 
+#=
+#==============================================================================
+
+#==============================================================================
+#= [モデル数] 
+#==============================================================================
+0
+
+#==============================================================================
+#= [配置情報] 
+#==============================================================================
+
+MODEL = 0
+ --- POS = 423.8 0.0 3422.1 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = -184.2 0.0 3605.0 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = -480.1 0.0 2869.3 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = 3.1 0.0 2445.3 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = 481.3 0.0 2776.0 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = 944.1 0.0 2247.1 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = 1277.0 0.0 2991.5 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = 1871.6 0.0 3063.8 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = 2441.6 0.0 2566.3 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = 2408.3 0.0 3697.8 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = 2980.0 0.0 2698.4 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = 3592.2 0.0 3396.5 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = 3784.8 0.0 2773.5 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = 3866.4 0.0 3847.8 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = 2814.0 0.0 1793.9 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = 3176.4 0.0 1207.3 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = 3571.4 0.0 1385.1 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = 3720.7 0.0 959.9 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = 3238.3 0.0 578.2 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = 2759.5 0.0 933.0 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = 2224.9 0.0 938.5 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = 1919.7 0.0 1206.2 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = 1603.4 0.0 845.8 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = 1182.3 0.0 1093.0 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = 962.7 0.0 627.4 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = 598.0 0.0 947.3 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = 183.1 0.0 475.1 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = -115.2 0.0 1010.6 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = 10.7 0.0 1715.7 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = -818.2 0.0 770.6 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = -729.9 0.0 194.5 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = -1504.2 0.0 1043.7 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = -1909.3 0.0 581.9 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = -2167.5 0.0 1081.2 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = -2073.5 0.0 1655.4 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = -1879.2 0.0 2255.3 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = -1305.1 0.0 2222.0 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = -1273.2 0.0 2971.6 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = -2067.9 0.0 3010.7 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = -2672.5 0.0 2535.8 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = -3815.1 0.0 2784.9 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = -3314.8 0.0 2102.0 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = -2994.9 0.0 1389.4 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = -3605.1 0.0 1015.4 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = -2900.9 0.0 626.2 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = -3867.6 0.0 82.9 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = -3869.9 0.0 -655.6 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = -3184.3 0.0 -894.2 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = -2522.6 0.0 -597.7 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = -2086.5 0.0 -1227.6 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = -2938.3 0.0 -1708.6 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = -3715.0 0.0 -2073.3 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = -3231.7 0.0 -2497.1 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = -2438.9 0.0 -2667.9 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = -1817.2 0.0 -1959.1 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = -863.1 0.0 -2321.8 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = -1706.5 0.0 -2670.6 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = -2556.8 0.0 -3410.3 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = -3459.8 0.0 -3757.2 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = -2016.0 0.0 -3773.9 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = -1193.1 0.0 -3932.7 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = -825.7 0.0 -3513.9 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = -720.1 0.0 -2961.3 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = -37.7 0.0 -3880.4 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = 1149.7 0.0 -3614.7 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = 1902.7 0.0 -3778.0 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = 2732.6 0.0 -3662.9 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = 1980.8 0.0 -3003.5 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = 2286.1 0.0 -2410.2 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = 2858.6 0.0 -2079.2 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = 3490.9 0.0 -2351.6 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = 2492.3 0.0 -1475.7 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = 1816.2 0.0 -1955.1 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = 1176.5 0.0 -1814.8 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = 1342.5 0.0 -2493.7 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = 627.0 0.0 -2439.4 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = 205.7 0.0 -1879.8 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = -312.4 0.0 -2470.5 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = -370.4 0.0 -1120.9 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = 307.8 0.0 -347.6 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = 1410.9 0.0 -670.2 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = 3134.5 0.0 -830.6 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+MODEL = 0
+ --- POS = 3710.1 0.0 -36.4 
+ --- ROT = 0.0 0.0 0.0 
+END_MODEL_SET 
+
+SET_END

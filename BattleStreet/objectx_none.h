@@ -43,6 +43,7 @@ public:
 	// モデル情報
 	typedef struct
 	{
+		int nModelNldx;		// モデルの番号
 		D3DXVECTOR3 size;	// 大きさ
 	}ModelData;
 
@@ -70,7 +71,6 @@ private:
 
 	MODEL m_model;								// 自身のモデル
 	static ModelData m_modelData[MODEL_MAX];	// モデルの情報
-	static int m_nModelNldx[MODEL_MAX];			// モデルの番号
 };
 
 #endif	// 二重インクルード防止の終了

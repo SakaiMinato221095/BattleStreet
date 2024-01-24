@@ -31,8 +31,8 @@
 //-	前方宣言
 //-======================================
 
-class CObj3dField;
-class CObj3dWall;
+class CBoxField;
+class CBoxWall;
 
 //-======================================
 //-	クラス定義
@@ -54,8 +54,8 @@ public:
 	// 見た目情報
 	struct DataVisual
 	{
-		CObj3dField* pField;
-		CObj3dWall* pWall;
+		CBoxField* pField;
+		CBoxWall* pWall;
 	};
 
 	// 当たり判定情報
