@@ -98,11 +98,6 @@ HRESULT CPlayer::Init(D3DXVECTOR3 pos , D3DXVECTOR3 rot,CModel::MODEL_TYPE model
 
 	for (int nCount = 0; nCount < m_nNumModel; nCount++)
 	{
-		if (m_nNumModel - 1 == nCount)
-		{
-			int nData = 0;
-		}
-
 		// 階層構造Xオブジェクトの有無を判定
 		if (m_apModel[nCount] == NULL)
 		{
@@ -173,15 +168,9 @@ void CPlayer::Uninit(void)
 		}
 	}
 
-
 	// モデルの終了処理
 	for (int nCount = 0; nCount < m_nNumModel; nCount++)
 	{
-		if (m_nNumModel - 1 == nCount)
-		{
-			int nData = 0;
-		}
-
 		if (m_apModel[nCount] != NULL)
 		{
 			// モデルの開放処理
@@ -268,14 +257,6 @@ void CPlayer::Update(void)
 
 	// 状態更新処理
 	UpdateState();
-
-	// カメラの更新処理
-	CCamera* pCamera = CManager::GetInstance()->GetCamera();
-
-	if (pCamera != nullptr)
-	{
-		pCamera->CameraPlayer(m_data.pos,m_data.rot);
-	}
 
 	// デバック表示
 	DebugPlayer();
@@ -403,11 +384,6 @@ void CPlayer::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 					this,
 					m_data.pos,
 					m_data.size + D3DXVECTOR3(100.0f,0.0f,100.0f));
-
-				if (m_apColl[nCount] != nullptr)
-				{
-					m_apColl[nCount]->SetIsVisualDrawStop(false);
-				}
 
 				break;
 			}
@@ -705,19 +681,16 @@ void CPlayer::UpdateMotionNone(void)
 		pMotion->Set(m_data.motionState);
 	}
 
-	if (m_pMotion != nullptr)
+	// モーションの終了状況を判定
+	if (pMotion->IsFinsih())
 	{
-		// モーションの終了状況を判定
-		if (pMotion->IsFinsih())
-		{
-			// モーションの更新
-			pMotion->Update();
-		}
-		else
-		{
-			// 待機状態を設定
-			m_data.motionState = MOTION_STATE_NEUTRAL;
-		}
+		// モーションの更新
+		pMotion->Update();
+	}
+	else
+	{
+		// 待機状態を設定
+		m_data.motionState = MOTION_STATE_NEUTRAL;
 	}
 }
 

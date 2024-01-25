@@ -27,6 +27,7 @@
 const char *pMotionText[] =
 {
 	"data\\TXT\\Motion\\MotionPlayerBattle.txt",	// プレイヤーのモーションファイル
+	"data\\TXT\\Motion\\MotionAlien000.txt",		// 敵000のモーションファイル
 };
 
 //-======================================

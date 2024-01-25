@@ -28,6 +28,8 @@
 namespace HelperSakai
 {
 	void NormalizeAngle(D3DXVECTOR3* rot, D3DXVECTOR3* rotDest, float destSpeed);
+	bool IfRangeFloat(float fData, float fMin, float fMax);
+	float CalculateLength(D3DXVECTOR3 pos, D3DXVECTOR3 posTgt);
 }
 
 #endif	// 二重インクルード防止の終了

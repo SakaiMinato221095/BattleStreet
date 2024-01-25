@@ -24,11 +24,13 @@
     <ClCompile Include="box_field.cpp" />
     <ClCompile Include="box_wall.cpp" />
     <ClCompile Include="camera.cpp" />
+    <ClCompile Include="character.cpp" />
     <ClCompile Include="coll.cpp" />
     <ClCompile Include="command.cpp" />
     <ClCompile Include="debugproc.cpp" />
     <ClCompile Include="effect.cpp" />
     <ClCompile Include="enemy.cpp" />
+    <ClCompile Include="enemy_boss.cpp" />
     <ClCompile Include="fade.cpp" />
     <ClCompile Include="finish_punch.cpp" />
     <ClCompile Include="game.cpp" />
@@ -39,7 +41,6 @@
     <ClCompile Include="manager.cpp" />
     <ClCompile Include="manager_model.cpp" />
     <ClCompile Include="manager_texture.cpp" />
-    <ClCompile Include="map_enemy.cpp" />
     <ClCompile Include="map_manager.cpp" />
     <ClCompile Include="map_object_x.cpp" />
     <ClCompile Include="mgr_coll.cpp" />
@@ -78,11 +79,13 @@
     <ClInclude Include="box_field.h" />
     <ClInclude Include="box_wall.h" />
     <ClInclude Include="camera.h" />
+    <ClInclude Include="character.h" />
     <ClInclude Include="coll.h" />
     <ClInclude Include="command.h" />
     <ClInclude Include="debugproc.h" />
     <ClInclude Include="effect.h" />
     <ClInclude Include="enemy.h" />
+    <ClInclude Include="enemy_boss.h" />
     <ClInclude Include="fade.h" />
     <ClInclude Include="finish_punch.h" />
     <ClInclude Include="game.h" />
@@ -93,7 +96,6 @@
     <ClInclude Include="manager.h" />
     <ClInclude Include="manager_model.h" />
     <ClInclude Include="manager_texture.h" />
-    <ClInclude Include="map_enemy.h" />
     <ClInclude Include="map_manager.h" />
     <ClInclude Include="map_object_x.h" />
     <ClInclude Include="mgr_coll.h" />

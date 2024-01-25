@@ -13,7 +13,6 @@
 #include "map_manager.h"
 
 #include "map_object_x.h"
-#include "map_enemy.h"
 
 //-======================================
 //-	É}ÉNÉçíËã`
@@ -56,5 +55,4 @@ void CMapManager::GameSave(void)
 void CMapManager::GameLoad(void)
 {
 	CMapObjectX::Load(CMapObjectX::TXT_NORMAL_000);
-	CMapEnemy::Load(CMapEnemy::TXT_NORMAL_000);
 }

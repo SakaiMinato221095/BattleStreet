@@ -26,6 +26,7 @@
 const char *pModelText[] =
 {
 	"data\\TXT\\Model\\ModelPlayerBattle.txt",	// プレイヤーのモデルファイル
+	"data\\TXT\\Model\\ModelAlien000.txt",		// 敵000のモデルファイル
 };
 
 //=======================================

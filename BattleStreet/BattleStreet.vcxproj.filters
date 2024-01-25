@@ -46,6 +46,9 @@
     <Filter Include="System">
       <UniqueIdentifier>{a98f5520-be31-47ae-829e-27d9340cfe73}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ObjX">
+      <UniqueIdentifier>{5b479fc8-dbdb-4fcf-88cd-59af181536db}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="camera.cpp">
@@ -66,12 +69,6 @@
     <ClCompile Include="manager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="model.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="motion.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="number.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -82,9 +79,6 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="object_billboard.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="object_x.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="object2d.cpp">
@@ -168,9 +162,6 @@
     <ClCompile Include="map_manager.cpp">
       <Filter>Map</Filter>
     </ClCompile>
-    <ClCompile Include="map_enemy.cpp">
-      <Filter>Map</Filter>
-    </ClCompile>
     <ClCompile Include="map_object_x.cpp">
       <Filter>Map</Filter>
     </ClCompile>
@@ -195,6 +186,21 @@
     <ClCompile Include="helper_sakai.cpp">
       <Filter>System</Filter>
     </ClCompile>
+    <ClCompile Include="enemy_boss.cpp">
+      <Filter>Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="object_x.cpp">
+      <Filter>ObjX</Filter>
+    </ClCompile>
+    <ClCompile Include="motion.cpp">
+      <Filter>ObjX</Filter>
+    </ClCompile>
+    <ClCompile Include="model.cpp">
+      <Filter>ObjX</Filter>
+    </ClCompile>
+    <ClCompile Include="character.cpp">
+      <Filter>ObjX</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h">
@@ -215,12 +221,6 @@
     <ClInclude Include="manager.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="model.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="motion.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="number.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -231,9 +231,6 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="object_billboard.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="object_x.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="object2d.h">
@@ -317,9 +314,6 @@
     <ClInclude Include="map_manager.h">
       <Filter>Map</Filter>
     </ClInclude>
-    <ClInclude Include="map_enemy.h">
-      <Filter>Map</Filter>
-    </ClInclude>
     <ClInclude Include="map_object_x.h">
       <Filter>Map</Filter>
     </ClInclude>
@@ -343,6 +337,21 @@
     </ClInclude>
     <ClInclude Include="helper_sakai.h">
       <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="enemy_boss.h">
+      <Filter>Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="motion.h">
+      <Filter>ObjX</Filter>
+    </ClInclude>
+    <ClInclude Include="model.h">
+      <Filter>ObjX</Filter>
+    </ClInclude>
+    <ClInclude Include="object_x.h">
+      <Filter>ObjX</Filter>
+    </ClInclude>
+    <ClInclude Include="character.h">
+      <Filter>ObjX</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

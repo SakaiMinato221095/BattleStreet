@@ -15,8 +15,6 @@
 #include "renderer.h"
 #include "manager.h"
 
-#include "manager_model.h"
-
 #include "coll.h"
 
 #include "particle.h"
@@ -29,26 +27,18 @@
 //=	コンスト定義
 //=======================================
 
-// 敵のモデルのコンスト定義
-const char *pModelEnemy[] =
-{
-	"data\\MODEL\\alien000.x",			// エイリアン000
-};
-
 //-======================================
 //-	静的変数宣言
 //-======================================
-
-CEnemy::ModelData CEnemy::m_modelData[MODEL_MAX] = {};	// モデル情報
 
 //-------------------------------------
 //-	敵のコンストラクタ
 //-------------------------------------
 CEnemy::CEnemy()
 {
-	m_model = MODEL(0);
-	m_move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_pColl = NULL;
+
+	ZeroMemory(&m_data, sizeof(m_data));
 }
 
 //-------------------------------------
@@ -60,89 +50,12 @@ CEnemy::~CEnemy()
 }
 
 //-------------------------------------
-//- 敵のモデル読み込み
-//-------------------------------------
-HRESULT CEnemy::Load(void)
-{
-	// デバイスを取得
-	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
-
-	// デバイスの情報取得の成功を判定
-	if (pDevice == NULL)
-	{// 失敗時
-
-		// 初期化処理を抜ける
-		return E_FAIL;
-	}
-
-	// モデル管理の生成
-	CManagerModel *pManagerModel = CManager::GetInstance()->GetManagerModel();
-
-	// モデル管理の有無を判定
-	if (pManagerModel == NULL)
-	{
-		// 初期化処理を抜ける
-		return E_FAIL;
-	}
-
-	// モデル設定
-	for (int nCount = 0; nCount < MODEL_MAX; nCount++)
-	{
-		// モデル番号の取得（モデルの割当）
-		m_modelData[nCount].nModelNldx = pManagerModel->Regist(pModelEnemy[nCount]);
-
-		// モデルの読み込み成功の有無を確認
-		if (m_modelData[nCount].nModelNldx == -1)
-		{
-			// 失敗時に初期化処理を抜ける
-			return E_FAIL;
-		}
-	}
-
-	m_modelData[MODEL_ALIEN_000].size = D3DXVECTOR3(50.0f, 100.0f, 50.0f);
-
-	// 成功を返す
-	return S_OK;
-}
-
-//-------------------------------------
-//- 敵の読み込んだモデル破棄
-//-------------------------------------
-void CEnemy::Unload(void)
-{
-
-}
-
-//-------------------------------------
 //- 敵の初期化処理
 //-------------------------------------
-HRESULT CEnemy::Init(MODEL modelType, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+HRESULT CEnemy::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
-	// モデル管理の生成
-	CManagerModel *pManagerModel = CManager::GetInstance()->GetManagerModel();
-
-	// モデル管理の有無を判定
-	if (pManagerModel == NULL)
-	{
-		// 処理を抜ける
-		return E_FAIL;
-	}
-
-	// モデル番号を取得
-	int nModelNldx = m_modelData[modelType].nModelNldx;
-
-	// 効果なしオブジェクトのモデル割当
-	BindModel(nModelNldx, modelType);
-
 	// 初期設定処理
-	InitSet(modelType, pos, rot);
-
-	// Xファイルオブジェクトの初期化 if(初期化成功の有無を判定)
-	if (FAILED(CObjectX::Init()))
-	{
-		// 失敗を返す
-		return E_FAIL;
-	}
+	InitSet(pos, rot);
 
 	if (m_pColl == NULL)
 	{
@@ -150,8 +63,8 @@ HRESULT CEnemy::Init(MODEL modelType, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 		m_pColl = CColl::Create(
 			CMgrColl::TAG_ENEMY,
 			this,
-			GetVtxData().pos,
-			GetVtxData().size);
+			m_data.pos,
+			m_data.size);
 	}
 	else
 	{
@@ -177,8 +90,8 @@ void CEnemy::Uninit(void)
 		m_pColl = NULL;
 	}
 
-	// Xファイルオブジェクトの終了
-	CObjectX::Uninit();
+	// 自分自身のポインタの開放
+	Release();
 }
 
 //-------------------------------------
@@ -186,16 +99,11 @@ void CEnemy::Uninit(void)
 //-------------------------------------
 void CEnemy::Update(void)
 {
-	if (m_pColl != nullptr)
-	{
-		// 当たり判定の情報更新処理
-		m_pColl->UpdateData(
-			GetVtxData().pos,
-			GetVtxData().size);
-	}
+	// 位置更新処理
+	UpdatePos();
 
-	// Xファイルオブジェクトの更新処理
-	CObjectX::Update();
+	// 当たり判定更新処理
+	UpdateCollision();
 }
 
 //-------------------------------------
@@ -203,8 +111,18 @@ void CEnemy::Update(void)
 //-------------------------------------
 void CEnemy::Draw(void)
 {
-	// Xファイルオブジェクトの描画処理
-	CObjectX::Draw();
+
+}
+
+//-------------------------------------
+//-	敵のモデルの初期設定
+//-------------------------------------
+void CEnemy::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+{
+	// データの代入
+	m_data.pos = pos;										// 位置
+	m_data.rot = rot;										// 向き
+	m_data.size = D3DXVECTOR3(60.0f, 150.0f, 50.0f);		// サイズ
 }
 
 //-------------------------------------
@@ -212,15 +130,12 @@ void CEnemy::Draw(void)
 //-------------------------------------
 void CEnemy::HitDamage(int nDamage)
 {
-	// 
-	CObjectX::VtxData vtxData = GetVtxData();
-
 	if (nDamage == 20)
 	{
 		// パーティクルの設定
 		SetParticle(
 			64,
-			vtxData.pos,
+			m_data.pos,
 			D3DXVECTOR3(10.0f, 10.0f, 0.0f),
 			D3DXVECTOR3(30.0f, 30.0f, 0.0f),
 			D3DXCOLOR(1.0f, 0.0, 0.0f, 1.0f),
@@ -231,7 +146,7 @@ void CEnemy::HitDamage(int nDamage)
 		// パーティクルの設定
 		SetParticle(
 			8,
-			vtxData.pos,
+			m_data.pos,
 			D3DXVECTOR3(10.0f, 10.0f, 0.0f),
 			D3DXVECTOR3(10.0f, 10.0f, 0.0f),
 			D3DXCOLOR(1.0f, 0.0, 0.0f, 1.0f),
@@ -243,7 +158,7 @@ void CEnemy::HitDamage(int nDamage)
 //-------------------------------------
 //- 通常敵の生成処理
 //-------------------------------------
-CEnemy * CEnemy::Create(MODEL modelType, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+CEnemy * CEnemy::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
 	// 通常敵の生成
 	CEnemy *pEnemy = DBG_NEW CEnemy;
@@ -252,7 +167,7 @@ CEnemy * CEnemy::Create(MODEL modelType, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	if (pEnemy != NULL)
 	{
 		// 初期化処理
-		if (FAILED(pEnemy->Init(modelType,pos,rot)))
+		if (FAILED(pEnemy->Init(pos,rot)))
 		{// 失敗時
 
 			// 「なし」を返す
@@ -271,18 +186,28 @@ CEnemy * CEnemy::Create(MODEL modelType, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 }
 
 //-------------------------------------
-//-	敵のモデルの初期設定
+//- プレイヤーの移動処理
 //-------------------------------------
-void CEnemy::InitSet(MODEL modelType, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+void CEnemy::UpdatePos(void)
 {
-	// 頂点値情報を取得
-	CObjectX::VtxData vtxData = GetVtxData();
+	// 位置情報に移動量を加算
+	m_data.pos += m_data.move;
 
-	// データの代入
-	vtxData.pos = pos;										// 位置
-	vtxData.rot = rot;										// 向き
-	vtxData.size = D3DXVECTOR3(60.0f, 150.0f, 50.0f);		// サイズ
+	// 移動量を減衰
+	m_data.move.x += (0.0f - m_data.move.x) * 0.3f;
+	m_data.move.z += (0.0f - m_data.move.z) * 0.3f;
+}
 
-	// 情報更新（頂点値情報）
-	SetVtxData(vtxData);
+//-------------------------------------
+//- プレイヤーの当たり判定更新処理
+//-------------------------------------
+void CEnemy::UpdateCollision(void)
+{
+	if (m_pColl != nullptr)
+	{
+		// 当たり判定の情報更新処理
+		m_pColl->UpdateData(
+			m_data.pos,
+			m_data.size);
+	}
 }

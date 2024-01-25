@@ -62,3 +62,31 @@ void HelperSakai::NormalizeAngle(D3DXVECTOR3* rot, D3DXVECTOR3* rotDest, float d
 	}
 
 }
+
+//-------------------------------------
+//-	範囲指定のIF文（浮動小数）
+//-------------------------------------
+bool HelperSakai::IfRangeFloat(float fData,float fMin, float fMax)
+{
+	if (fData > fMin &&
+		fData < fMax)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+//-------------------------------------
+//-	対象との距離を算出
+//-------------------------------------
+float HelperSakai::CalculateLength(D3DXVECTOR3 pos, D3DXVECTOR3 posTgt)
+{
+	// ターゲットとの距離を判定
+	float fLengthTgtSquared = ((posTgt.x - pos.x) * (posTgt.x - pos.x) +
+							   (posTgt.y - pos.y) * (posTgt.y - pos.y) +
+							   (posTgt.z - pos.z) * (posTgt.z - pos.z));
+
+	// 距離を返す
+	return std::sqrt(fLengthTgtSquared);
+}

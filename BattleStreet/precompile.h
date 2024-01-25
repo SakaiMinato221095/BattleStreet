@@ -23,6 +23,7 @@
 #include <time.h>
 
 #include <stdio.h>
+#include <cmath>
 
 #include <d3dx9.h>						// •`‰æˆ—‚É•K—v
 

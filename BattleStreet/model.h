@@ -37,6 +37,7 @@ public:
 	typedef enum
 	{
 		MODEL_TYPE_PLAYER = 0,	// ÉvÉåÉCÉÑÅ[
+		MODEL_TYPE_ALIEN_000,	// ìG000
 		MODEL_TYPE_MAX
 	}MODEL_TYPE;
 

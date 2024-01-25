@@ -17,7 +17,7 @@
 //-	インクルード
 //-======================================
 
-#include "object_x.h"
+#include "object.h"
 
 //-======================================
 //-	マクロ定義
@@ -34,56 +34,48 @@ class CColl;
 //-======================================
 
 // 敵のクラス
-class CEnemy : public CObjectX
+class CEnemy : public CObject
 {
 
 public:
 
-	typedef enum
-	{
-		MODEL_ALIEN_000 = 0,			// エイリアン_000
-		MODEL_MAX
-	}MODEL;
-
 	// モデル情報
 	typedef struct
 	{
-		int nModelNldx;		// モデル番号
+		D3DXVECTOR3 pos;	// 位置
+		D3DXVECTOR3 rot;	// 向き
 		D3DXVECTOR3 size;	// 大きさ
-	}ModelData;
+
+		D3DXVECTOR3 move;	// 移動量
+	}Data;
 
 	CEnemy();
 	~CEnemy();
 
-	static HRESULT Load(void);
-	static void Unload(void);
-
-	HRESULT Init(MODEL modelType, D3DXVECTOR3 pos, D3DXVECTOR3 rot);
+	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot);
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
 
+	void InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 rot);
+
 	virtual void HitDamage(int nDamage);
 
-	static CEnemy *Create(MODEL modelType,D3DXVECTOR3 pos,D3DXVECTOR3 rot);
+	static CEnemy *Create(D3DXVECTOR3 pos,D3DXVECTOR3 rot);
 
-	int GetModelIdx(void) { return m_model; }
+	void SetData(Data data) { m_data = data; }
+	Data GetData(void) { return m_data; }
 
-	static void SetModelData(int nNum, ModelData modelData) { m_modelData[nNum] = modelData; }
-	static ModelData GetModelData(int nNum) { return m_modelData[nNum]; }
+protected:
+
+	void UpdatePos(void);
+	void UpdateCollision(void);
 
 private:
 
-	void InitSet(MODEL modelType, D3DXVECTOR3 pos, D3DXVECTOR3 rot);
+	Data m_data;		// 情報
 
-	static ModelData m_modelData[MODEL_MAX];	// モデルの情報
-	
-	MODEL m_model;		// 自身のモデル
-
-	D3DXVECTOR3 m_move;	// 移動量
-
-	CColl *m_pColl;		// 当たり判定の情報
-
+	CColl* m_pColl;		// 当たり判定の情報
 };
 
 #endif	// 二重インクルード防止の終了

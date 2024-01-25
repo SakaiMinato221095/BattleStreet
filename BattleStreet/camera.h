@@ -61,11 +61,6 @@ public:
 	void Uninit(void);
 	void Update(void);
 
-	void UpdateRot(void);
-	void UpdateTitle(void);
-
-	void CameraPlayer(D3DXVECTOR3 posPlayer, D3DXVECTOR3 rotPlayer);
-
 	void SetCamera(void);
 
 	void SetMode(CCamera::MODE mode);
@@ -73,6 +68,11 @@ public:
 	Data GetData(void) { return m_data; }
 private:
 	
+	void UpdateRot(void);
+	void UpdateTitle(void);
+
+	void CameraPlayer(void);
+
 	D3DXMATRIX m_mtxProjectien;		// プロジェクションマトリックス
 	D3DXMATRIX m_mtxView;			// ビューマトリックス
 

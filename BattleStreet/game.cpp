@@ -26,7 +26,7 @@
 
 #include "player.h"
 
-#include "enemy.h"
+#include "enemy_boss.h"
 
 #include "obj_3d_field.h"
 #include "obj_3d_wall.h"
@@ -207,8 +207,9 @@ HRESULT CGame::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	}
 
 	// ìGÇÃê∂ê¨
-	CEnemy::Create(
-		CEnemy::MODEL_ALIEN_000,
+	CEnemyBoss::Create(
+		CModel::MODEL_TYPE_ALIEN_000,
+		CMotion::MOTION_TYPE_ALIEN_000,
 		D3DXVECTOR3(0.0f, 0.0f, 400.0f),
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 

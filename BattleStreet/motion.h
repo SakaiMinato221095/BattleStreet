@@ -43,6 +43,7 @@ public:
 	typedef enum
 	{
 		MOTION_TYPE_PLAYER = 0,		// ÉvÉåÉCÉÑÅ[
+		MOTION_TYPE_ALIEN_000,		// ìG000
 		MOTION_TYPE_MAX
 	}MOTION_TYPE;
 

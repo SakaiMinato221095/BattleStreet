@@ -20,7 +20,6 @@
 #include "model.h"
 
 #include "objectx_none.h"
-#include "enemy.h"
 #include "skybox.h"
 
 //-------------------------------------
@@ -61,17 +60,6 @@ HRESULT CManagerModel::Load(HWND hWnd)
 
 		// 失敗メッセージ
 		MessageBox(hWnd, "効果なしオブジェクトのデータ", "データ読み込み処理失敗！", MB_ICONWARNING);
-
-		// データ読み込みを抜ける
-		return E_FAIL;
-	}
-
-	// 敵オブジェクト
-	if (FAILED(CEnemy::Load()))
-	{// 失敗時
-
-	 // 失敗メッセージ
-		MessageBox(hWnd, "敵のデータ", "データ読み込み処理失敗！", MB_ICONWARNING);
 
 		// データ読み込みを抜ける
 		return E_FAIL;
