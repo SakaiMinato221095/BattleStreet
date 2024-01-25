@@ -238,6 +238,14 @@ void CColl::SetHitData(HitData data)
 	// •Ï”éŒ¾iî•ñæ“¾j
 	int nHitNum = m_data.nHitNldxMax;	// Œ»İ‚ÌÅ‘åÚG”
 
+	for (int nCount = 0; nCount < nHitNum; nCount++)
+	{
+		if (data.nNldx == m_data.hitData[nCount].nNldx)
+		{
+			m_data.nHitNldxMax--;
+		}
+	}
+
 	// ÚG‘Šè‚Ì“–‚½‚è”»’èî•ñ‚ğ‘ã“ü
 	m_data.hitData[nHitNum] = data;		
 

@@ -68,6 +68,14 @@ public:
 		STATE_MAX
 	}STATE;
 
+	// 当たり判定の種類
+	typedef enum
+	{
+		COLL_TYPE_NEUTRAL = 0,	// 通常
+		COLL_TYPE_SEARCH,		// 索敵
+		COLL_TYPE_MAX
+	}COLL_TYPE;
+
 	// 追加値の情報
 	typedef struct
 	{
@@ -81,6 +89,7 @@ public:
 	{
 		D3DXVECTOR3 pos;		// 位置
 		D3DXVECTOR3 posOld;		// 前回の位置
+		D3DXVECTOR3 posTgt;		// ターゲットの位置
 
 		D3DXVECTOR3 rot;		// 向き
 		D3DXVECTOR3 rotDest;	// 目的の向き
@@ -95,6 +104,7 @@ public:
 		STATE state;				// 情報の種類
 		MOTION_STATE motionState;	// モーション状態の種類
 
+		bool bIsTarget;				// ターゲットの有無
 		int stateTimeCnt;			// 状態カウント
 
 	}Data;
@@ -127,6 +137,7 @@ private:
 	void InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 rot);
 
 	void UpdatePos(void);
+	void UpdateBattle(void);
 	void UpdateRot(void);
 	void UpdatePlusData(void);
 	void UpdateAttack(void);
@@ -144,11 +155,13 @@ private:
 	void SetAttackKick(void);
 	void SetAttackFinish(void);
 
+	void SetAttackFinishPunch(void);
+
 	void DebugPlayer(void);
 
 	Data m_data;							// 値を格納
 
-	CColl *m_pColl;							// 当たり判定情報
+	CColl* m_apColl[COLL_TYPE_MAX];			// 当たり判定情報
 
 	D3DXMATRIX m_mtxWorld;					// ワールドマトリックス
 

@@ -86,9 +86,11 @@ public:
 	int Set(CColl *pColl);
 	void Reset(int nNldx);
 
+	CColl* GetColl(int nNldx) { return m_apColl[nNldx]; }
+
 private:
 
-	void SetHit(CColl* pCollMy, int nNldx, CObject* pObjPair);
+	void SetHit(CColl* pCollMy, int nNldx, CObject* pObjPair,float fLength);
 
 	bool hitRectangle(D3DXVECTOR3 posMy, D3DXVECTOR3 sizeMy, D3DXVECTOR3 posPair, D3DXVECTOR3 sizePair);
 	bool hitRectangleSide(float fPos, float fSize, float fPosPair, float fSizePair);

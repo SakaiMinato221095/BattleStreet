@@ -1,7 +1,7 @@
 
 //-===============================================
 //-
-//-	当たり判定壁のヘッダー[box_wall.h]
+//-	パンチのフィニッシュ攻撃処理のヘッダー[finish_punch.h]
 //- Author Sakai Minato
 //-
 //-===============================================
@@ -10,40 +10,45 @@
 //-	二重インクルード防止
 //-======================================
 
-#ifndef _BOX_WALL_H_		// このマクロが定義されなかったら
-#define _BOX_WALL_H_		// 二重インクルード帽子のマクロを定義
+#ifndef _FINISH_PUNCH_H_		// このマクロが定義されなかったら
+#define _FINISH_PUNCH_H_		// 二重インクルード帽子のマクロを定義
 
 //-======================================
 //-	インクルード
 //-======================================
 
-#include "object3d.h"
+#include "attack.h"
 
-//-======================================
-//-	マクロ定義
-//-======================================
+//=======================================
+//=	マクロ定義
+//=======================================
+
+//=======================================
+//=	前方宣言
+//=======================================
+
+class CColl;
 
 //-======================================
 //-	クラス定義
 //-======================================
 
-// アイテムのクラス
-class CBoxWall : public CObject3d
+class CFinishPunch : public CAttack
 {
 
 public:
 
-	CBoxWall(int nPriority = 3);;
-	~CBoxWall();
+	CFinishPunch();
+	~CFinishPunch();
 
 	HRESULT Init(void);
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
 
-	static CBoxWall* Create(void);
+	void InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 size, int nDamage);
 
-	void SetVtx(void);
+	static CFinishPunch* Create(void);
 
 private:
 

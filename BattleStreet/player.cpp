@@ -31,6 +31,8 @@
 #include "attack.h"
 #include "punch.h"
 
+#include "finish_punch.h"
+
 //-======================================
 //-	マクロ定義
 //-======================================
@@ -156,15 +158,19 @@ HRESULT CPlayer::Init(D3DXVECTOR3 pos , D3DXVECTOR3 rot,CModel::MODEL_TYPE model
 //-------------------------------------
 void CPlayer::Uninit(void)
 {
-	if (m_pColl != NULL)
+	for (int nCount = 0; nCount < COLL_TYPE_MAX; nCount++)
 	{
-		// 当たり判定の終了処理
-		m_pColl->Uninit();
+		if (m_apColl[nCount] != NULL)
+		{
+			// 当たり判定の終了処理
+			m_apColl[nCount]->Uninit();
 
-		// 当たり判定の開放処理
-		delete m_pColl;
-		m_pColl = NULL;
+			// 当たり判定の開放処理
+			delete m_apColl[nCount];
+			m_apColl[nCount] = NULL;
+		}
 	}
+
 
 	// モデルの終了処理
 	for (int nCount = 0; nCount < m_nNumModel; nCount++)
@@ -223,8 +229,16 @@ void CPlayer::Update(void)
 	// 前回の位置を更新
 	m_data.posOld = m_data.pos;
 
-	// 移動の入力処理
-	InputMove();
+	if (m_data.state == STATE_NEUTRAL)
+	{
+		// 移動の入力処理
+		InputMove();
+	}
+	else if (m_data.state == STATE_BATTLE)
+	{
+		// 攻撃処理
+		UpdateBattle();
+	}
 
 	// コンボ入力処理
 	InputCombo();
@@ -354,12 +368,42 @@ void CPlayer::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 
 	m_data.size = D3DXVECTOR3(100.0f, 100.0f, 100.0f);
 
-	// 当たり判定設定
-	m_pColl = CColl::Create(
-		CMgrColl::TAG_PLAYER,
-		this,
-		m_data.pos,
-		m_data.size);
+	for (int nCount = 0; nCount < COLL_TYPE_MAX; nCount++)
+	{
+		if (m_apColl[nCount] == NULL)
+		{
+			switch (nCount)
+			{
+			case COLL_TYPE_NEUTRAL:
+				
+				// 当たり判定設定
+				m_apColl[nCount] = CColl::Create(
+					CMgrColl::TAG_PLAYER,
+					this,
+					m_data.pos,
+					m_data.size);
+
+				break;
+
+			case COLL_TYPE_SEARCH:
+
+				// 当たり判定設定
+				m_apColl[nCount] = CColl::Create(
+					CMgrColl::TAG_PLAYER,
+					this,
+					m_data.pos,
+					m_data.size + D3DXVECTOR3(100.0f,0.0f,100.0f));
+
+				if (m_apColl[nCount] != nullptr)
+				{
+					m_apColl[nCount]->SetIsVisualDrawStop(false);
+				}
+
+				break;
+			}
+
+		}
+	}
 
 	m_data.plus.speedRate = 1.0f;
 }
@@ -375,6 +419,34 @@ void CPlayer::UpdatePos(void)
 
 	// 位置情報に移動量を加算
 	pos += move;
+
+	// 移動量を減衰
+	move.x += (0.0f - move.x) * 0.3f;
+	move.z += (0.0f - move.z) * 0.3f;
+
+	// 情報更新
+	m_data.pos = pos;
+	m_data.move = move;
+}
+
+//-------------------------------------
+//- プレイヤーの攻撃更新処理
+//-------------------------------------
+void CPlayer::UpdateBattle(void)
+{
+	// 変数宣言（情報取得）
+	D3DXVECTOR3 pos = m_data.pos;	// 位置
+	D3DXVECTOR3 move = m_data.move;	// 移動量
+
+	if (m_data.bIsTarget)
+	{
+		// 位置情報に移動量を加算
+		float rotTgt = atan2f(pos.x - m_data.posTgt.x, pos.z - m_data.posTgt.z);
+
+		m_data.rotDest.y = rotTgt;
+	}
+
+	pos += D3DXVECTOR3(-sinf(m_data.rot.y) * 3.0f, 0.0f, -cosf(m_data.rot.y) * 3.0f);
 
 	// 移動量を減衰
 	move.x += (0.0f - move.x) * 0.3f;
@@ -504,8 +576,6 @@ void CPlayer::UpdateCommand(void)
 	{
 		// コマンドの更新処理
 		m_pCommand->Update();
-
-		
 	}
 }
 
@@ -514,32 +584,98 @@ void CPlayer::UpdateCommand(void)
 //-------------------------------------
 void CPlayer::UpdateCollision(void)
 {
-	if (m_pColl != nullptr)
+	for (int nCntColl = 0; nCntColl < COLL_TYPE_MAX; nCntColl++)
 	{
-		// 当たり判定の情報更新処理
-		m_pColl->UpdateData(
-			m_data.pos,
-			m_data.posOld,
-			m_data.size);
-
-		// プレイヤーの当たり判定
-		if (m_pColl->HitSide(CMgrColl::TAG_WALL_X, CMgrColl::EVENT_TYPE_PRESS, CMgrColl::TYPE_SXIS_X) == true)
+		if (m_apColl[nCntColl] != NULL)
 		{
-			// 移動量をなくす
-			m_data.move.x = 0.0f;
+			switch (nCntColl)
+			{
+			case COLL_TYPE_NEUTRAL:
 
-			// プレイヤーのY座標移動を停止
-			m_data.pos.x = m_data.posOld.x;
-		}
+				// 当たり判定の情報更新処理
+				m_apColl[nCntColl]->UpdateData(
+					m_data.pos,
+					m_data.posOld,
+					m_data.size);
 
-		// プレイヤーの当たり判定
-		if (m_pColl->HitSide(CMgrColl::TAG_WALL_Z, CMgrColl::EVENT_TYPE_PRESS, CMgrColl::TYPE_SXIS_Z) == true)
-		{
-			// 移動量をなくす
-			m_data.move.z = 0.0f;
+				// プレイヤーの当たり判定
+				if (m_apColl[nCntColl]->HitSide(CMgrColl::TAG_WALL_X, CMgrColl::EVENT_TYPE_PRESS, CMgrColl::TYPE_SXIS_X) == true)
+				{
+					// 移動量をなくす
+					m_data.move.x = 0.0f;
 
-			// プレイヤーのY座標移動を停止
-			m_data.pos.z = m_data.posOld.z;
+					// プレイヤーのY座標移動を停止
+					m_data.pos.x = m_data.posOld.x;
+				}
+
+				// プレイヤーの当たり判定
+				if (m_apColl[nCntColl]->HitSide(CMgrColl::TAG_WALL_Z, CMgrColl::EVENT_TYPE_PRESS, CMgrColl::TYPE_SXIS_Z) == true)
+				{
+					// 移動量をなくす
+					m_data.move.z = 0.0f;
+
+					// プレイヤーのY座標移動を停止
+					m_data.pos.z = m_data.posOld.z;
+				}
+
+				break;
+
+			case COLL_TYPE_SEARCH:
+
+				if (m_data.rot.y >= 0.0f && m_data.rot.y <= (D3DX_PI * 0.25f) ||
+					m_data.rot.y <= 0.0f && m_data.rot.y >= -(D3DX_PI * 0.25f) ||
+					m_data.rot.y >= (D3DX_PI * 0.75f) && m_data.rot.y <= D3DX_PI ||
+					m_data.rot.y <= -(D3DX_PI * 0.75f) && m_data.rot.y >= -D3DX_PI)
+				{
+					// 当たり判定の情報更新処理
+					m_apColl[nCntColl]->UpdateData(
+						m_data.pos + D3DXVECTOR3((-sinf(m_data.rot.y) * m_data.size.x), 0.0f, (-cosf(m_data.rot.y) * m_data.size.z)),
+						m_data.posOld,
+						D3DXVECTOR3(200.0f, 50.0f, 100.0f));
+				}
+				else if (
+					m_data.rot.y >=  (D3DX_PI * 0.25f) && m_data.rot.y <=  (D3DX_PI * 0.75f) ||
+					m_data.rot.y <= -(D3DX_PI * 0.25f) && m_data.rot.y >= -(D3DX_PI * 0.75f))
+				{
+					// 当たり判定の情報更新処理
+					m_apColl[nCntColl]->UpdateData(
+						m_data.pos + D3DXVECTOR3((-sinf(m_data.rot.y) * m_data.size.x), 0.0f, (-cosf(m_data.rot.y) * m_data.size.z)),
+						m_data.posOld,
+						D3DXVECTOR3(100.0f, 50.0f, 200.0f));
+				}
+
+				// プレイヤーの当たり判定
+				if (m_apColl[nCntColl]->Hit(CMgrColl::TAG_ENEMY, CMgrColl::EVENT_TYPE_PRESS) == true)
+				{
+					float fLengthNear = 100000.0f;
+					int nHitMax = m_apColl[nCntColl]->GetData().nHitNldxMax;
+
+					for (int nCntLength = 0; nCntLength < nHitMax; nCntLength++)
+					{
+						float fLength = m_apColl[nCntColl]->GetData().hitData[nCntLength].fLength;
+
+						if (fLength < fLengthNear)
+						{
+							fLengthNear = fLength;
+
+							int hitNldx = m_apColl[nCntColl]->GetData().hitData[nCntLength].nNldx;
+							
+							CColl* pCollPair = CManager::GetInstance()->GetMgrColl()->GetColl(hitNldx);
+
+							m_data.posTgt = pCollPair->GetData().pos;
+
+							m_data.bIsTarget = true;
+						}
+					}
+				}
+				else
+				{
+					m_data.bIsTarget = false;
+				}
+				
+				break;
+			}
+
 		}
 
 	}
@@ -584,6 +720,8 @@ void CPlayer::UpdateMotionNone(void)
 			m_pAttack->Uninit();
 			m_pAttack = nullptr;
 		}
+
+		m_data.state = STATE_NEUTRAL;
 	}
 
 	if (m_data.motionState != pMotion->GetType())
@@ -821,6 +959,7 @@ void CPlayer::InputCombo(void)
 			// 状態設定
 			m_data.state = STATE_BATTLE;
 
+			// フィニッシュ攻撃
 			SetAttackFinish();
 		}
 		else
@@ -917,30 +1056,52 @@ void CPlayer::SetAttackKick(void)
 }
 
 //-------------------------------------
-//- プレイヤーのフィニッシュ攻撃（偽装フィニッシュ）
+//- プレイヤーのフィニッシュ攻撃設定処理
 //-------------------------------------
 void CPlayer::SetAttackFinish(void)
 {
+	CCommand::InfoFinish infoFinish = m_pCommand->GetInfoFinish();
+
+	switch (infoFinish.type)
+	{
+	case CCommand::COMMAND_TYPE_PUNCH_NOR:
+
+		// パンチフィニッシュ攻撃
+		SetAttackFinishPunch();
+
+		break;
+
+	case CCommand::COMMAND_TYPE_KICK_NOR:
+
+		break;
+	}
+}
+
+//-------------------------------------
+//- プレイヤーのフィニッシュ攻撃（パンチフィニッシュ）
+//-------------------------------------
+void CPlayer::SetAttackFinishPunch(void)
+{
 	if (m_pAttack == nullptr)
 	{
-		m_pAttack = CPunch::Create();
+		m_pAttack = CFinishPunch::Create();
 
 		if (m_pAttack != nullptr)
 		{
-			// 手の位置
-			D3DXVECTOR3 posHand = D3DXVECTOR3(
-				GetModel(7)->GetMtxWorld()._41,
-				GetModel(7)->GetMtxWorld()._42,
-				GetModel(7)->GetMtxWorld()._43);
+			// 足の位置
+			D3DXVECTOR3 posShin = D3DXVECTOR3(
+				GetModel(11)->GetMtxWorld()._41,
+				GetModel(11)->GetMtxWorld()._42,
+				GetModel(11)->GetMtxWorld()._43);
 
 			// 攻撃の初期設定処理
 			m_pAttack->InitSet(
-				posHand,
+				posShin,
 				D3DXVECTOR3(20.0f, 20.0f, 20.0f),
-				20);
+				5);
 		}
 
-		// フィニッシュを実行
+		// モーションの設定（パンチフィニッシュ）
 		m_data.motionState = MOTION_STATE_PUNCH_FINISH;
 	}
 }

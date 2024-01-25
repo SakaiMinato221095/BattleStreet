@@ -94,12 +94,15 @@ void CCommand::Uninit(void)
 //-------------------------------------
 void CCommand::Update(void)
 {
-	m_InfoCombo.nWindowTimeCnt++;
-
-	if (m_InfoCombo.nWindowTimeCnt >= WINDOW_TIME)
+	if (m_InfoCombo.nNum > 0)
 	{
-		// コンボのリセット処理
-		ReSetCombo();
+		m_InfoCombo.nWindowTimeCnt++;
+
+		if (m_InfoCombo.nWindowTimeCnt >= WINDOW_TIME)
+		{
+			// コンボのリセット処理
+			ReSetCombo();
+		}
 	}
 
 	// デバック表示
@@ -122,33 +125,31 @@ bool CCommand::SetInput(INPUT_TYPE inputType)
 	// フィニッシュの有無
 	bool bFinish = false;
 
-	// 現在のコンボ数
-	int nNum = m_InfoCombo.nNum;
+	// コンボ受付時間を初期化
+	m_InfoCombo.nWindowTimeCnt = 0;
+
+	if (m_InfoCombo.nNum >= COMMAND::COMBO_NUM_MAX)
+	{
+		// コンボのリセット処理
+		ReSetCombo();
+	}
 
 	for (int nCntCommand = 0; nCntCommand < COMMAND_TYPE_MAX; nCntCommand++)
 	{
-		// 現在のコマンドの情報を取得
-		InfoCommand InfoCommand = m_InfoCombo.InfoCommand[nCntCommand];
-
-		// フィニッシュまでの回数を判定 or コンボの有無
-		if (m_dataCommand[nCntCommand].nInputNumFinish > nNum ||
-			InfoCommand.bIsCombo)
+		// コンボ中
+		if (m_InfoCombo.InfoCommand[nCntCommand].bIsCombo)
 		{
-			// 現在のコマンドごとのコンボ数を取得
-			int nNumCombo = InfoCommand.nNumCombo;
-
 			// コンボ
-			for (int nCntCombo = nNumCombo; nCntCombo < COMMAND::COMBO_NUM_MAX; nCntCombo++)
+			for (int nCntCombo = m_InfoCombo.nNum; nCntCombo < COMMAND::COMBO_NUM_MAX; nCntCombo++)
 			{
 				// コマンド入力と入力情報を判定
-				if (m_dataCommand[nCntCommand].aInputType[nCntCombo] == inputType)
+				if (m_dataCommand[nCntCommand].aInputType[m_InfoCombo.InfoCommand[nCntCommand].nNumCombo] == inputType)
 				{
 					// コンボ回数を加算
-					nNumCombo++;
-					m_InfoCombo.InfoCommand[nCntCommand].nNumCombo = nNumCombo;
+					m_InfoCombo.InfoCommand[nCntCommand].nNumCombo++;
 
 					// フィニッシュの有無を判定
-					if (m_dataCommand[nCntCommand].nInputNumFinish <= nNumCombo)
+					if (m_dataCommand[nCntCommand].nInputNumFinish <= m_InfoCombo.InfoCommand[nCntCommand].nNumCombo)
 					{
 						// コンボのリセット処理
 						ReSetCombo();
@@ -168,13 +169,33 @@ bool CCommand::SetInput(INPUT_TYPE inputType)
 						break;
 					}
 				}
+				else
+				{
+					// コマンドのコンボ数を初期化
+					m_InfoCombo.InfoCommand[nCntCommand].nNumCombo = 0;
+
+					// コマンドをコンボ中を解除
+					m_InfoCombo.InfoCommand[nCntCommand].bIsCombo = false;
+				}
+			}
+		}
+		// コンボ始動可能の有無
+ 		else if (m_dataCommand[nCntCommand].nInputNumFinish > m_InfoCombo.nNum)
+		{
+			// コンボ始動と入力の比較
+			if (m_dataCommand[nCntCommand].aInputType[0] == inputType)
+			{
+				// コマンドのコンボ数を加算
+				m_InfoCombo.InfoCommand[nCntCommand].nNumCombo++;
+
+				// コマンドをコンボ中に
+				m_InfoCombo.InfoCommand[nCntCommand].bIsCombo = true;
 			}
 		}
 	}
 
 	// コンボ数を加算
-	nNum++;
-	m_InfoCombo.nNum = nNum;
+	m_InfoCombo.nNum++;
 
 	return bFinish;
 }

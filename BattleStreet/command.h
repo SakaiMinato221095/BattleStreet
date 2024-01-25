@@ -98,6 +98,9 @@ public:
 
 	void SetInfoCombo(InfoCombo infoCombo) { m_InfoCombo = infoCombo; }
 	InfoCombo GetInfoCombo(void) { return m_InfoCombo; }
+
+	InfoFinish GetInfoFinish(void) { return m_InfoFinish; }
+
 private:
 
 	void SetInitData(void);

@@ -186,6 +186,9 @@
     <ClCompile Include="object3d.cpp">
       <Filter>Obj3d</Filter>
     </ClCompile>
+    <ClCompile Include="finish_punch.cpp">
+      <Filter>Attack</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h">
@@ -328,6 +331,9 @@
     </ClInclude>
     <ClInclude Include="obj_3d_field.h">
       <Filter>Obj3d</Filter>
+    </ClInclude>
+    <ClInclude Include="finish_punch.h">
+      <Filter>Attack</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

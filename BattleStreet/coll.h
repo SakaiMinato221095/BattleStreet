@@ -49,6 +49,7 @@ public:
 	{
 		int nNldx;		// 番号
 		CObject* pObj;	// オブジェクトのポインタ
+		float fLength;	// 距離
 	}HitData;
 
 	// 見た目情報

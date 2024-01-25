@@ -154,17 +154,22 @@ bool CMgrColl::Hit(int nNldxColl, TAG hitTag, EVENT_TYPE eventType)
 				D3DXVECTOR3 posPair = pCollPair->GetData().pos;		// ‘ŠŽè‚ÌˆÊ’u
 				D3DXVECTOR3 sizePair = pCollPair->GetData().size;	// ‘ŠŽè‚Ì‘å‚«‚³
 
-				// XŽ²‚Ì“–‚½‚è”»’è
+				// “–‚½‚è”»’è
 				if (hitRectangle(posMy, sizeMy, posPair, sizePair) == true)
 				{
 					// ÚG”»’è‚ðÝ’è
 					bHit = true;
 
+					//‹——£‚ð‘ª‚é•Ï”
+					float fLength = ((posPair.x - posMy.x) * (posPair.x - posMy.x)
+						+ (posPair.z - posMy.z) * (posPair.z - posMy.z));
+
 					// ÚGî•ñÝ’èˆ—
 					SetHit(
 						pCollMy,
 						nCount,
-						pCollPair->GetData().pObj);
+						pCollPair->GetData().pObj,
+						fLength);
 				}
 			}
 
@@ -242,11 +247,16 @@ bool CMgrColl::HitSide(int nNldxColl, CMgrColl::TAG hitTag, EVENT_TYPE eventType
 					// ÚG”»’è‚ðÝ’è
 					bHit = true;
 
+					//‹——£‚ð‘ª‚é•Ï”
+					float fLength = ((posPair.x - posMy.x) * (posPair.x - posMy.x)
+						+ (posPair.z - posMy.z) * (posPair.z - posMy.z));
+
 					// ÚGî•ñÝ’èˆ—
 					SetHit(
 						pCollMy,
 						nCount,
-						pCollPair->GetData().pObj);
+						pCollPair->GetData().pObj,
+						fLength);
 				}
 			}
 		}
@@ -288,12 +298,14 @@ void CMgrColl::Reset(int nNldx)
 //-------------------------------------
 //- ÚGî•ñÝ’èˆ—
 //-------------------------------------
-void CMgrColl::SetHit(CColl* pCollMy,int nNldx,CObject* pObjPair)
+void CMgrColl::SetHit(CColl* pCollMy,int nNldx,CObject* pObjPair,float fLength)
 {
 	// ÚG‘ŠŽè‚Ì“–‚½‚è”»’èî•ñ‚ðÝ’è
 	CColl::HitData hitData = {};
+
 	hitData.nNldx = nNldx;
 	hitData.pObj = pObjPair;
+	hitData.fLength = fLength;
 
 	// ÚG‘ŠŽè‚Ì”Ô†‚ð‘ã“ü
 	pCollMy->SetHitData(hitData);
