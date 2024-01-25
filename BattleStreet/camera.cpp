@@ -18,7 +18,10 @@
 #include "manager.h"
 #include "game.h"
 
+#include "helper_sakai.h"
+
 #include "input.h"
+#include "xinput.h"
 
 #include "player.h"
 
@@ -26,9 +29,9 @@
 //=	コンスト定義
 //=======================================
 
-const D3DXVECTOR3 FOLL_POS_V = (D3DXVECTOR3(0.0f, 500.0f, 0.0f));		// 追尾状態の初期視点
-const D3DXVECTOR3 FOLL_POS_R = (D3DXVECTOR3(0.0f, 150.0f, 0.0f));		// 追尾状態の初期注視点
-const float FOLL_LENGTH = (700.0f);										// 追尾状態の視点と注視点の距離
+const D3DXVECTOR3 FOLL_POS_V = (D3DXVECTOR3(0.0f, 400.0f, 0.0f));		// 追尾状態の初期視点
+const D3DXVECTOR3 FOLL_POS_R = (D3DXVECTOR3(0.0f, 200.0f, 0.0f));		// 追尾状態の初期注視点
+const float FOLL_LENGTH = (600.0f);										// 追尾状態の視点と注視点の距離
 const float FOLL_POS_DEST_SPEED = (0.3f);								// 追尾状態の位置補正速度
 
 //=======================================
@@ -120,26 +123,8 @@ void CCamera::Update(void)
 
 	if (CManager::GetInstance()->GetMode() == CScene::MODE_GAME)
 	{
-		// カメラのモード
-		switch (m_mode)
-		{
-		case MODE_NORMAL:
-
-			// カメラの移動処理
-			UpdateOperation();
-
-			break;
-
-		case MODE_FOLLOWING:
-
-			// カメラの追尾処理
-			UpdateFollowing();
-
-			// カメラの向き追尾処理
-			UpdateRot();
-
-			break;
-		}
+		// 向きの更新処理
+		UpdateRot();
 	}
 	else if (CManager::GetInstance()->GetMode() == CScene::MODE_TITEL)
 	{
@@ -149,247 +134,16 @@ void CCamera::Update(void)
 }
 
 //-------------------------------------
-//-	カメラの操作処理
-//-------------------------------------
-void CCamera::UpdateOperation(void)
-{
-	// 変数宣言（情報取得）
-	D3DXVECTOR3 posV = m_data.posV;		// 視点
-	D3DXVECTOR3 posR = m_data.posR;		// 注視点
-	D3DXVECTOR3 rot = m_data.rot;		// 向き
-	float fLength = m_data.fLength;		// カメラとの距離
-
-	// キーボードのポインタを宣言
-	CInputKeyboard *pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
-
-	// キーボードの情報取得の成功を判定
-	if (pInputKeyboard == NULL)
-	{// 失敗時
-
-		// 更新処理を抜ける
-		return;
-	}
-
-	//移動
-	if (pInputKeyboard->GetPress(DIK_LEFT) == true)
-	{//左の移動[Aキーが押されたとき]
-
-		posV.x -= 100.0f;
-		posR.x -= 100.0f;
-
-	}
-	if (pInputKeyboard->GetPress(DIK_RIGHT) == true)
-	{//右の移動[Dキーが押されたとき]
-
-		posV.x += 100.0f;
-		posR.x += 100.0f;
-
-	}
-	if (pInputKeyboard->GetPress(DIK_UP) == true)
-	{//右の移動[Wキーが押されたとき]
-
-		posV.z += 100.0f;
-		posR.z += 100.0f;
-
-	}
-	if (pInputKeyboard->GetPress(DIK_DOWN) == true)
-	{//右の移動[Sキーが押されたとき]
-
-		posV.z -= 100.0f;
-		posR.z -= 100.0f;
-
-	}
-
-	if (pInputKeyboard->GetPress(DIK_Q) == true)
-	{//[Qキーが押されたとき]
-
-		rot.y -= 0.05f;
-
-		//注視点の位置を更新
-		posR.x = posV.x + sinf(rot.y) * fLength;
-		posR.z = posV.z + cosf(rot.y) * fLength;
-	}
-
-	if (pInputKeyboard->GetPress(DIK_E) == true)
-	{//[Eキーが押されたとき]
-
-		rot.y += 0.05f;
-
-		//注視点の位置を更新
-		posR.x = posV.x + sinf(rot.y) * fLength;
-		posR.z = posV.z + cosf(rot.y) * fLength;
-
-	}
-
-	if (pInputKeyboard->GetPress(DIK_Y) == true)
-	{
-		rot.y -= 0.05f;
-
-		//注視点の位置を更新
-		posV.x = posR.x + sinf(rot.y) * -fLength;
-		posV.z = posR.z + cosf(rot.y) * -fLength;
-	}
-	if (pInputKeyboard->GetPress(DIK_T) == true)
-	{//[Eキーが押されたとき]
-
-		rot.y += 0.05f;
-
-		//注視点の位置を更新
-		posV.x = posR.x + sinf(rot.y) * -fLength;
-		posV.z = posR.z + cosf(rot.y) * -fLength;
-	}
-
-	if (pInputKeyboard->GetPress(DIK_RETURN) == true)
-	{//[エンターキーが押されたとき]
-
-		posV = D3DXVECTOR3(0.0f, 50.0f, -200.0f);
-		posR = D3DXVECTOR3(0.0f, 30.0f, 0.0f);
-		rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-
-		//注視点の位置を更新
-		posR.x = posV.x + sinf(rot.y) * fLength;
-		posR.z = posV.z + cosf(rot.y) * fLength;
-
-		posV.x = posR.x + sinf(rot.y) * -fLength;
-		posV.z = posR.z + cosf(rot.y) * -fLength;
-	}
-
-	//角度の修正
-	if (rot.y > D3DX_PI)
-	{
-		rot.y = (-D3DX_PI);
-	}
-	else if (rot.y < -D3DX_PI)
-	{
-		rot.y = (D3DX_PI);
-	}
-
-	// 情報更新
-	m_data.posV = posV;			// 視点
-	m_data.posR = posR;			// 注視点
-	m_data.rot = rot;			// 向き
-	m_data.fLength = fLength;	// カメラとの距離
-}
-
-//-------------------------------------
-//-	カメラの追尾処理
-//-------------------------------------
-void CCamera::UpdateFollowing(void)
-{
-	// 変数宣言（情報取得）
-	D3DXVECTOR3 posV =	m_data.posV;			// 視点
-	D3DXVECTOR3 posVDest = m_data.posVDest;		// 目的の視点
-	float fLength = m_data.fLength;				// カメラとの距離
-
-	// プレイヤーの情報を取得
-	D3DXVECTOR3 posR = m_data.posR;				// 注視点
-	D3DXVECTOR3 posRDest = m_data.posRDest;		// 目的の注視点
-	D3DXVECTOR3 rot = m_data.rot;				// 向き
-
-	// プレイヤーの情報取得
-	CPlayer *pPlayer = CGame::GetPlayer();
-
-	// プレイヤーの情報取得の成功を判定
-	if (pPlayer == NULL)
-	{// 失敗時
-
-		// 追尾処理を抜ける
-		return;
-	}
-
-	// 変数宣言（プレイヤーの情報取得）
-	D3DXVECTOR3 playerPos = pPlayer->GetData().pos;		// 位置
-	D3DXVECTOR3 playerRot = pPlayer->GetData().rot;		// 向き
-
-	//注視点とプレイヤーの距離
-	D3DXVECTOR3 cameraPlayer = D3DXVECTOR3(
-		sinf(playerRot.y),
-		0.0f,
-		cosf(playerRot.y));
-
-	//視点の位置を更新
-	posV.x = posR.x + sinf(rot.y) * -fLength;
-	posV.z = posR.z + cosf(rot.y) * -fLength;
-
-	//目的の視点の位置
-	posVDest.x = playerPos.x + (sinf(rot.y) * -fLength) + cameraPlayer.x;
-	posVDest.z = playerPos.z + (cosf(rot.y) * -fLength) + cameraPlayer.z;
-
-	//目的の注視点の位置
-	posRDest.x = playerPos.x + cameraPlayer.x;
-	posRDest.z = playerPos.z + cameraPlayer.z;
-
-	//視点の補正
-	posV.x += (posVDest.x - posV.x) * FOLL_POS_DEST_SPEED;
-	posV.z += (posVDest.z - posV.z) * FOLL_POS_DEST_SPEED;
-
-	//注視点の補正
-	posR.x += (posRDest.x - posR.x) * FOLL_POS_DEST_SPEED;
-	posR.z += (posRDest.z - posR.z) * FOLL_POS_DEST_SPEED;
-
-	// 情報更新
-	m_data.posV = posV;				// 視点
-	m_data.posVDest = posVDest;		// 目的の視点
-	m_data.posR = posR;				// 注視点
-	m_data.posRDest = posRDest;		// 目的の注視点
-	m_data.rot = rot;				// 向き
-	m_data.fLength = fLength;		// カメラとの距離
-}
-//-------------------------------------
 //-	カメラの向き追尾処理
 //-------------------------------------
 void CCamera::UpdateRot(void)
 {
-	// キーボードのポインタを宣言
-	CInputKeyboard *pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
-
-	// キーボードの情報取得の成功を判定
-	if (pInputKeyboard == NULL)
-	{// 失敗時
-
-	 // 更新処理を抜ける
-		return;
-	}
-
 	// 変数宣言（情報取得）
 	D3DXVECTOR3 rot = m_data.rot;				// 向き
 	D3DXVECTOR3 rotDest = m_data.rotDest;		// 目的の向き
 
-	// 目的の向きの補正
-	if (rotDest.y > D3DX_PI)
-	{
-		rotDest.y += -D3DX_PI * 2;
-	}
-	else if (rotDest.y < -D3DX_PI)
-	{
-		rotDest.y += D3DX_PI * 2;
-	}
-
-	// 差分の向きを算出
-	float rotDiff = rotDest.y - rot.y;
-
-	// 差分の向きを補正
-	if (rotDiff > D3DX_PI)
-	{
-		rotDiff += -D3DX_PI * 2;
-	}
-	else if (rotDiff < -D3DX_PI)
-	{
-		rotDiff += D3DX_PI * 2;
-	}
-
-	// 角度の移動
-	rot.y += rotDiff * 0.02f;
-
-	// 向きの補正
-	if (rot.y > D3DX_PI)
-	{
-		rot.y += -D3DX_PI * 2;
-	}
-	else if (rot.y < -D3DX_PI)
-	{
-		rot.y += D3DX_PI * 2;
-	}
+	// 角度の正規化
+	HelperSakai::NormalizeAngle(&rot, &rotDest,0.2f);
 	
 	// 情報更新
 	m_data.rot = rot;			// 向き
@@ -441,6 +195,80 @@ void CCamera::UpdateTitle(void)
 	m_data.rot = rot;			// 向き
 	m_data.rotDest = rot;		// 目的の向き
 	m_data.fLength = fLength;	// カメラとの長さ
+}
+
+//-------------------------------------
+//-	プレイヤーのカメラ処理
+//-------------------------------------
+void CCamera::CameraPlayer(D3DXVECTOR3 posPlayer,D3DXVECTOR3 rotPlayer)
+{
+	// キーボードのポインタを宣言
+	CInputKeyboard* pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
+
+	// キーボードの情報取得の成功を判定
+	if (pInputKeyboard == NULL)
+	{// 失敗時
+
+	 // 更新処理を抜ける
+		return;
+	}
+
+	// X入力のポインタを宣言
+	CXInput* pXInput = CManager::GetInstance()->GetXInput();
+
+	// X入力の情報取得の成功を判定
+	if (pXInput == NULL)
+	{
+		// 処理を抜ける
+		return;
+	}
+
+	if (pInputKeyboard->GetPress(DIK_A) == true ||
+		pXInput->GetPress(CXInput::TYPE_STICK_LEFT, CXInput::TYPE_INPUT_STICK_L) == true ||
+		pXInput->GetPress(CXInput::TYPE_STICK_LEFT, CXInput::TYPE_INPUT_STICK_R) == true)
+	{//[Eキーが押されたとき]
+
+		m_data.rotDest.y -= 0.03f;
+	}
+	else if (
+		pInputKeyboard->GetPress(DIK_D) == true ||
+		pXInput->GetPress(CXInput::TYPE_STICK_RIGHT, CXInput::TYPE_INPUT_STICK_L) == true ||
+		pXInput->GetPress(CXInput::TYPE_STICK_RIGHT, CXInput::TYPE_INPUT_STICK_R) == true)
+	{
+		m_data.rotDest.y += 0.03f;
+	}
+
+	if (pXInput->GetPress(CXInput::TYPE_STICK_LEFT, CXInput::TYPE_INPUT_STICK_R) == true)
+	{//[Eキーが押されたとき]
+
+		m_data.rotDest.y -= 0.04f;
+	}
+	else if (pXInput->GetPress(CXInput::TYPE_STICK_RIGHT, CXInput::TYPE_INPUT_STICK_R) == true)
+	{
+		m_data.rotDest.y += 0.04f;
+	}
+
+	//注視点とプレイヤーの距離
+	D3DXVECTOR3 cameraPlayer = D3DXVECTOR3(
+		sinf(rotPlayer.y),
+		30.0f,
+		cosf(rotPlayer.y));
+
+	//視点の位置を更新
+	m_data.posV.x = m_data.posR.x + sinf(m_data.rot.y) * -m_data.fLength;
+	m_data.posV.z = m_data.posR.z + cosf(m_data.rot.y) * -m_data.fLength;
+
+	//目的の視点の位置
+	m_data.posVDest.x = posPlayer.x + (sinf(m_data.rot.y) * -m_data.fLength) + cameraPlayer.x;
+	m_data.posVDest.z = posPlayer.z + (cosf(m_data.rot.y) * -m_data.fLength) + cameraPlayer.z;
+
+	//目的の注視点の位置
+	m_data.posRDest.x = posPlayer.x + cameraPlayer.x;
+	m_data.posRDest.z = posPlayer.z + cameraPlayer.z;
+
+	//注視点の補正
+	m_data.posR.x += (m_data.posRDest.x - m_data.posR.x) * 0.05f;
+	m_data.posR.z += (m_data.posRDest.z - m_data.posR.z) * 0.05f;
 }
 
 //-------------------------------------

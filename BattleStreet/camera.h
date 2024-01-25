@@ -61,10 +61,10 @@ public:
 	void Uninit(void);
 	void Update(void);
 
-	void UpdateOperation(void);
-	void UpdateFollowing(void);
 	void UpdateRot(void);
 	void UpdateTitle(void);
+
+	void CameraPlayer(D3DXVECTOR3 posPlayer, D3DXVECTOR3 rotPlayer);
 
 	void SetCamera(void);
 

@@ -65,6 +65,7 @@
     <ClCompile Include="punch.cpp" />
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="result.cpp" />
+    <ClCompile Include="helper_sakai.cpp" />
     <ClCompile Include="skybox.cpp" />
     <ClCompile Include="sound.cpp" />
     <ClCompile Include="timer.cpp" />
@@ -115,6 +116,7 @@
     <ClInclude Include="punch.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="result.h" />
+    <ClInclude Include="helper_sakai.h" />
     <ClInclude Include="skybox.h" />
     <ClInclude Include="sound.h" />
     <ClInclude Include="timer.h" />

@@ -21,6 +21,8 @@
 #include "sound.h"
 #include "debugproc.h"
 
+#include "helper_sakai.h"
+
 #include "camera.h"
 
 #include "coll.h"
@@ -267,6 +269,14 @@ void CPlayer::Update(void)
 	// 状態更新処理
 	UpdateState();
 
+	// カメラの更新処理
+	CCamera* pCamera = CManager::GetInstance()->GetCamera();
+
+	if (pCamera != nullptr)
+	{
+		pCamera->CameraPlayer(m_data.pos,m_data.rot);
+	}
+
 	// デバック表示
 	DebugPlayer();
 }
@@ -466,41 +476,7 @@ void CPlayer::UpdateRot(void)
 	D3DXVECTOR3 rot = m_data.rot;			// 向き
 	D3DXVECTOR3 rotDest = m_data.rotDest;	// 目的の向き
 
-	// 目的の向きの補正
-	if (rotDest.y > D3DX_PI)
-	{
-		rotDest.y += -D3DX_PI * 2;
-	}
-	else if (rotDest.y < -D3DX_PI)
-	{
-		rotDest.y += D3DX_PI * 2;
-	}
-
-	// 差分の向きを算出
-	float rotDiff = rotDest.y - rot.y;
-
-	// 差分の向きを補正
-	if (rotDiff > D3DX_PI)
-	{
-		rotDiff += -D3DX_PI * 2;
-	}
-	else if (rotDiff < -D3DX_PI)
-	{
-		rotDiff += D3DX_PI * 2;
-	}
-
-	//移動方向（角度）の補正
-	rot.y += rotDiff * 0.15f;
-
-	// 向きの補正
-	if (rot.y > D3DX_PI)
-	{
-		rot.y += -D3DX_PI * 2;
-	}
-	else if (rot.y < -D3DX_PI)
-	{
-		rot.y += D3DX_PI * 2;
-	}
+	HelperSakai::NormalizeAngle(&rot, &rotDest, 0.15f);
 
 	// 情報更新
 	m_data.rot = rot;			// 向き
@@ -1124,5 +1100,13 @@ void CPlayer::DebugPlayer(void)
 	pDebugProc->Print("プレイヤーの位置");
 	pDebugProc->Print("\n");
 	pDebugProc->Print("%f,%f,%f",m_data.pos.x, m_data.pos.y, m_data.pos.z);
+	pDebugProc->Print("\n");
+	pDebugProc->Print("プレイヤーの向き");
+	pDebugProc->Print("\n");
+	pDebugProc->Print("%f", m_data.rot.y);
+	pDebugProc->Print("\n");
+	pDebugProc->Print("プレイヤーの目標の向き");
+	pDebugProc->Print("\n");
+	pDebugProc->Print("%f", m_data.rotDest.y);
 	pDebugProc->Print("\n");
 }
