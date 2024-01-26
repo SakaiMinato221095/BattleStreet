@@ -52,6 +52,12 @@
     <Filter Include="Attack\Finish">
       <UniqueIdentifier>{2a901ad8-2c02-4283-b710-f179a932ee78}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Attack\Player">
+      <UniqueIdentifier>{69212499-67eb-49a2-a1c7-fb394a60ff21}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Attack\Enemy">
+      <UniqueIdentifier>{d0a5b827-5a13-45c2-a1a3-abe666f0f168}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="camera.cpp">
@@ -132,12 +138,6 @@
     <ClCompile Include="Input.cpp">
       <Filter>Input</Filter>
     </ClCompile>
-    <ClCompile Include="punch.cpp">
-      <Filter>Attack</Filter>
-    </ClCompile>
-    <ClCompile Include="kick.cpp">
-      <Filter>Attack</Filter>
-    </ClCompile>
     <ClCompile Include="enemy.cpp">
       <Filter>Enemy</Filter>
     </ClCompile>
@@ -206,6 +206,15 @@
     </ClCompile>
     <ClCompile Include="finish_kick.cpp">
       <Filter>Attack\Finish</Filter>
+    </ClCompile>
+    <ClCompile Include="kick.cpp">
+      <Filter>Attack\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="punch.cpp">
+      <Filter>Attack\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="charge.cpp">
+      <Filter>Attack\Enemy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -287,12 +296,6 @@
     <ClInclude Include="Input.h">
       <Filter>Input</Filter>
     </ClInclude>
-    <ClInclude Include="punch.h">
-      <Filter>Attack</Filter>
-    </ClInclude>
-    <ClInclude Include="kick.h">
-      <Filter>Attack</Filter>
-    </ClInclude>
     <ClInclude Include="enemy.h">
       <Filter>Enemy</Filter>
     </ClInclude>
@@ -361,6 +364,15 @@
     </ClInclude>
     <ClInclude Include="finish_kick.h">
       <Filter>Attack\Finish</Filter>
+    </ClInclude>
+    <ClInclude Include="kick.h">
+      <Filter>Attack\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="punch.h">
+      <Filter>Attack\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="charge.h">
+      <Filter>Attack\Enemy</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

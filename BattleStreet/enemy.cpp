@@ -15,6 +15,8 @@
 #include "renderer.h"
 #include "manager.h"
 
+#include "fade.h"
+
 #include "coll.h"
 
 #include "particle.h"
@@ -99,8 +101,6 @@ void CEnemy::Uninit(void)
 //-------------------------------------
 void CEnemy::Update(void)
 {
-	m_data.posOld = m_data.pos;
-
 	// 位置更新処理
 	UpdatePos();
 
@@ -125,6 +125,8 @@ void CEnemy::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	m_data.pos = pos;										// 位置
 	m_data.rot = rot;										// 向き
 	m_data.size = D3DXVECTOR3(60.0f, 150.0f, 50.0f);		// サイズ
+
+	m_data.nLife = 100;
 }
 
 //-------------------------------------
@@ -153,6 +155,30 @@ void CEnemy::HitDamage(int nDamage)
 			D3DXVECTOR3(10.0f, 10.0f, 0.0f),
 			D3DXCOLOR(1.0f, 0.0, 0.0f, 1.0f),
 			30);
+	}
+
+	m_data.nLife -= nDamage;
+
+	// パーティクルの設定
+	SetParticle(
+		8,
+		m_data.pos,
+		D3DXVECTOR3(10.0f, 10.0f, 0.0f),
+		D3DXVECTOR3(10.0f, 10.0f, 0.0f),
+		D3DXCOLOR(1.0f, 0.0, 0.0f, 1.0f),
+		30);
+
+	if (m_data.nLife < 0)
+	{
+		if (CManager::GetInstance() != nullptr)
+		{
+			if (CManager::GetInstance()->GetFade() != nullptr)
+			{
+				// ゲームモード
+				CManager::GetInstance()->GetFade()->SetFade(CScene::MODE_RESULT);
+			}
+		}
+
 	}
 
 }

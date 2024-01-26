@@ -31,6 +31,8 @@
 
 #include "particle.h"
 
+#include "attack.h"
+#include "charge.h"
 
 //-======================================
 //-	マクロ定義
@@ -52,6 +54,7 @@ CEnemyBoss::CEnemyBoss()
 	ZeroMemory(&m_infoVisual, sizeof(m_infoVisual));
 	ZeroMemory(&m_infoAi, sizeof(m_infoAi));
 	ZeroMemory(&m_infoTarger, sizeof(m_infoTarger));
+	m_pAttack = nullptr;
 }
 
 //-------------------------------------
@@ -99,6 +102,13 @@ void CEnemyBoss::Uninit(void)
 		m_infoVisual.pCharacter = nullptr;
 	}
 
+	// 攻撃の終了処理
+	if (m_pAttack != nullptr)
+	{
+		m_pAttack->Uninit();
+		m_pAttack = nullptr;
+	}
+
 	// Xファイルオブジェクトの終了
 	CEnemy::Uninit();
 }
@@ -108,6 +118,10 @@ void CEnemyBoss::Uninit(void)
 //-------------------------------------
 void CEnemyBoss::Update(void)
 {
+	CEnemy::Data data = GetData();
+	data.posOld = data.pos;
+	SetData(data);
+
 	// ターゲットとの情報更新（プレイヤー）
 	UpdateTargetPlayer();
 
@@ -116,6 +130,9 @@ void CEnemyBoss::Update(void)
 
 	// 位置更新処理
 	UpdatePos();
+
+	// 攻撃の更新処理
+	UpdateAttack();
 
 	// 当たり判定更新処理
 	UpdateCollision();
@@ -236,6 +253,37 @@ void CEnemyBoss::UpdateTargetPlayer(void)
 }
 
 //-------------------------------------
+//- 通常状態プレイヤーの攻撃の更新処理
+//-------------------------------------
+void CEnemyBoss::UpdateAttack(void)
+{
+	// 攻撃の情報更新処理
+	if (m_pAttack != nullptr)
+	{
+		D3DXVECTOR3 posParts = {};
+
+		if (m_infoVisual.motionState == MOTION_STATE_CHARGE_ATTACK)
+		{
+			if (m_infoVisual.pCharacter != nullptr)
+			{
+				if (m_infoVisual.pCharacter->GetModel(0) != nullptr)
+				{
+					// 手の位置
+					posParts = D3DXVECTOR3(
+						m_infoVisual.pCharacter->GetModel(0)->GetMtxWorld()._41,
+						m_infoVisual.pCharacter->GetModel(0)->GetMtxWorld()._42,
+						m_infoVisual.pCharacter->GetModel(0)->GetMtxWorld()._43);
+				}
+			}
+		}
+
+		D3DXVECTOR3 size = m_pAttack->GetData().size;
+
+		m_pAttack->UpdateData(posParts, size);
+	}
+}
+
+//-------------------------------------
 //-	モーションの更新処理
 //-------------------------------------
 void CEnemyBoss::UpdateMotion(void)
@@ -274,19 +322,18 @@ void CEnemyBoss::UpdateMotion(void)
 		}
 	}
 
-	//if (pMotion->GetType() == MOTION_STATE_PUNCH && m_data.motionState != MOTION_STATE_PUNCH ||
-	//	pMotion->GetType() == MOTION_STATE_KICK && m_data.motionState != MOTION_STATE_KICK ||
-	//	pMotion->GetType() == MOTION_STATE_PUNCH_FINISH && m_data.motionState != MOTION_STATE_PUNCH_FINISH)
-	//{
-	//	if (m_pAttack != nullptr)
-	//	{
-	//		// 終了処理
-	//		m_pAttack->Uninit();
-	//		m_pAttack = nullptr;
-	//	}
+	if (pMotion->GetType() == MOTION_STATE_CHARGE_ATTACK && m_infoVisual.motionState!= MOTION_STATE_CHARGE_ATTACK)
+	{
+		if (m_pAttack != nullptr)
+		{
+			// 終了処理
+			m_pAttack->Uninit();
+			m_pAttack = nullptr;
+		}
 
-	//	m_data.state = STATE_NEUTRAL;
-	//}
+		// 待機状態の変更
+		m_infoVisual.motionState = MOTION_STATE_NEUTRAL;
+	}
 
 	// モーション状態と現在のモーションを比較
 	if (m_infoVisual.motionState != pMotion->GetType())
@@ -440,6 +487,30 @@ void CEnemyBoss::SetAiActiv(void)
 		m_infoAi.state = AI_STATE_CHARGE;
 
 		m_infoVisual.motionState = MOTION_STATE_CHARGE;
+
+		if (m_pAttack == nullptr)
+		{
+			m_pAttack = CCharge::Create();
+
+			if (m_infoVisual.pCharacter != nullptr)
+			{
+				if (m_infoVisual.pCharacter->GetModel(0) != nullptr)
+				{
+					// 体の位置
+					D3DXVECTOR3 posBody = D3DXVECTOR3(
+						m_infoVisual.pCharacter->GetModel(0)->GetMtxWorld()._41,
+						m_infoVisual.pCharacter->GetModel(0)->GetMtxWorld()._42,
+						m_infoVisual.pCharacter->GetModel(0)->GetMtxWorld()._43);
+
+					// 攻撃の初期設定処理
+					m_pAttack->InitSet(
+						posBody,
+						D3DXVECTOR3(75.0f, 20.0f, 75.0f),
+						10);
+				}
+
+			}
+		}
 	}
 	else
 	{

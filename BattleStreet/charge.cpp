@@ -1,7 +1,7 @@
 
 //================================================
 //=
-//=	パンチの処理[punch.cpp]
+//=	突進の処理[charge.cpp]
 //= Author Sakai Minato
 //=
 //================================================
@@ -10,7 +10,7 @@
 //=	インクルード
 //=======================================
 
-#include "punch.h"
+#include "charge.h"
 
 #include "coll.h"
 #include "mgr_coll.h"
@@ -26,7 +26,7 @@
 //-------------------------------------
 //-	タイマーのコンストラクタ
 //-------------------------------------
-CPunch::CPunch()
+CCharge::CCharge()
 {
 
 }
@@ -34,7 +34,7 @@ CPunch::CPunch()
 //-------------------------------------
 //-	タイマーのデストラクタ
 //-------------------------------------
-CPunch::~CPunch()
+CCharge::~CCharge()
 {
 
 }
@@ -42,7 +42,7 @@ CPunch::~CPunch()
 //-------------------------------------
 //- タイマーの初期化処理
 //-------------------------------------
-HRESULT CPunch::Init(void)
+HRESULT CCharge::Init(void)
 {
 	// 親クラスの初期化処理
 	if (CAttack::Init() == E_FAIL)
@@ -57,7 +57,7 @@ HRESULT CPunch::Init(void)
 //-------------------------------------
 //- タイマーの終了処理
 //-------------------------------------
-void CPunch::Uninit(void)
+void CCharge::Uninit(void)
 {
 	// 親クラスの終了処理
 	CAttack::Uninit();
@@ -66,7 +66,7 @@ void CPunch::Uninit(void)
 //-------------------------------------
 //- タイマーの更新処理
 //-------------------------------------
-void CPunch::Update(void)
+void CCharge::Update(void)
 {
 	// 親クラスの更新処理
 	CAttack::Update();
@@ -75,7 +75,7 @@ void CPunch::Update(void)
 //-------------------------------------
 //- タイマーの描画処理
 //-------------------------------------
-void CPunch::Draw(void)
+void CCharge::Draw(void)
 {
 	// 親クラスの描画処理
 	CAttack::Draw();
@@ -84,22 +84,22 @@ void CPunch::Draw(void)
 //-------------------------------------
 //- タイマーの初期設定処理
 //-------------------------------------
-void CPunch::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 size, int nDamage)
+void CCharge::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 size, int nDamage)
 {
 	// 親クラスの初期設定処理
 	CAttack::InitSet(pos, size, nDamage);
 
-	// ターゲットを敵に設定
-	SetTagTgt(CMgrColl::TAG_ENEMY);
+	// ターゲットをプレイヤーに設定
+	SetTagTgt(CMgrColl::TAG_PLAYER);
 }
 
 //-------------------------------------
 //- タイマーの生成処理
 //-------------------------------------
-CPunch* CPunch::Create(void)
+CCharge* CCharge::Create(void)
 {
 	// 生成処理
-	CPunch* pPunch = DBG_NEW CPunch;
+	CCharge* pPunch = DBG_NEW CCharge;
 
 	// 生成の成功の有無を判定
 	if (pPunch != NULL)
@@ -122,4 +122,3 @@ CPunch* CPunch::Create(void)
 	// ポインタを返す
 	return pPunch;
 }
-

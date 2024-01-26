@@ -25,6 +25,7 @@
     <ClCompile Include="box_wall.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="character.cpp" />
+    <ClCompile Include="charge.cpp" />
     <ClCompile Include="coll.cpp" />
     <ClCompile Include="command.cpp" />
     <ClCompile Include="debugproc.cpp" />
@@ -81,6 +82,7 @@
     <ClInclude Include="box_wall.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="character.h" />
+    <ClInclude Include="charge.h" />
     <ClInclude Include="coll.h" />
     <ClInclude Include="command.h" />
     <ClInclude Include="debugproc.h" />

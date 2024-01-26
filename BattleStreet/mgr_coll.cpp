@@ -133,7 +133,7 @@ bool CMgrColl::Hit(int nNldxColl, TAG hitTag, EVENT_TYPE eventType)
 
 					for (int nCntHitNldx = 0; nCntHitNldx < nHitNldxMax; nCntHitNldx++)
 					{
-						if (nCount == dataMy.hitData->nNldx)
+						if (nCount == dataMy.hitData[nCntHitNldx].nNldx)
 						{
 							bHitTrigger = true;
 							break;

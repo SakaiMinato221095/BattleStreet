@@ -19,6 +19,8 @@
 
 #include "object.h"
 
+#include "mgr_coll.h"
+
 //=======================================
 //=	マクロ定義
 //=======================================
@@ -55,7 +57,7 @@ public:
 	virtual void Update(void) = 0;
 	virtual void Draw(void) = 0;
 
-	void InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 size, int nDamage);
+	virtual void InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 size, int nDamage);
 
 	void Debug(void);
 
@@ -66,11 +68,14 @@ public:
 
 	CColl* GetColl(void) { return m_pColl; }
 
+	void SetTagTgt(CMgrColl::TAG tagTgt) { m_tagTgt = tagTgt; }
+
 private:
 
-	Data m_data;		// 値情報
+	Data m_data;			// 値情報
 
-	CColl* m_pColl;		// 当たり判定の情報
+	CColl* m_pColl;			// 当たり判定の情報
+	CMgrColl::TAG m_tagTgt;	// ターゲットのタグ
 };
 
 #endif	// 二重インクルード防止の終了

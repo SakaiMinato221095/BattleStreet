@@ -100,6 +100,8 @@ public:
 
 		D3DXVECTOR3 size;		// ‘å‚«‚³
 
+		int nLife;				// ‘Ì—Í
+
 		DataPlus plus;			// ’Ç‰Á’l
 
 		STATE state;				// î•ñ‚Ìí—Ş
@@ -118,6 +120,8 @@ public:
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
+
+	virtual void HitDamage(int nDamage);
 
 	static CPlayer * Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, CModel::MODEL_TYPE modelType, CMotion::MOTION_TYPE motionType);
 

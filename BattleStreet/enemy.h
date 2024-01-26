@@ -48,6 +48,8 @@ public:
 		D3DXVECTOR3 size;	// ‘å‚«‚³
 
 		D3DXVECTOR3 move;	// ˆÚ“®—Ê
+
+		int nLife;			// ‘Ì—Í
 	}Data;
 
 	CEnemy();

@@ -34,6 +34,8 @@ CAttack::CAttack()
 	// ’l‚ÌƒNƒŠƒA
 	ZeroMemory(&m_data, sizeof(m_data));
 	m_pColl = nullptr;
+
+	m_tagTgt = CMgrColl::TAG_NONE;
 }
 
 //-------------------------------------
@@ -99,8 +101,8 @@ void CAttack::Update(void)
 			m_data.pos,
 			m_data.size);
 
-		// “G‚Æ‚ÌÚG”»’è
-		if (m_pColl->Hit(CMgrColl::TAG_ENEMY,CMgrColl::EVENT_TYPE_TRIGGER))
+		// ƒ^[ƒQƒbƒg‚Æ‚ÌÚG”»’è
+		if (m_pColl->Hit(m_tagTgt,CMgrColl::EVENT_TYPE_TRIGGER))
 		{
 			// Å‘åÚG”‚ğæ“¾
 			CColl::Data data = m_pColl->GetData();

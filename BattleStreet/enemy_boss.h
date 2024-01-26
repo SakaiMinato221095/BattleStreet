@@ -31,6 +31,7 @@
 //=======================================
 
 class CCharacter;
+class CAttack;
 
 //-======================================
 //-	クラス定義
@@ -101,6 +102,7 @@ private:
 
 	void UpdateAi(void);
 	void UpdateTargetPlayer(void);
+	void UpdateAttack(void);
 	void UpdateMotion(void);
 
 	void AiWait(void);
@@ -117,6 +119,9 @@ private:
 	InfoVisual m_infoVisual;	// 見た目情報
 	InfoAi m_infoAi;			// AIの情報
 	InfoTarget m_infoTarger;	// ターゲットとの情報
+
+	CAttack* m_pAttack;						// 攻撃のポインタ
+
 
 };
 

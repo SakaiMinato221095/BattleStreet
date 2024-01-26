@@ -15,6 +15,8 @@
 #include "renderer.h"
 #include "manager.h"
 
+#include "fade.h"
+
 #include "Input.h"
 #include "xinput.h"
 
@@ -35,6 +37,8 @@
 
 #include "finish_punch.h"
 #include "finish_kick.h"
+
+#include "particle.h"
 
 //-======================================
 //-	マクロ定義
@@ -317,6 +321,35 @@ void CPlayer::Draw(void)
 		m_pCommand->Draw();
 	}
 }
+//-------------------------------------
+//- プレイヤーのキック攻撃設定処理
+//-------------------------------------
+void CPlayer::HitDamage(int nDamage)
+{
+	m_data.nLife -= nDamage;
+
+	// パーティクルの設定
+	SetParticle(
+		8,
+		m_data.pos,
+		D3DXVECTOR3(10.0f, 10.0f, 0.0f),
+		D3DXVECTOR3(10.0f, 10.0f, 0.0f),
+		D3DXCOLOR(1.0f, 0.0, 0.0f, 1.0f),
+		30);
+
+	if (m_data.nLife < 0)
+	{
+		if (CManager::GetInstance() != nullptr)
+		{
+			if (CManager::GetInstance()->GetFade() != nullptr)
+			{
+				// ゲームモード
+				CManager::GetInstance()->GetFade()->SetFade(CScene::MODE_RESULT);
+			}
+		}
+
+	}
+}
 
 //-------------------------------------
 //- プレイヤーの生成処理
@@ -360,6 +393,8 @@ void CPlayer::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 
 	m_data.size = D3DXVECTOR3(100.0f, 100.0f, 100.0f);
 
+	m_data.nLife = 100;
+
 	for (int nCount = 0; nCount < COLL_TYPE_MAX; nCount++)
 	{
 		if (m_apColl[nCount] == NULL)
@@ -381,7 +416,7 @@ void CPlayer::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 
 				// 当たり判定設定
 				m_apColl[nCount] = CColl::Create(
-					CMgrColl::TAG_PLAYER,
+					CMgrColl::TAG_NONE,
 					this,
 					m_data.pos,
 					m_data.size + D3DXVECTOR3(100.0f,0.0f,100.0f));
