@@ -363,12 +363,14 @@ void CCamera::CameraPlayer(void)
 		m_data.rotDest.y += 0.02f;
 	}
 
-	if (pXInput->GetPress(CXInput::TYPE_STICK_LEFT, CXInput::TYPE_INPUT_STICK_R) == true)
+	if (pInputKeyboard->GetPress(DIK_Q) == true || 
+		pXInput->GetPress(CXInput::TYPE_STICK_LEFT, CXInput::TYPE_INPUT_STICK_R) == true)
 	{//[EƒL[‚ª‰Ÿ‚³‚ê‚½‚Æ‚«]
 
 		m_data.rotDest.y -= 0.03f;
 	}
-	else if (pXInput->GetPress(CXInput::TYPE_STICK_RIGHT, CXInput::TYPE_INPUT_STICK_R) == true)
+	else if (pInputKeyboard->GetPress(DIK_E) == true ||
+			 pXInput->GetPress(CXInput::TYPE_STICK_RIGHT, CXInput::TYPE_INPUT_STICK_R) == true)
 	{
 		m_data.rotDest.y += 0.03f;
 	}

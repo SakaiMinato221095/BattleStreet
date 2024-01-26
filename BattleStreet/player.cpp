@@ -34,6 +34,7 @@
 #include "punch.h"
 
 #include "finish_punch.h"
+#include "finish_kick.h"
 
 //-======================================
 //-	マクロ定義
@@ -509,6 +510,14 @@ void CPlayer::UpdateAttack(void)
 				GetModel(7)->GetMtxWorld()._42,
 				GetModel(7)->GetMtxWorld()._43);
 		}
+		else if (m_data.motionState == MOTION_STATE_KICK_FINISH)
+		{
+			// 手の位置
+			posParts = D3DXVECTOR3(
+				GetModel(11)->GetMtxWorld()._41,
+				GetModel(11)->GetMtxWorld()._42,
+				GetModel(11)->GetMtxWorld()._43);
+		}
 
 		if (m_pAttack->GetColl() != nullptr)
 		{
@@ -664,7 +673,8 @@ void CPlayer::UpdateMotionNone(void)
 
 	if (pMotion->GetType() == MOTION_STATE_PUNCH && m_data.motionState != MOTION_STATE_PUNCH ||
 		pMotion->GetType() == MOTION_STATE_KICK && m_data.motionState != MOTION_STATE_KICK ||
-		pMotion->GetType() == MOTION_STATE_PUNCH_FINISH && m_data.motionState != MOTION_STATE_PUNCH_FINISH)
+		pMotion->GetType() == MOTION_STATE_PUNCH_FINISH && m_data.motionState != MOTION_STATE_PUNCH_FINISH ||
+		pMotion->GetType() == MOTION_STATE_KICK_FINISH && m_data.motionState != MOTION_STATE_KICK_FINISH)
 	{
 		if (m_pAttack != nullptr)
 		{
@@ -1022,6 +1032,9 @@ void CPlayer::SetAttackFinish(void)
 
 	case CCommand::COMMAND_TYPE_KICK_NOR:
 
+		// パンチフィニッシュ攻撃
+		SetAttackFinishKick();
+
 		break;
 	}
 }
@@ -1037,6 +1050,35 @@ void CPlayer::SetAttackFinishPunch(void)
 
 		if (m_pAttack != nullptr)
 		{
+			// 手の位置
+			D3DXVECTOR3 posShin = D3DXVECTOR3(
+				GetModel(7)->GetMtxWorld()._41,
+				GetModel(7)->GetMtxWorld()._42,
+				GetModel(7)->GetMtxWorld()._43);
+
+			// 攻撃の初期設定処理
+			m_pAttack->InitSet(
+				posShin,
+				D3DXVECTOR3(20.0f, 20.0f, 20.0f),
+				20);
+		}
+
+		// モーションの設定（パンチフィニッシュ）
+		m_data.motionState = MOTION_STATE_PUNCH_FINISH;
+	}
+}
+
+//-------------------------------------
+//- プレイヤーのフィニッシュ攻撃（キックフィニッシュ）
+//-------------------------------------
+void CPlayer::SetAttackFinishKick(void)
+{
+	if (m_pAttack == nullptr)
+	{
+		m_pAttack = CFinishKick::Create();
+
+		if (m_pAttack != nullptr)
+		{
 			// 足の位置
 			D3DXVECTOR3 posShin = D3DXVECTOR3(
 				GetModel(11)->GetMtxWorld()._41,
@@ -1046,12 +1088,12 @@ void CPlayer::SetAttackFinishPunch(void)
 			// 攻撃の初期設定処理
 			m_pAttack->InitSet(
 				posShin,
-				D3DXVECTOR3(20.0f, 20.0f, 20.0f),
-				5);
+				D3DXVECTOR3(50.0f, 20.0f, 50.0f),
+				10);
 		}
 
 		// モーションの設定（パンチフィニッシュ）
-		m_data.motionState = MOTION_STATE_PUNCH_FINISH;
+		m_data.motionState = MOTION_STATE_KICK_FINISH;
 	}
 }
 

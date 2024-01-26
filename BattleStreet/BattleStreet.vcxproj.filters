@@ -49,6 +49,9 @@
     <Filter Include="ObjX">
       <UniqueIdentifier>{5b479fc8-dbdb-4fcf-88cd-59af181536db}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Attack\Finish">
+      <UniqueIdentifier>{2a901ad8-2c02-4283-b710-f179a932ee78}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="camera.cpp">
@@ -180,9 +183,6 @@
     <ClCompile Include="object3d.cpp">
       <Filter>Obj3d</Filter>
     </ClCompile>
-    <ClCompile Include="finish_punch.cpp">
-      <Filter>Attack</Filter>
-    </ClCompile>
     <ClCompile Include="helper_sakai.cpp">
       <Filter>System</Filter>
     </ClCompile>
@@ -200,6 +200,12 @@
     </ClCompile>
     <ClCompile Include="character.cpp">
       <Filter>ObjX</Filter>
+    </ClCompile>
+    <ClCompile Include="finish_punch.cpp">
+      <Filter>Attack\Finish</Filter>
+    </ClCompile>
+    <ClCompile Include="finish_kick.cpp">
+      <Filter>Attack\Finish</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -332,9 +338,6 @@
     <ClInclude Include="obj_3d_field.h">
       <Filter>Obj3d</Filter>
     </ClInclude>
-    <ClInclude Include="finish_punch.h">
-      <Filter>Attack</Filter>
-    </ClInclude>
     <ClInclude Include="helper_sakai.h">
       <Filter>System</Filter>
     </ClInclude>
@@ -352,6 +355,12 @@
     </ClInclude>
     <ClInclude Include="character.h">
       <Filter>ObjX</Filter>
+    </ClInclude>
+    <ClInclude Include="finish_punch.h">
+      <Filter>Attack\Finish</Filter>
+    </ClInclude>
+    <ClInclude Include="finish_kick.h">
+      <Filter>Attack\Finish</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

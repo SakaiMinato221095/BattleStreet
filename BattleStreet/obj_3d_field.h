@@ -44,7 +44,7 @@ public:
 		TEX_MAX
 	}TEX;
 
-	CObj3dField(int nPriority = 3);
+	CObj3dField(int nPriority);
 	~CObj3dField();
 
 	static HRESULT Load(void);

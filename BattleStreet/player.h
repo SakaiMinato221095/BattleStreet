@@ -56,6 +56,7 @@ public:
 		MOTION_STATE_PUNCH,			// パンチ
 		MOTION_STATE_KICK,			// キック
 		MOTION_STATE_PUNCH_FINISH,	// パンチ基本フィニッシュ
+		MOTION_STATE_KICK_FINISH,	// キック基本フィニッシュ
 		MOTION_STATE_MAX
 	}MOTION_STATE;
 
@@ -156,6 +157,7 @@ private:
 	void SetAttackFinish(void);
 
 	void SetAttackFinishPunch(void);
+	void SetAttackFinishKick(void);
 
 	void DebugPlayer(void);
 

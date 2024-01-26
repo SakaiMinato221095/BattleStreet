@@ -43,6 +43,7 @@ public:
 	typedef struct
 	{
 		D3DXVECTOR3 pos;	// ˆÊ’u
+		D3DXVECTOR3 posOld;	// ‘O‰ñ‚ÌˆÊ’u
 		D3DXVECTOR3 rot;	// Œü‚«
 		D3DXVECTOR3 size;	// ‘å‚«‚³
 

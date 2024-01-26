@@ -1,7 +1,7 @@
 
 //================================================
 //=
-//=	攻撃の処理[attack.cpp]
+//=	キックのフィニッシュ攻撃処理[finish_kick.cpp]
 //= Author Sakai Minato
 //=
 //================================================
@@ -10,10 +10,7 @@
 //=	インクルード
 //=======================================
 
-#include "attack.h"
-
-#include "manager.h"
-#include "debugproc.h"
+#include "finish_kick.h"
 
 #include "coll.h"
 #include "mgr_coll.h"
@@ -29,17 +26,15 @@
 //-------------------------------------
 //-	タイマーのコンストラクタ
 //-------------------------------------
-CAttack::CAttack()
+CFinishKick::CFinishKick()
 {
-	// 値のクリア
-	ZeroMemory(&m_data, sizeof(m_data));
-	m_pColl = nullptr;
+
 }
 
 //-------------------------------------
 //-	タイマーのデストラクタ
 //-------------------------------------
-CAttack::~CAttack()
+CFinishKick::~CFinishKick()
 {
 
 }
@@ -47,20 +42,10 @@ CAttack::~CAttack()
 //-------------------------------------
 //- タイマーの初期化処理
 //-------------------------------------
-HRESULT CAttack::Init(void)
+HRESULT CFinishKick::Init(void)
 {
-	if (m_pColl == NULL)
-	{
-		// 当たり判定設定
-		m_pColl = CColl::Create(
-			CMgrColl::TAG_ATTACK,
-			this,
-			m_data.pos,
-			m_data.size);
-
-		m_pColl->SetIsVisualDrawStop(false);
-	}
-	else
+	// 親クラスの初期化処理
+	if (CAttack::Init() == E_FAIL)
 	{
 		return E_FAIL;
 	}
@@ -72,88 +57,88 @@ HRESULT CAttack::Init(void)
 //-------------------------------------
 //- タイマーの終了処理
 //-------------------------------------
-void CAttack::Uninit(void)
+void CFinishKick::Uninit(void)
 {
-	if (m_pColl != nullptr)
-	{
-		// 当たり判定の初期化
-		m_pColl->Uninit();
-		delete m_pColl;
-
-		m_pColl = nullptr;
-	}
-
-	// 自分自身のポインタの開放
-	Release();
+	// 親クラスの終了処理
+	CAttack::Uninit();
 }
 
 //-------------------------------------
 //- タイマーの更新処理
 //-------------------------------------
-void CAttack::Update(void)
+void CFinishKick::Update(void)
 {
-	if (m_pColl != nullptr)
-	{
-		// 当たり判定の情報更新処理
-		m_pColl->UpdateData(
-			m_data.pos,
-			m_data.size);
+	// 親クラスの更新処理
+	CAttack::Update();
 
+	// 当たり判定の取得
+	CColl* pColl = GetColl();
+
+	if (pColl != pColl)
+	{
 		// 敵との接触判定
-		if (m_pColl->Hit(CMgrColl::TAG_ENEMY,CMgrColl::EVENT_TYPE_TRIGGER))
+		if (pColl->Hit(CMgrColl::TAG_ENEMY, CMgrColl::EVENT_TYPE_TRIGGER))
 		{
 			// 最大接触数を取得
-			CColl::Data data = m_pColl->GetData();
+			CColl::Data data = pColl->GetData();
 			int nHitNldxMax = data.nHitNldxMax;
 
 			// 接触した敵のダメージ処理
 			for (int nCount = 0; nCount < nHitNldxMax; nCount++)
 			{
 				// 相手のダメージ処理
-				data.hitData[nCount].pObj->HitDamage(m_data.nDamage);
+				data.hitData[nCount].pObj->HitDamage(GetData().nDamage);
 			}
 		}
 	}
 
-	// デバック
-	Debug();
 }
 
 //-------------------------------------
 //- タイマーの描画処理
 //-------------------------------------
-void CAttack::Draw(void)
+void CFinishKick::Draw(void)
 {
-
+	// 親クラスの描画処理
+	CAttack::Draw();
 }
 
 //-------------------------------------
-//- タイマーの位置情報の設定
+//- タイマーの初期設定処理
 //-------------------------------------
-void CAttack::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 size, int nDamage)
+void CFinishKick::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 size, int nDamage)
 {
-	m_data.pos = pos;
-	m_data.size = size;
-	m_data.nDamage = nDamage;
+	// 親クラスの初期設定処理
+	CAttack::InitSet(pos, size, nDamage);
 }
 
 //-------------------------------------
-//- プレイヤーのデバック表示
+//- タイマーの生成処理
 //-------------------------------------
-void CAttack::Debug(void)
+CFinishKick* CFinishKick::Create(void)
 {
-	// デバックプロックの取得
-	CDebugProc* pDebugProc = CManager::GetInstance()->GetDbugProc();
+	// 生成処理
+	CFinishKick* pKick = DBG_NEW CFinishKick;
 
-	// デバックプロック取得の有無を判定
-	if (pDebugProc == NULL)
+	// 生成の成功の有無を判定
+	if (pKick != NULL)
 	{
-		return;
+		// 初期化処理
+		if (FAILED(pKick->Init()))
+		{// 失敗時
+
+			// 「なし」を返す
+			return NULL;
+		}
+	}
+	else if (pKick == NULL)
+	{// 失敗時
+
+		// 「なし」を返す
+		return NULL;
 	}
 
-	pDebugProc->Print("\n");
-	pDebugProc->Print("攻撃の位置");
-	pDebugProc->Print("\n");
-	pDebugProc->Print("%f,%f,%f", m_data.pos.x, m_data.pos.y, m_data.pos.z);
-	pDebugProc->Print("\n");
+	// ポインタを返す
+	return pKick;
 }
+

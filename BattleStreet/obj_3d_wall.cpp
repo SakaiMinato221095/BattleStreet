@@ -212,7 +212,7 @@ void CObj3dWall::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 rot, D3D
 CObj3dWall * CObj3dWall::Create(TEX tex)
 {
 	// フィールドのポインタを宣言
-	CObj3dWall *pCObj3dWall = new CObj3dWall(5);
+	CObj3dWall *pCObj3dWall = new CObj3dWall(1);
 
 	// 生成の成功の有無を判定
 	if (pCObj3dWall != NULL)

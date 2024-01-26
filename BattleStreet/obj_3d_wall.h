@@ -48,7 +48,7 @@ public:
 		TEX_MAX
 	}TEX;
 
-	CObj3dWall(int nPriority = 3);
+	CObj3dWall(int nPriority);
 	~CObj3dWall();
 
 	static HRESULT Load(void);

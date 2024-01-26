@@ -99,6 +99,8 @@ void CEnemy::Uninit(void)
 //-------------------------------------
 void CEnemy::Update(void)
 {
+	m_data.posOld = m_data.pos;
+
 	// 位置更新処理
 	UpdatePos();
 
@@ -209,5 +211,25 @@ void CEnemy::UpdateCollision(void)
 		m_pColl->UpdateData(
 			m_data.pos,
 			m_data.size);
+
+		// プレイヤーの当たり判定
+		if (m_pColl->HitSide(CMgrColl::TAG_WALL_X, CMgrColl::EVENT_TYPE_PRESS, CMgrColl::TYPE_SXIS_X) == true)
+		{
+			// 移動量をなくす
+			m_data.move.x = 0.0f;
+
+			// プレイヤーのY座標移動を停止
+			m_data.pos.x = m_data.posOld.x;
+		}
+
+		// プレイヤーの当たり判定
+		if (m_pColl->HitSide(CMgrColl::TAG_WALL_Z, CMgrColl::EVENT_TYPE_PRESS, CMgrColl::TYPE_SXIS_Z) == true)
+		{
+			// 移動量をなくす
+			m_data.move.z = 0.0f;
+
+			// プレイヤーのY座標移動を停止
+			m_data.pos.z = m_data.posOld.z;
+		}
 	}
 }
