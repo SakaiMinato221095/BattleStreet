@@ -47,6 +47,15 @@ public:
 		MOTION_TYPE_MAX
 	}MOTION_TYPE;
 
+	// モーション情報の構造体
+	typedef struct
+	{
+		D3DXVECTOR3 pos;		// 位置
+		D3DXVECTOR3 posOld;		// 前回の位置
+		D3DXVECTOR3 rot;		// 向き
+		D3DXVECTOR3 rotOld;		// 前回の向き
+	}MotionData;
+
 	// キー要素の構造体
 	typedef struct
 	{
@@ -106,10 +115,7 @@ private:
 
 	Info m_aInfo[MOTION_TYPE_NUM_MAX];	// キー情報
 
-	D3DXVECTOR3 m_motionPos[MODEL_PARTS_MAX];		// モーションの位置
-	D3DXVECTOR3 m_motionPosOld[MODEL_PARTS_MAX];	// モーションの前回の位置
-	D3DXVECTOR3 m_motionRot[MODEL_PARTS_MAX];		// モーションの向き
-	D3DXVECTOR3 m_motionRotOld[MODEL_PARTS_MAX];	// モーションの前回の向き
+	MotionData m_aMotionData[MODEL_PARTS_MAX];
 
 	int m_nNumState;		// モーションの種類の数
 	int m_nNumAll;			// 

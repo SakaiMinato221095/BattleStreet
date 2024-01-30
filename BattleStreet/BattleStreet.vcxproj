@@ -38,6 +38,7 @@
     <ClCompile Include="game.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="kick.cpp" />
+    <ClCompile Include="life.cpp" />
     <ClCompile Include="light.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="manager.cpp" />
@@ -55,6 +56,7 @@
     <ClCompile Include="objectx_none.cpp" />
     <ClCompile Include="object_billboard.cpp" />
     <ClCompile Include="object_x.cpp" />
+    <ClCompile Include="obj_2d_gage.cpp" />
     <ClCompile Include="obj_2d_none.cpp" />
     <ClCompile Include="obj_3d_field.cpp" />
     <ClCompile Include="obj_3d_wall.cpp" />
@@ -95,6 +97,7 @@
     <ClInclude Include="game.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="kick.h" />
+    <ClInclude Include="life.h" />
     <ClInclude Include="light.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="manager.h" />
@@ -112,6 +115,7 @@
     <ClInclude Include="objectx_none.h" />
     <ClInclude Include="object_billboard.h" />
     <ClInclude Include="object_x.h" />
+    <ClInclude Include="obj_2d_gage.h" />
     <ClInclude Include="obj_2d_none.h" />
     <ClInclude Include="obj_3d_field.h" />
     <ClInclude Include="obj_3d_wall.h" />

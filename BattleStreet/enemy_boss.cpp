@@ -34,6 +34,8 @@
 #include "attack.h"
 #include "charge.h"
 
+#include "life.h"
+
 //-======================================
 //-	ƒ}ƒNƒ’è‹`
 //-======================================
@@ -55,6 +57,7 @@ CEnemyBoss::CEnemyBoss()
 	ZeroMemory(&m_infoAi, sizeof(m_infoAi));
 	ZeroMemory(&m_infoTarger, sizeof(m_infoTarger));
 	m_pAttack = nullptr;
+	m_pLife = nullptr;
 }
 
 //-------------------------------------
@@ -86,6 +89,23 @@ HRESULT CEnemyBoss::Init(CModel::MODEL_TYPE modelType, CMotion::MOTION_TYPE moti
 			return E_FAIL;
 		}
 	}
+
+	//// ‘Ì—Í
+	//if (m_pLife == nullptr)
+	//{
+	//	// ‘Ì—Í‚Ì¶¬
+	//	m_pLife = CLife::Create(
+	//		CLife::TEX_NULL,
+	//		D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.9f, 0.0f),
+	//		D3DXVECTOR3(300.0f, 30.0f, 0.0f),
+	//		D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f)
+	//		);
+
+	//	if (m_pLife == nullptr)
+	//	{
+	//		return E_FAIL;
+	//	}
+	//}
 
 	// ¬Œ÷‚ð•Ô‚·
 	return S_OK;
@@ -260,7 +280,7 @@ void CEnemyBoss::UpdateAttack(void)
 	// UŒ‚‚Ìî•ñXVˆ—
 	if (m_pAttack != nullptr)
 	{
-		D3DXVECTOR3 posParts = {};
+		D3DXVECTOR3 posParts = D3DXVECTOR3(0.0f,0.0f,0.0f);
 
 		if (m_infoVisual.motionState == MOTION_STATE_CHARGE_ATTACK)
 		{
@@ -395,34 +415,6 @@ void CEnemyBoss::AiWait(void)
 }
 
 //-------------------------------------
-//-	ƒpƒ“ƒ`AI
-//-------------------------------------
-void CEnemyBoss::AiPunch(void)
-{
-	if (m_infoAi.nCntState >= 120)
-	{
-		m_infoAi.nCntState = 0;
-
-		// UŒ‚Ý’èˆ—
-		SetAiActiv();
-	}
-	else
-	{
-		// î•ñŽæ“¾
-		CEnemy::Data data = GetData();
-
-		if (HelperSakai::IfRangeFloat(m_infoTarger.fLength, 0.0f, 200.0f))
-		{
-			// ‹ß‚Ã‚­
-			data.move = D3DXVECTOR3(-sinf(data.rot.y) * 1.0f, 0.0f, -cosf(data.rot.y) * 1.0f);
-
-		}
-
-		SetData(data);
-	}
-}
-
-//-------------------------------------
 //-	“ËiAI
 //-------------------------------------
 void CEnemyBoss::AiCharge(void)
@@ -440,11 +432,13 @@ void CEnemyBoss::AiCharge(void)
 
 		m_infoVisual.motionState = MOTION_STATE_CHARGE_ATTACK;
 
+		// UŒ‚Ý’è
+		SetAttack();
 	}
 	else
 	{
 		// ‹ß‚Ã‚­
-		data.move = D3DXVECTOR3(-sinf(data.rot.y) * 7.0f, 0.0f, -cosf(data.rot.y) * 7.0f);
+		data.move = D3DXVECTOR3(-sinf(data.rot.y) * 10.0f, 0.0f, -cosf(data.rot.y) * 10.0f);
 	}
 
 	SetData(data);
@@ -470,7 +464,7 @@ void CEnemyBoss::AiChargeAttack(void)
 	{
 		m_infoAi.nCntState++;
 
-		data.move = D3DXVECTOR3(-sinf(data.rot.y) * 15.0f, 0.0f, -cosf(data.rot.y) * 15.0f);
+		data.move = D3DXVECTOR3(-sinf(data.rot.y) * 17.5f, 0.0f, -cosf(data.rot.y) * 17.5f);
 	}
 
 	SetData(data);
@@ -481,36 +475,19 @@ void CEnemyBoss::AiChargeAttack(void)
 //-------------------------------------
 void CEnemyBoss::SetAiActiv(void)
 {
-	if (HelperSakai::IfRangeFloat(m_infoTarger.fLength, 500.0f, 1000.0f))
+	if (HelperSakai::IfRangeFloat(m_infoTarger.fLength, 0.0f, 200.0f))
+	{
+		//// R‚è1ó‘Ô
+		//m_infoAi.state = AI_STATE_KICK_1;
+
+		//m_infoVisual.motionState = MOTION_STATE_KICK_1;
+	}
+	else if (HelperSakai::IfRangeFloat(m_infoTarger.fLength, 500.0f, 1500.0f))
 	{
 		// “Ëió‘Ô
 		m_infoAi.state = AI_STATE_CHARGE;
 
 		m_infoVisual.motionState = MOTION_STATE_CHARGE;
-
-		if (m_pAttack == nullptr)
-		{
-			m_pAttack = CCharge::Create();
-
-			if (m_infoVisual.pCharacter != nullptr)
-			{
-				if (m_infoVisual.pCharacter->GetModel(0) != nullptr)
-				{
-					// ‘Ì‚ÌˆÊ’u
-					D3DXVECTOR3 posBody = D3DXVECTOR3(
-						m_infoVisual.pCharacter->GetModel(0)->GetMtxWorld()._41,
-						m_infoVisual.pCharacter->GetModel(0)->GetMtxWorld()._42,
-						m_infoVisual.pCharacter->GetModel(0)->GetMtxWorld()._43);
-
-					// UŒ‚‚Ì‰ŠúÝ’èˆ—
-					m_pAttack->InitSet(
-						posBody,
-						D3DXVECTOR3(75.0f, 20.0f, 75.0f),
-						10);
-				}
-
-			}
-		}
 	}
 	else
 	{
@@ -518,6 +495,36 @@ void CEnemyBoss::SetAiActiv(void)
 		m_infoAi.state = AI_STATE_WAIT;
 
 		m_infoVisual.motionState = MOTION_STATE_NEUTRAL;
+	}
+}
+
+//-------------------------------------
+//-	s“®AIÝ’èˆ—
+//-------------------------------------
+void CEnemyBoss::SetAttack(void)
+{
+	if (m_pAttack == nullptr)
+	{
+		m_pAttack = CCharge::Create();
+
+		if (m_infoVisual.pCharacter != nullptr)
+		{
+			if (m_infoVisual.pCharacter->GetModel(0) != nullptr)
+			{
+				// ‘Ì‚ÌˆÊ’u
+				D3DXVECTOR3 posBody = D3DXVECTOR3(
+					m_infoVisual.pCharacter->GetModel(0)->GetMtxWorld()._41,
+					m_infoVisual.pCharacter->GetModel(0)->GetMtxWorld()._42,
+					m_infoVisual.pCharacter->GetModel(0)->GetMtxWorld()._43);
+
+				// UŒ‚‚Ì‰ŠúÝ’èˆ—
+				m_pAttack->InitSet(
+					posBody,
+					D3DXVECTOR3(75.0f, 20.0f, 75.0f),
+					10);
+			}
+
+		}
 	}
 }
 

@@ -104,7 +104,6 @@ void CObject2d::Uninit(void)
 //-------------------------------------
 void CObject2d::Update(void)
 {
-	// 2Dオブジェクトの頂点情報設定
 	SetVtx();
 }
 
@@ -251,11 +250,6 @@ void CObject2d::SetVtx(void)
 		// 頂点バッファをアンロックする
 		m_pVtxBuff->Unlock();
 	}
-
-	// 情報更新
-	m_vtxData.pos = pos;		// 位置
-	m_vtxData.size = size;		// 大きさ
-	m_vtxData.color = color;	// 色
 }
 
 //-------------------------------------

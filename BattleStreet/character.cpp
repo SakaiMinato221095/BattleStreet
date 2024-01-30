@@ -55,13 +55,16 @@
 CCharacter::CCharacter()
 {
 	// ’l‚ðƒNƒŠƒA
-	ZeroMemory(m_mtxWorld, sizeof(D3DXMATRIX));
+	ZeroMemory(&m_mtxWorld, sizeof(m_mtxWorld));
 
-	ZeroMemory(m_apModel, sizeof(m_apModel));
+	ZeroMemory(&m_apModel, sizeof(m_apModel));
 
 	m_nNumModel = 0;
 
 	m_pMotion = NULL;
+
+	ZeroMemory(&m_data, sizeof(m_data));
+
 
 }
 

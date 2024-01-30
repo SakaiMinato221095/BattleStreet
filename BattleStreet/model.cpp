@@ -48,7 +48,7 @@ CModel::CModel()
 	m_nPartsNum = -1;
 
 	ZeroMemory(&m_data, sizeof(m_data));
-	ZeroMemory(m_mtxWorld, sizeof(D3DXMATRIX));
+	ZeroMemory(&m_mtxWorld, sizeof(m_mtxWorld));
 }
 
 //-------------------------------------

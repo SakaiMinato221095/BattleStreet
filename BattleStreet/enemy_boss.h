@@ -32,6 +32,7 @@
 
 class CCharacter;
 class CAttack;
+class CLife;
 
 //-======================================
 //-	クラス定義
@@ -60,6 +61,9 @@ public:
 	enum AI_STATE
 	{
 		AI_STATE_WAIT = 0,		// 待機状態
+		AI_STATE_KICK_1,		// 蹴り1
+		AI_STATE_KICK_2,		// 蹴り2
+		AI_STATE_KICK_3,		// 蹴り3
 		AI_STATE_CHARGE,		// 突進
 		AI_STATE_CHARGE_ATTACK,	// 突進攻撃
 		AI_STATE_MAX
@@ -106,13 +110,13 @@ private:
 	void UpdateMotion(void);
 
 	void AiWait(void);
-
-	void AiPunch(void);
-
+	void AiKickCombo(void);
 	void AiCharge(void);
 	void AiChargeAttack(void);
 
 	void SetAiActiv(void);
+
+	void SetAttack(void);
 
 	void Debug(void);
 
@@ -122,7 +126,7 @@ private:
 
 	CAttack* m_pAttack;						// 攻撃のポインタ
 
-
+	CLife* m_pLife;							// 体力表示のポインタ
 };
 
 #endif	// 二重インクルード防止の終了

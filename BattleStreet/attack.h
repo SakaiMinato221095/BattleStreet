@@ -52,7 +52,7 @@ public:
 	CAttack();
 	virtual ~CAttack();
 
-	virtual HRESULT Init(void) = 0;
+	HRESULT Init(void);
 	virtual void Uninit(void) = 0;
 	virtual void Update(void) = 0;
 	virtual void Draw(void) = 0;

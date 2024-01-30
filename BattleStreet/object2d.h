@@ -40,23 +40,23 @@ public:
 	}VtxData;
 
 	CObject2d(int nPriority = 3);
-	~CObject2d();
+	virtual ~CObject2d();
 
 	HRESULT Init(D3DXVECTOR3 pos,D3DXVECTOR3 size, D3DXCOLOR color);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
-
-	void BindTexture(int nTextureNldx);
-
-	static CObject2d *Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXCOLOR color);
+	virtual void Uninit(void);
+	virtual void Update(void);
+	virtual void Draw(void);
 
 	virtual void SetVtx(void);
 
-	LPDIRECT3DVERTEXBUFFER9 GetVtxBuff(void) { return m_pVtxBuff; }
-	VtxData GetVtxData(void) { return m_vtxData; }
+	static CObject2d *Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXCOLOR color);
+
+	void BindTexture(int nTextureNldx);
 
 	void SetVtxData(VtxData vtxData) { m_vtxData = vtxData; }
+	VtxData GetVtxData(void) { return m_vtxData; }
+
+	LPDIRECT3DVERTEXBUFFER9 GetVtxBuff(void) { return m_pVtxBuff; }
 
 private:
 

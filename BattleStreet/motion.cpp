@@ -39,7 +39,8 @@ const char *pMotionText[] =
 //-------------------------------------
 CMotion::CMotion()
 {
-	memset(m_aInfo,NULL,sizeof(m_aInfo));
+	ZeroMemory(&m_aInfo[0], sizeof(m_aInfo));
+	ZeroMemory(&m_aMotionData[0], sizeof(m_aMotionData));
 
 	m_bMotionUse = false;
 
@@ -168,8 +169,8 @@ void CMotion::Set(int nType)
 			D3DXVECTOR3 motionPos = m_ppModel[nCutModel]->GetData().posMotion;
 			D3DXVECTOR3 motionRot = m_ppModel[nCutModel]->GetData().rotMotion;
 
-			m_motionPosOld[nCutModel] = motionPos;
-			m_motionRotOld[nCutModel] = motionRot;
+			m_aMotionData[nCutModel].posOld = motionPos;
+			m_aMotionData[nCutModel].rotOld = motionRot;
 		}
 	}
 }
@@ -193,8 +194,8 @@ void CMotion::BlendSet(void)
 		D3DXVECTOR3 motionPos = m_ppModel[nCutModel]->GetData().posMotion;
 		D3DXVECTOR3 motionRot = m_ppModel[nCutModel]->GetData().rotMotion;
 
-		m_motionPosOld[nCutModel] = motionPos;
-		m_motionRotOld[nCutModel] = motionRot;
+		m_aMotionData[nCutModel].posOld = motionPos;
+		m_aMotionData[nCutModel].rotOld = motionRot;
 	}
 }
 
@@ -551,8 +552,8 @@ void CMotion::UpdateChangeBlend(void)
 	for (int nCutModel = 0; nCutModel < m_nNumModel; nCutModel++)
 	{
 		// 前回の情報を取得
-		D3DXVECTOR3 motionPosOld = m_motionPosOld[nCutModel];
-		D3DXVECTOR3 motionRotOld = m_motionRotOld[nCutModel];
+		D3DXVECTOR3 motionPosOld = m_aMotionData[nCutModel].posOld;
+		D3DXVECTOR3 motionRotOld = m_aMotionData[nCutModel].rotOld;
 		
 		// 現在のモーションの位置
 		float fPosX = motionPosOld.x;
@@ -625,8 +626,8 @@ void CMotion::UpdateBlend(void)
 	for (int nCutModel = 0; nCutModel < m_nNumModel; nCutModel++)
 	{
 		// 前回の情報を取得
-		D3DXVECTOR3 motionPosOld = m_motionPosOld[nCutModel];
-		D3DXVECTOR3 motionRotOld = m_motionRotOld[nCutModel];
+		D3DXVECTOR3 motionPosOld = m_aMotionData[nCutModel].posOld;
+		D3DXVECTOR3 motionRotOld = m_aMotionData[nCutModel].rotOld;
 
 		// 現在のモーションの位置
 		float fPosX = motionPosOld.x;

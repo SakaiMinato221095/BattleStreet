@@ -40,6 +40,8 @@
 
 #include "particle.h"
 
+#include "life.h"
+
 //-======================================
 //-	マクロ定義
 //-======================================
@@ -80,6 +82,7 @@ CPlayer::CPlayer()
 
 	m_pAttack = nullptr;
 	m_pCommand = nullptr;
+	m_pLife = nullptr;
 }
 
 //-------------------------------------
@@ -151,6 +154,22 @@ HRESULT CPlayer::Init(D3DXVECTOR3 pos , D3DXVECTOR3 rot,CModel::MODEL_TYPE model
 		}
 	}
 
+	//// 体力
+	//if (m_pLife == nullptr)
+	//{
+	//	// 体力の生成
+	//	m_pLife = CLife::Create(
+	//		CLife::TEX_NULL,
+	//		D3DXVECTOR3(SCREEN_WIDTH * 0.85f,SCREEN_HEIGHT * 0.2f,0.0f),
+	//		D3DXVECTOR3(150.0f, 30.0f, 0.0f),
+	//		D3DXCOLOR(1.0f,0.0f,0.0f,1.0f));
+
+	//	if (m_pLife == nullptr)
+	//	{
+	//		return E_FAIL;
+	//	}
+	//}
+
 	// 成功を返す
 	return S_OK;
 }
@@ -211,6 +230,13 @@ void CPlayer::Uninit(void)
 	{
 		m_pAttack->Uninit();
 		m_pAttack = nullptr;
+	}
+
+	// 攻撃の終了処理
+	if (m_pLife != nullptr)
+	{
+		m_pLife->Uninit();
+		m_pLife = nullptr;
 	}
 
 	// 自分自身のポインタの開放
