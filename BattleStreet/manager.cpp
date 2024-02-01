@@ -696,8 +696,11 @@ void CManager::Update(void)
 	// カメラの有無を判定
 	if (m_pCamera != NULL)
 	{
-		// カメラの更新処理
-		m_pCamera->Update();
+		if (m_pCamera->GetIsUpdateStop() == false)
+		{
+			// カメラの更新処理
+			m_pCamera->Update();
+		}
 	}
 
 	// ライトの有無を判定
@@ -727,7 +730,6 @@ void CManager::Update(void)
 		// レンダラーの更新処理
 		m_pRenderer->Update();
 	}
-
 
 	// フェードの有無を判定
 	if (m_pFade != NULL)

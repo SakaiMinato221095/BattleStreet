@@ -62,8 +62,6 @@ public:
 private:
 
 	static CPlayer* m_pPlayer;				// プレイヤー
-	static CTimer* m_pTimer;				// タイマー
-
 	static CPause* m_pPause;				// ポーズ
 
 	GAME m_game;							// ゲーム状態

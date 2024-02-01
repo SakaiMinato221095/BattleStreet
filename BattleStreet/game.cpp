@@ -47,7 +47,6 @@
 //=======================================
 
 CPlayer *CGame::m_pPlayer = NULL;
-CTimer *CGame::m_pTimer = NULL;
 CPause *CGame::m_pPause = NULL;
 
 //-------------------------------------
@@ -195,17 +194,6 @@ HRESULT CGame::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 	CMapManager::GameLoad();
 
-	if (m_pTimer == NULL)
-	{
-		// 時間の生成
-		m_pTimer = CTimer::Create(
-			D3DXVECTOR3(SCREEN_WIDTH * 0.04f, SCREEN_HEIGHT * 0.075f, 0.0f),
-			D3DXVECTOR3(60.0f, 0.0f, 0.0f),
-			D3DXVECTOR3(40.0f, 0.0f, 0.0f),
-			D3DXVECTOR3(30.0f, 40.0f, 0.0f),
-			D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-	}
-
 	// 敵の生成
 	CEnemyBoss::Create(
 		CModel::MODEL_TYPE_ALIEN_000,
@@ -241,14 +229,11 @@ void CGame::Uninit(void)
 		m_pPlayer = NULL;
 	}
 
-	if (m_pTimer != NULL)
+	if (m_pPause != NULL)
 	{
-		// 時間管理の終了処理
-		m_pTimer->Uninit();
-
-		// 時間管理の開放処理
-		delete m_pTimer;
-		m_pTimer = NULL;
+		m_pPause->Uninit();	
+		delete m_pPause;
+		m_pPause = NULL;
 	}
 
 	// オブジェクトの全開放処理
@@ -288,9 +273,6 @@ void CGame::Update(void)
 		{
 			m_pPause = CPause::Create();
 
-			// 全更新停止
-			CObject::SetIsUpdateAllStop(false);
-
 			// ポーズ状態
 			m_game = GAME_PAUSE;
 		}
@@ -299,11 +281,10 @@ void CGame::Update(void)
 			if (m_pPause != NULL)
 			{
 				m_pPause->Uninit();
+				delete m_pPause;
+
 				m_pPause = NULL;
 			}
-
-			// 全更新停止
-			CObject::SetIsUpdateAllStop(false);
 
 			// ゲーム状態
 			m_game = GAME_NONE;
@@ -312,41 +293,14 @@ void CGame::Update(void)
 
 	if (m_game == GAME_NONE)
 	{
-		if (m_pTimer != NULL &&
-			CObject::GetIsUpdateAllStop() == true)
-		{
-			// 時間の更新処理
-			m_pTimer->Update();
-		}
 
-#if _DEBUG
-		if (pInputKeyboard->GetTrigger(DIK_F1) == true)
-		{
-			if (m_pPlayer != NULL)
-			{
-				// プレイヤーの更新停止
-				m_pPlayer->IsUpdateStop(false);
-			}
-		}
-#endif
-		else
-		{
-			if (pInputKeyboard->GetTrigger(DIK_F1) == true)
-			{
-				if (m_pPlayer != NULL)
-				{
-					// プレイヤーの更新停止
-					m_pPlayer->IsUpdateStop(true);
-				}
-			}
-		}
 	}
 	else if (m_game == GAME_PAUSE)
 	{
 		if (m_pPause != NULL)
 		{
-			//// ポーズの更新処理
-			//m_pPause->Update();
+			// ポーズの更新処理
+			m_pPause->Update();
 
 			if (m_pPause->GetOk() == true)
 			{
@@ -373,10 +327,8 @@ void CGame::Update(void)
 
 				// ポーズの開放処理
 				m_pPause->Uninit();
+				delete m_pPause;
 				m_pPause = NULL;
-
-				// 全更新停止
-				CObject::SetIsUpdateAllStop(true);
 
 				// ゲーム状態
 				m_game = GAME_NONE;

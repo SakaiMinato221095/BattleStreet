@@ -33,7 +33,7 @@ class CObj2dNone;
 //-	ƒNƒ‰ƒX’è‹`
 //-======================================
 
-class CPause : public CObject
+class CPause
 {
 
 public:

@@ -24,7 +24,7 @@
 //=======================================
 
 //-------------------------------------
-//-	タイマーのコンストラクタ
+//-	コンストラクタ
 //-------------------------------------
 CFinishKick::CFinishKick()
 {
@@ -32,7 +32,7 @@ CFinishKick::CFinishKick()
 }
 
 //-------------------------------------
-//-	タイマーのデストラクタ
+//-	デストラクタ
 //-------------------------------------
 CFinishKick::~CFinishKick()
 {
@@ -40,7 +40,7 @@ CFinishKick::~CFinishKick()
 }
 
 //-------------------------------------
-//- タイマーの初期化処理
+//- 初期化処理
 //-------------------------------------
 HRESULT CFinishKick::Init(void)
 {
@@ -55,7 +55,7 @@ HRESULT CFinishKick::Init(void)
 }
 
 //-------------------------------------
-//- タイマーの終了処理
+//- 終了処理
 //-------------------------------------
 void CFinishKick::Uninit(void)
 {
@@ -64,7 +64,7 @@ void CFinishKick::Uninit(void)
 }
 
 //-------------------------------------
-//- タイマーの更新処理
+//- 更新処理
 //-------------------------------------
 void CFinishKick::Update(void)
 {
@@ -76,7 +76,7 @@ void CFinishKick::Update(void)
 }
 
 //-------------------------------------
-//- タイマーの描画処理
+//- 描画処理
 //-------------------------------------
 void CFinishKick::Draw(void)
 {
@@ -85,7 +85,7 @@ void CFinishKick::Draw(void)
 }
 
 //-------------------------------------
-//- タイマーの初期設定処理
+//- 初期設定処理
 //-------------------------------------
 void CFinishKick::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 size, int nDamage)
 {
@@ -97,32 +97,30 @@ void CFinishKick::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 size, int nDamage)
 }
 
 //-------------------------------------
-//- タイマーの生成処理
+//- 生成処理
 //-------------------------------------
 CFinishKick* CFinishKick::Create(void)
 {
 	// 生成処理
-	CFinishKick* pKick = DBG_NEW CFinishKick;
+	CFinishKick* pFinishKick = DBG_NEW CFinishKick;
 
 	// 生成の成功の有無を判定
-	if (pKick != NULL)
+	if (pFinishKick != NULL)
 	{
 		// 初期化処理
-		if (FAILED(pKick->Init()))
+		if (FAILED(pFinishKick->Init()))
 		{// 失敗時
 
-			// 「なし」を返す
 			return NULL;
 		}
 	}
-	else if (pKick == NULL)
+	else if (pFinishKick == NULL)
 	{// 失敗時
 
-		// 「なし」を返す
 		return NULL;
 	}
 
 	// ポインタを返す
-	return pKick;
+	return pFinishKick;
 }
 

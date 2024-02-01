@@ -17,6 +17,9 @@
 #include "manager.h"
 #include "fade.h"
 
+#include "object.h"
+#include "camera.h"
+
 #include "Input.h"
 #include "xinput.h"
 #include "sound.h"
@@ -164,6 +167,22 @@ HRESULT CPause::Init(void)
 		return E_FAIL;
 	}
 
+	CCamera* pCamera = CManager::GetInstance()->GetCamera();
+
+	if (pCamera != nullptr)
+	{
+		pCamera->SetIsUpdateStop(true);
+	}
+
+	// 全停止処理
+	CObject::SetIsUpdateAllStop(true);
+
+	// オブジェクトの更新停止除外
+	for (int nCutPause = 0; nCutPause < TYPE_MAX; nCutPause++)
+	{
+		m_apObj2dNone[nCutPause]->SetIsUpdatePause(true);
+	}
+
 	// 成功を返す
 	return S_OK;
 }
@@ -183,8 +202,16 @@ void CPause::Uninit(void)
 		}
 	}
 
-	// 自分自身の開放処理
-	Release();
+	CCamera* pCamera = CManager::GetInstance()->GetCamera();
+	
+	if (pCamera != nullptr)
+	{
+		pCamera->SetIsUpdateStop(false);
+	}
+
+	// 全停止処理
+	CObject::SetIsUpdateAllStop(false);
+
 }
 
 //-------------------------------------

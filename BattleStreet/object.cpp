@@ -74,6 +74,7 @@ CObject::CObject(int nPriority)
 
 	m_nPriority = nPriority;	// 自身の優先順位を保存
 	m_bIsUpdateStop = false;	// 更新の有無
+	m_bIsUpdatePause = false;	// ポーズの更新の有無
 	m_bIsDrawStop = false;		// 描画の有無
 	m_bIsDeath = false;			// 死亡の有無
 }
@@ -125,7 +126,7 @@ void CObject::UpdateAll(void)
 		{
 			CObject* pObjectNext = pObject->m_pNext;
 
-			if (pObject->m_bIsUpdateStop == false)
+			if (pObject->CheckFlagUpdate())
 			{
 				// オブジェクトの更新処理
 				pObject->Update();
@@ -185,6 +186,20 @@ CObject* CObject::GetNext(void)
 void CObject::Release(void)
 {
 	m_bIsDeath = true;
+}
+
+//-------------------------------------
+//- 更新フラグ確認処理
+//-------------------------------------
+bool CObject::CheckFlagUpdate(void)
+{
+	if (m_bIsUpdateStop ||
+		m_bIsUpdateAllStop && m_bIsUpdatePause == false)
+	{
+		return false;
+	}
+
+	return true;
 }
 
 //-------------------------------------

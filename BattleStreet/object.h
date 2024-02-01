@@ -81,11 +81,10 @@ public:
 
 	virtual void HitDamage(int nDamage) {};
 
-	void IsUpdateStop(bool bIsUpdateStop) { m_bIsUpdateStop = bIsUpdateStop; }
-	void IsDrawStop(bool bIsDrawStop) { m_bIsDrawStop = bIsDrawStop; }
+	void SetIsUpdateStop(bool bIsUpdateStop) { m_bIsUpdateStop = bIsUpdateStop; }
+	void SetIsUpdatePause(bool bIsUpdatePause) { m_bIsUpdatePause = bIsUpdatePause; }
+	void SetIsDrawStop(bool bIsDrawStop) { m_bIsDrawStop = bIsDrawStop; }
 
-	virtual CObject2d* GetObject2d(void) { return nullptr; }
-	virtual CMapManagerMulti* GetBgMulti(void) { return nullptr; }
 
 	static bool GetIsUpdateAllStop(void) { return m_bIsUpdateAllStop; }
 	static void SetIsUpdateAllStop(bool bIsUpdateAllStop) { m_bIsUpdateAllStop = bIsUpdateAllStop; }
@@ -95,6 +94,8 @@ protected:
 	void Release(void);
 
 private:
+
+	bool CheckFlagUpdate(void);
 
 	void ReleaseObj(void);
 	static void DeathAllCheckRelease(void);
@@ -110,6 +111,7 @@ private:
 	int m_nPriority;		// 自身の優先順位
 
 	bool m_bIsUpdateStop;		// 更新の有無
+	bool m_bIsUpdatePause;		// ポーズ時の更新の有無
 	bool m_bIsDrawStop;			// 描画の有無
 	bool m_bIsDeath;			// 死亡の有無
 

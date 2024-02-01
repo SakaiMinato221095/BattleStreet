@@ -52,9 +52,6 @@
     <Filter Include="Attack\Finish">
       <UniqueIdentifier>{2a901ad8-2c02-4283-b710-f179a932ee78}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Attack\Player">
-      <UniqueIdentifier>{69212499-67eb-49a2-a1c7-fb394a60ff21}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Attack\Enemy">
       <UniqueIdentifier>{d0a5b827-5a13-45c2-a1a3-abe666f0f168}</UniqueIdentifier>
     </Filter>
@@ -64,39 +61,36 @@
     <Filter Include="Obj2d">
       <UniqueIdentifier>{d56ef7ca-f041-4818-ad3f-2bbba003330c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="View">
+      <UniqueIdentifier>{a55c4a1e-721b-4444-b6f8-aa2d6a21e33e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object">
+      <UniqueIdentifier>{c15e32dc-ecd7-4986-8321-28c0a4aa26be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Attack\Player">
+      <UniqueIdentifier>{69212499-67eb-49a2-a1c7-fb394a60ff21}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Template">
+      <UniqueIdentifier>{1a67f52d-dcd8-434d-b6db-4412b2e282af}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="camera.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="debugproc.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="fade.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="light.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="manager.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="number.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="object.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="object_billboard.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="objectx_none.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="pause.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="precompile.cpp">
@@ -228,39 +222,42 @@
     <ClCompile Include="obj_2d_gage.cpp">
       <Filter>Obj2d</Filter>
     </ClCompile>
+    <ClCompile Include="manager.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="camera.cpp">
+      <Filter>View</Filter>
+    </ClCompile>
+    <ClCompile Include="light.cpp">
+      <Filter>View</Filter>
+    </ClCompile>
+    <ClCompile Include="object.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="pause.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="template.cpp">
+      <Filter>Template</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="camera.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="debugproc.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="fade.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="light.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="main.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="manager.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="number.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="object.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="object_billboard.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="objectx_none.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="pause.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="precompile.h">
@@ -391,6 +388,24 @@
     </ClInclude>
     <ClInclude Include="obj_2d_gage.h">
       <Filter>Obj2d</Filter>
+    </ClInclude>
+    <ClInclude Include="manager.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="camera.h">
+      <Filter>View</Filter>
+    </ClInclude>
+    <ClInclude Include="light.h">
+      <Filter>View</Filter>
+    </ClInclude>
+    <ClInclude Include="object.h">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="pause.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="template.h">
+      <Filter>Template</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

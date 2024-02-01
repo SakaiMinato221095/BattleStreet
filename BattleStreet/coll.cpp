@@ -78,7 +78,7 @@ HRESULT CColl::Init(CMgrColl::TAG tag, CObject* pObj, D3DXVECTOR3 pos, D3DXVECTO
 			D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f),
 			D3DXVECTOR2(1.0f, 1.0f));
 
-		m_data.dataVisual.pField->IsDrawStop(true);
+		m_data.dataVisual.pField->SetIsDrawStop(true);
 	}
 
 	// “–‚½‚è”»’è‚Ì•Ç‚ð¶¬
@@ -93,7 +93,7 @@ HRESULT CColl::Init(CMgrColl::TAG tag, CObject* pObj, D3DXVECTOR3 pos, D3DXVECTO
 			D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f),
 			D3DXVECTOR2(1.0f, 1.0f));
 
-		m_data.dataVisual.pWall->IsDrawStop(true);
+		m_data.dataVisual.pWall->SetIsDrawStop(true);
 	}
 
 	// “–‚½‚è”»’èŠÇ—‚ÉÝ’èˆ—
@@ -278,12 +278,12 @@ void CColl::SetIsVisualDrawStop(bool bDrawStop)
 {
 	if (m_data.dataVisual.pField != nullptr)
 	{
-		m_data.dataVisual.pField->IsDrawStop(bDrawStop);
+		m_data.dataVisual.pField->SetIsDrawStop(bDrawStop);
 	}
 
 	if (m_data.dataVisual.pWall != nullptr)
 	{
-		m_data.dataVisual.pWall->IsDrawStop(bDrawStop);
+		m_data.dataVisual.pWall->SetIsDrawStop(bDrawStop);
 	}
 }
 

@@ -73,6 +73,8 @@ HRESULT CCamera::Init(void)
 	D3DXVECTOR3 rot = m_data.rot;		// 向き
 	float fLength = m_data.fLength;		// カメラとの長さ
 	
+	m_bIsUpdateStop = false;
+
 	// グローバル変数の初期化
 	{
 		// 情報設定

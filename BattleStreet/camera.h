@@ -66,6 +66,9 @@ public:
 	void SetMode(CCamera::MODE mode);
 
 	Data GetData(void) { return m_data; }
+
+	bool GetIsUpdateStop(void) { return m_bIsUpdateStop;}
+	void SetIsUpdateStop(bool bUpdateStop) { m_bIsUpdateStop = bUpdateStop; }
 private:
 	
 	void UpdateRot(void);
@@ -79,6 +82,8 @@ private:
 	MODE m_mode;					// カメラのモード
 
 	Data m_data;					// カメラの値情報を格納
+
+	bool m_bIsUpdateStop;			// 更新の停止
 
 };
 
