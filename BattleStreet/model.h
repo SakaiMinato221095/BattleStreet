@@ -66,6 +66,8 @@ public:
 		D3DXVECTOR3 posMotion;	// モーションの位置情報
 		D3DXVECTOR3 rot;		// モデル本体の向き情報
 		D3DXVECTOR3 rotMotion;	// モーションの位置情報
+
+		D3DXCOLOR color;		// モデルの色
 	}Data;
 
 	CModel();
@@ -88,6 +90,9 @@ public:
 
 	void SetData(CModel::Data data) { m_data = data; }
 	Data GetData(void) { return m_data; }
+
+	void SetColor(D3DXCOLOR color) { m_data.color = color; }
+	D3DXCOLOR GetColor(void) { return m_data.color; }
 
 	static int GetPartsNum(MODEL_TYPE modelType) { return m_model[modelType].nPartsNum; }
 

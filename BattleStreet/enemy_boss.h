@@ -54,6 +54,8 @@ public:
 		MOTION_STATE_KICK_3,		// キック3
 		MOTION_STATE_CHARGE,		// 突進
 		MOTION_STATE_CHARGE_ATTACK,	// 突進攻撃
+		MOTION_STATE_DAMAGE,		// ダメージ
+		MOTION_STATE_BIG_DAMAGE,	// 吹き飛び
 		MOTION_STATE_MAX
 	};
 
@@ -69,27 +71,6 @@ public:
 		AI_STATE_MAX
 	};
 
-	// ターゲットとの情報
-	struct InfoVisual
-	{
-		CCharacter* pCharacter;		// キャラクターのポインタ
-		MOTION_STATE motionState;	// モーション状態
-	};
-
-	// AIの情報
-	struct InfoAi
-	{
-		AI_STATE state;			// AIの状態情報
-		int nCntState;			// AIの状態カウント
-	};
-
-	// ターゲットとの情報
-	struct InfoTarget
-	{
-		D3DXVECTOR3 rot;	// ターゲットへの向き
-		float fLength;		// 距離
-	};
-
 	CEnemyBoss();
 	~CEnemyBoss();
 
@@ -100,14 +81,58 @@ public:
 
 	void InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 rot);
 
+	virtual void HitDamage(int nDamage);
+
 	static CEnemyBoss* Create(CModel::MODEL_TYPE modelType, CMotion::MOTION_TYPE motionType, D3DXVECTOR3 pos, D3DXVECTOR3 rot);
 
 private:
 
-	void UpdateAi(void);
-	void UpdateTargetPlayer(void);
-	void UpdateAttack(void);
+	enum STATE
+	{
+		STATE_NORMAL = 0,	// 通常状態
+		STATE_DAMAGE,		// ダメージ状態
+		STATE_BIG_DAMAGE,	// 吹き飛び状態
+		STATE_MAX
+	};
+
+	// 情報
+	struct Info
+	{
+		STATE state;	// 状態
+		int nCntHit;	// ヒット状態のカウント
+	};
+
+	// ターゲットとの情報
+	struct InfoVisual
+	{
+		CCharacter* pCharacter;		// キャラクターのポインタ
+		MOTION_STATE motionState;	// モーション状態
+	};
+
+	// 付属情報
+	struct InfoAttach
+	{
+		CAttack* pAttack;			// 攻撃のポインタ
+		int nPartsIdx;				// パーツの番号
+	};
+
+	// AIの情報
+	struct InfoAi
+	{
+		AI_STATE state;			// AIの状態情報
+		int nCnt;				// AIの状態カウント
+		int nCntChange;			// AIの状態カウントの切り替え数
+
+		bool bCombo;			// コンボ継続の有無
+	};
+
+	void UpdateVisual(void);
 	void UpdateMotion(void);
+	void UpdateAi(void);
+	void UpdateAttack(void);
+
+	void UpdateDamage(void);
+	void UpdateBigDamage(void);
 
 	void AiWait(void);
 	void AiKickCombo(void);
@@ -115,18 +140,18 @@ private:
 	void AiChargeAttack(void);
 
 	void SetAiActiv(void);
+	void SetCombo(void);
+	void SetAttack(int nPartsNum);
 
-	void SetAttack(void);
+	void SetState(MOTION_STATE motionState);
 
 	void Debug(void);
 
+	Info m_info;				// 情報
 	InfoVisual m_infoVisual;	// 見た目情報
+	InfoAttach m_infoAttach;	// 付属情報
+
 	InfoAi m_infoAi;			// AIの情報
-	InfoTarget m_infoTarger;	// ターゲットとの情報
-
-	CAttack* m_pAttack;						// 攻撃のポインタ
-
-	CLife* m_pLife;							// 体力表示のポインタ
 };
 
 #endif	// 二重インクルード防止の終了

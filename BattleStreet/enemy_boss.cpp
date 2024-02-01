@@ -17,13 +17,9 @@
 #include "renderer.h"
 #include "manager.h"
 
-#include "game.h"
-
 #include "debugproc.h"
 
 #include "helper_sakai.h"
-
-#include "player.h"
 
 #include "manager_model.h"
 
@@ -44,6 +40,24 @@
 //=	コンスト定義
 //=======================================
 
+const int PARTS_BODY = 0;
+const int PARTS_LEG_L = 1;
+const int PARTS_LEG_R = 2;
+
+const D3DXVECTOR3 PARTS_POS[3]
+{
+	D3DXVECTOR3(0.0f,0.0f,0.0f),
+	D3DXVECTOR3(0.0f,-30.0f,0.0f),
+	D3DXVECTOR3(0.0f,-30.0f,0.0f),
+};
+
+const D3DXVECTOR3 PARTS_SIZE[3]
+{
+	D3DXVECTOR3(50.0f,30.0f,50.0f),
+	D3DXVECTOR3(15.0f,30.0f,15.0f),
+	D3DXVECTOR3(15.0f,30.0f,15.0f),
+};
+
 //-======================================
 //-	静的変数宣言
 //-======================================
@@ -53,11 +67,10 @@
 //-------------------------------------
 CEnemyBoss::CEnemyBoss()
 {
+	ZeroMemory(&m_info, sizeof(m_info));
 	ZeroMemory(&m_infoVisual, sizeof(m_infoVisual));
 	ZeroMemory(&m_infoAi, sizeof(m_infoAi));
-	ZeroMemory(&m_infoTarger, sizeof(m_infoTarger));
-	m_pAttack = nullptr;
-	m_pLife = nullptr;
+	ZeroMemory(&m_infoAttach, sizeof(m_infoAttach));
 }
 
 //-------------------------------------
@@ -90,23 +103,6 @@ HRESULT CEnemyBoss::Init(CModel::MODEL_TYPE modelType, CMotion::MOTION_TYPE moti
 		}
 	}
 
-	//// 体力
-	//if (m_pLife == nullptr)
-	//{
-	//	// 体力の生成
-	//	m_pLife = CLife::Create(
-	//		CLife::TEX_NULL,
-	//		D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.9f, 0.0f),
-	//		D3DXVECTOR3(300.0f, 30.0f, 0.0f),
-	//		D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f)
-	//		);
-
-	//	if (m_pLife == nullptr)
-	//	{
-	//		return E_FAIL;
-	//	}
-	//}
-
 	// 成功を返す
 	return S_OK;
 }
@@ -123,10 +119,10 @@ void CEnemyBoss::Uninit(void)
 	}
 
 	// 攻撃の終了処理
-	if (m_pAttack != nullptr)
+	if (m_infoAttach.pAttack != nullptr)
 	{
-		m_pAttack->Uninit();
-		m_pAttack = nullptr;
+		m_infoAttach.pAttack->Uninit();
+		m_infoAttach.pAttack = nullptr;
 	}
 
 	// Xファイルオブジェクトの終了
@@ -138,15 +134,27 @@ void CEnemyBoss::Uninit(void)
 //-------------------------------------
 void CEnemyBoss::Update(void)
 {
-	CEnemy::Data data = GetData();
-	data.posOld = data.pos;
-	SetData(data);
+	// 前回の位置を更新
+	SetPosOld(GetPos());
 
-	// ターゲットとの情報更新（プレイヤー）
-	UpdateTargetPlayer();
+	if (m_info.state == STATE_DAMAGE)
+	{
+		// ダメージの更新処理
+		UpdateDamage();
+	}
+	else if (m_info.state == STATE_BIG_DAMAGE)
+	{
+		// ダメージの吹き飛ばしダメージ
+		UpdateBigDamage();
+	}
+	else
+	{
+		// ターゲットとの情報更新（プレイヤー）
+		UpdateTargetPlayer();
 
-	// AIの更新処理
-	UpdateAi();
+		// AIの更新処理
+		UpdateAi();
+	}
 
 	// 位置更新処理
 	UpdatePos();
@@ -157,15 +165,20 @@ void CEnemyBoss::Update(void)
 	// 当たり判定更新処理
 	UpdateCollision();
 
+	if (m_infoAi.state != AI_STATE_CHARGE_ATTACK)
+	{
+		// 当たり判定更新処理
+		UpdateCollisionPlayer();
+	}
+
 	// モーションの更新処理
 	UpdateMotion();
 
-	if (m_infoVisual.pCharacter != nullptr)
-	{
-		m_infoVisual.pCharacter->UpdateData(
-			GetData().pos,
-			GetData().rot);
-	}
+	// 見た目の更新処理
+	UpdateVisual();
+
+	// デバック表示
+	Debug();
 }
 
 //-------------------------------------
@@ -175,6 +188,41 @@ void CEnemyBoss::Draw(void)
 {
 	// Xファイルオブジェクトの描画処理
 	CEnemy::Draw();
+}
+
+//-------------------------------------
+//-	敵のモデルの初期設定
+//-------------------------------------
+void CEnemyBoss::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+{
+	CEnemy::InitSet(pos, rot);
+}
+
+//-------------------------------------
+//-	敵のダメージ処理
+//-------------------------------------
+void CEnemyBoss::HitDamage(int nDamage)
+{
+	SetLife(GetLife() - nDamage);
+
+	// 状態を設定
+	if (nDamage >= 5)
+	{// 大きいダメージ
+
+		// 状態設定
+		SetState(MOTION_STATE_BIG_DAMAGE);
+
+		// 色を変更
+		m_infoVisual.pCharacter->SetColorAll(D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
+	}
+	else
+	{
+		// 状態設定
+		SetState(MOTION_STATE_DAMAGE);
+
+		// 色を変更
+		m_infoVisual.pCharacter->SetColorAll(D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
+	}
 }
 
 //-------------------------------------
@@ -208,11 +256,101 @@ CEnemyBoss* CEnemyBoss::Create(CModel::MODEL_TYPE modelType, CMotion::MOTION_TYP
 }
 
 //-------------------------------------
-//-	敵のモデルの初期設定
+//-	モーションの更新処理
 //-------------------------------------
-void CEnemyBoss::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+void CEnemyBoss::UpdateMotion(void)
 {
-	CEnemy::InitSet(pos, rot);
+	if (m_infoVisual.pCharacter == nullptr)
+	{
+		return;
+	}
+
+	// 変数宣言（情報取得）
+	CMotion* pMotion = m_infoVisual.pCharacter->GetMotion();		// モーション
+
+	if (pMotion == nullptr)
+	{
+		return;
+	}
+
+	// 状態を判定
+	if (m_infoVisual.motionState == MOTION_STATE_NEUTRAL ||
+		m_infoVisual.motionState == MOTION_STATE_MOVE)
+	{
+		// 移動量で状態を変更
+		if (GetMove().x >= 0.1f ||
+			GetMove().x <= -0.1f ||
+			GetMove().z >= 0.1f ||
+			GetMove().z <= -0.1f)
+		{
+			// 移動状態に変更
+			m_infoVisual.motionState = MOTION_STATE_MOVE;
+		}
+		else
+		{
+			// 待機状態の変更
+			m_infoVisual.motionState = MOTION_STATE_NEUTRAL;
+		}
+	}
+
+	if (pMotion->GetType() == MOTION_STATE_CHARGE_ATTACK && m_infoVisual.motionState != MOTION_STATE_CHARGE_ATTACK ||
+		pMotion->GetType() == MOTION_STATE_KICK_1 && m_infoVisual.motionState != MOTION_STATE_KICK_1 ||
+		pMotion->GetType() == MOTION_STATE_KICK_2 && m_infoVisual.motionState != MOTION_STATE_KICK_2 ||
+		pMotion->GetType() == MOTION_STATE_KICK_3 && m_infoVisual.motionState != MOTION_STATE_KICK_3)
+	{
+		if (m_infoAttach.pAttack != nullptr)
+		{
+			// 終了処理
+			m_infoAttach.pAttack->Uninit();
+			m_infoAttach.pAttack = nullptr;
+		}
+
+		if (m_infoAi.bCombo == true)
+		{
+			SetAiActiv();
+		}
+		else
+		{
+			// 待機状態の変更
+			m_infoVisual.motionState = MOTION_STATE_NEUTRAL;
+		}
+	}
+
+	if (pMotion->GetType() == MOTION_STATE_DAMAGE && m_infoVisual.motionState != MOTION_STATE_DAMAGE ||
+		pMotion->GetType() == MOTION_STATE_BIG_DAMAGE && m_infoVisual.motionState != MOTION_STATE_BIG_DAMAGE)
+	{
+		m_info.state = STATE_NORMAL;
+
+		// 色を変更
+		m_infoVisual.pCharacter->SetColorAll(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	}
+
+	// モーション状態と現在のモーションを比較
+	if (m_infoVisual.motionState != pMotion->GetType())
+	{
+		// モーション情報を設定
+		pMotion->Set(m_infoVisual.motionState);
+	}
+
+	// モーションの終了状況を判定
+	if (pMotion->IsFinsih() == false)
+	{
+		// 待機状態を設定
+		m_infoVisual.motionState = MOTION_STATE_NEUTRAL;
+	}
+}
+
+//-------------------------------------
+//-	見た目の更新処理
+//-------------------------------------
+void CEnemyBoss::UpdateVisual(void)
+{
+	if (m_infoVisual.pCharacter != nullptr)
+	{
+		m_infoVisual.pCharacter->UpdateData(
+			GetPos(),
+			GetRot());
+	}
 }
 
 //-------------------------------------
@@ -228,6 +366,28 @@ void CEnemyBoss::UpdateAi(void)
 		AiWait();
 
 		break;
+
+	case CEnemyBoss::AI_STATE_KICK_1:
+
+		// キックコンボAI
+		AiKickCombo();
+
+		break;
+
+	case CEnemyBoss::AI_STATE_KICK_2:
+
+		// キックコンボAI
+		AiKickCombo();
+
+		break;
+
+	case CEnemyBoss::AI_STATE_KICK_3:
+
+		// キックコンボAI
+		AiKickCombo();
+
+		break;
+
 	case CEnemyBoss::AI_STATE_CHARGE:
 
 		// 突進
@@ -244,134 +404,30 @@ void CEnemyBoss::UpdateAi(void)
 }
 
 //-------------------------------------
-//-	プレイヤーターゲット処理
-//-------------------------------------
-void CEnemyBoss::UpdateTargetPlayer(void)
-{
-	// プレイヤーの情報取得
-	CPlayer* pPlayer = CGame::GetPlayer();
-
-	// プレイヤーの情報取得の成功を判定
-	if (pPlayer == NULL)
-	{// 失敗時
-
-		// 追尾処理を抜ける
-		return;
-	}
-
-	// データを取得
-	CPlayer::Data dataPlayer = pPlayer->GetData();
-
-	// 情報取得
-	Data data = GetData();
-
-	// ターゲットへの向きを算出
-	m_infoTarger.rot.y = atan2f(data.pos.x - dataPlayer.pos.x, data.pos.z - dataPlayer.pos.z);
-
-	// ターゲットとの距離を算出
-	m_infoTarger.fLength = HelperSakai::CalculateLength(data.pos, dataPlayer.pos);
-}
-
-//-------------------------------------
 //- 通常状態プレイヤーの攻撃の更新処理
 //-------------------------------------
 void CEnemyBoss::UpdateAttack(void)
 {
 	// 攻撃の情報更新処理
-	if (m_pAttack != nullptr)
+	if (m_infoAttach.pAttack != nullptr)
 	{
-		D3DXVECTOR3 posParts = D3DXVECTOR3(0.0f,0.0f,0.0f);
+		D3DXVECTOR3 posParts = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
-		if (m_infoVisual.motionState == MOTION_STATE_CHARGE_ATTACK)
+		if (m_infoVisual.pCharacter != nullptr)
 		{
-			if (m_infoVisual.pCharacter != nullptr)
+			if (m_infoVisual.pCharacter->GetModel(m_infoAttach.nPartsIdx) != nullptr)
 			{
-				if (m_infoVisual.pCharacter->GetModel(0) != nullptr)
-				{
-					// 手の位置
-					posParts = D3DXVECTOR3(
-						m_infoVisual.pCharacter->GetModel(0)->GetMtxWorld()._41,
-						m_infoVisual.pCharacter->GetModel(0)->GetMtxWorld()._42,
-						m_infoVisual.pCharacter->GetModel(0)->GetMtxWorld()._43);
-				}
+				// 手の位置
+				posParts = D3DXVECTOR3(
+					m_infoVisual.pCharacter->GetModel(m_infoAttach.nPartsIdx)->GetMtxWorld()._41,
+					m_infoVisual.pCharacter->GetModel(m_infoAttach.nPartsIdx)->GetMtxWorld()._42,
+					m_infoVisual.pCharacter->GetModel(m_infoAttach.nPartsIdx)->GetMtxWorld()._43);
 			}
 		}
 
-		D3DXVECTOR3 size = m_pAttack->GetData().size;
-
-		m_pAttack->UpdateData(posParts, size);
-	}
-}
-
-//-------------------------------------
-//-	モーションの更新処理
-//-------------------------------------
-void CEnemyBoss::UpdateMotion(void)
-{
-	if (m_infoVisual.pCharacter == nullptr)
-	{
-		return;
-	}
-
-	// 変数宣言（情報取得）
-	CMotion* pMotion = m_infoVisual.pCharacter->GetMotion();		// モーション
-	Data data = GetData();
-
-	if (pMotion == nullptr)
-	{
-		return;
-	}
-
-	// 状態を判定
-	if (m_infoVisual.motionState == MOTION_STATE_NEUTRAL ||
-		m_infoVisual.motionState == MOTION_STATE_MOVE)
-	{
-		// 移動量で状態を変更
-		if (data.move.x >= 0.1f ||
-			data.move.x <= -0.1f ||
-			data.move.z >= 0.1f ||
-			data.move.z <= -0.1f)
-		{
-			// 移動状態に変更
-			m_infoVisual.motionState = MOTION_STATE_MOVE;
-		}
-		else
-		{
-			// 待機状態の変更
-			m_infoVisual.motionState = MOTION_STATE_NEUTRAL;
-		}
-	}
-
-	if (pMotion->GetType() == MOTION_STATE_CHARGE_ATTACK && m_infoVisual.motionState!= MOTION_STATE_CHARGE_ATTACK)
-	{
-		if (m_pAttack != nullptr)
-		{
-			// 終了処理
-			m_pAttack->Uninit();
-			m_pAttack = nullptr;
-		}
-
-		// 待機状態の変更
-		m_infoVisual.motionState = MOTION_STATE_NEUTRAL;
-	}
-
-	// モーション状態と現在のモーションを比較
-	if (m_infoVisual.motionState != pMotion->GetType())
-	{
-		// モーション情報を設定
-		pMotion->Set(m_infoVisual.motionState);
-	}
-
-	// モーションの終了状況を判定
-	if (pMotion->IsFinsih())
-	{
-		// モーションの更新
-		pMotion->Update();
-	}
-	else
-	{
-		// 待機状態を設定
-		m_infoVisual.motionState = MOTION_STATE_NEUTRAL;
+		m_infoAttach.pAttack->UpdateData(
+			posParts + PARTS_POS[m_infoAttach.nPartsIdx],
+			m_infoAttach.pAttack->GetData().size);
 	}
 }
 
@@ -380,38 +436,37 @@ void CEnemyBoss::UpdateMotion(void)
 //-------------------------------------
 void CEnemyBoss::AiWait(void)
 {
-	if (m_infoAi.nCntState >= 120)
+	if (m_infoAi.nCnt >= 120)
 	{
-		m_infoAi.nCntState = 0;
+		m_infoAi.nCnt = 0;
 
 		// 攻撃設定処理
 		SetAiActiv();
 	}
 	else
 	{
-		m_infoAi.nCntState++;
+		m_infoAi.nCnt++;
 
-		// 情報取得
-		CEnemy::Data data = GetData();
-
-		// プレイヤーの方を向く
-		data.rot = m_infoTarger.rot;
-
-		// プレイヤーと近い
-		if (HelperSakai::IfRangeFloat(m_infoTarger.fLength, 0.0f, 150.0f))
-		{
-			// 離れる
-			data.move = D3DXVECTOR3(sinf(data.rot.y) * 2.0f, 0.0f, cosf(data.rot.y) * 2.0f);
-		}
+		// ターゲットを向く
+		SetRot(GetTargetRot());
+		
 		// プレイヤーと遠い
-		else if (HelperSakai::IfRangeFloat(m_infoTarger.fLength, 500.0f, 1000.0f))
+		if (HelperSakai::IfRangeFloat(GetTargetLength(), 500.0f, 1000.0f))
 		{
 			// 近づく
-			data.move = D3DXVECTOR3(-sinf(data.rot.y) * 2.0f, 0.0f, -cosf(data.rot.y) * 2.0f);
+			SetMoveForward(2.0f);
 		}
-
-		SetData(data);
 	}
+}
+
+//-------------------------------------
+//-	キックAI
+//-------------------------------------
+void CEnemyBoss::AiKickCombo(void)
+{
+	// ターゲットを向く・近づく
+	SetRot(GetTargetRot());
+	SetMoveForward(2.0f);
 }
 
 //-------------------------------------
@@ -419,29 +474,20 @@ void CEnemyBoss::AiWait(void)
 //-------------------------------------
 void CEnemyBoss::AiCharge(void)
 {
-	// 情報取得
-	Data data = GetData();
-
-	// プレイヤーの方を向く
-	data.rot = m_infoTarger.rot;
-
-	if (HelperSakai::IfRangeFloat(m_infoTarger.fLength, 0.0f, 200.0f))
+	if (HelperSakai::IfRangeFloat(GetTargetLength(), 0.0f, 200.0f))
 	{
-		// 突進攻撃状態
-		m_infoAi.state = AI_STATE_CHARGE_ATTACK;
-
-		m_infoVisual.motionState = MOTION_STATE_CHARGE_ATTACK;
+		// 状態設定
+		SetState(MOTION_STATE_CHARGE_ATTACK);
 
 		// 攻撃設定
-		SetAttack();
+		SetAttack(PARTS_BODY);
 	}
 	else
 	{
-		// 近づく
-		data.move = D3DXVECTOR3(-sinf(data.rot.y) * 10.0f, 0.0f, -cosf(data.rot.y) * 10.0f);
+		// ターゲットを向く・近づく
+		SetRot(GetTargetRot());
+		SetMoveForward(10.0f);
 	}
-
-	SetData(data);
 }
 
 //-------------------------------------
@@ -449,25 +495,20 @@ void CEnemyBoss::AiCharge(void)
 //-------------------------------------
 void CEnemyBoss::AiChargeAttack(void)
 {
-	// 情報取得
-	Data data = GetData();
-
-	if (m_infoAi.nCntState >= 30)
+	if (m_infoAi.nCnt >= 30)
 	{
-		m_infoAi.state = AI_STATE_WAIT;
+		// 状態設定
+		SetState(MOTION_STATE_NEUTRAL);
 
-		m_infoVisual.motionState = MOTION_STATE_NEUTRAL;
-
-		m_infoAi.nCntState = 0;
+		m_infoAi.nCnt = 0;
 	}
 	else
 	{
-		m_infoAi.nCntState++;
+		m_infoAi.nCnt++;
 
-		data.move = D3DXVECTOR3(-sinf(data.rot.y) * 17.5f, 0.0f, -cosf(data.rot.y) * 17.5f);
+		// 近づく
+		SetMoveForward(17.5f);
 	}
-
-	SetData(data);
 }
 
 //-------------------------------------
@@ -475,56 +516,174 @@ void CEnemyBoss::AiChargeAttack(void)
 //-------------------------------------
 void CEnemyBoss::SetAiActiv(void)
 {
-	if (HelperSakai::IfRangeFloat(m_infoTarger.fLength, 0.0f, 200.0f))
+	if (HelperSakai::IfRangeFloat(GetTargetLength(), 0.0f, 500.0f))
 	{
-		//// 蹴り1状態
-		//m_infoAi.state = AI_STATE_KICK_1;
-
-		//m_infoVisual.motionState = MOTION_STATE_KICK_1;
+		// コンボ設定処理
+		SetCombo();
 	}
-	else if (HelperSakai::IfRangeFloat(m_infoTarger.fLength, 500.0f, 1500.0f))
+	else if (HelperSakai::IfRangeFloat(GetTargetLength(), 700.0f, 2000.0f))
 	{
-		// 突進状態
-		m_infoAi.state = AI_STATE_CHARGE;
+		// 状態設定
+		SetState(MOTION_STATE_CHARGE);
 
-		m_infoVisual.motionState = MOTION_STATE_CHARGE;
+		m_infoAi.bCombo = false;
 	}
 	else
 	{
-		// 待機状態
-		m_infoAi.state = AI_STATE_WAIT;
+		// 状態設定
+		SetState(MOTION_STATE_NEUTRAL);
 
-		m_infoVisual.motionState = MOTION_STATE_NEUTRAL;
+		m_infoAi.bCombo = false;
+	}
+}
+
+//-------------------------------------
+//-	ダメージの更新処理
+//-------------------------------------
+void CEnemyBoss::UpdateDamage(void)
+{
+	// ターゲットを向く
+	SetRot(GetTargetRot());
+
+	// 離れる
+	SetMoveForward(-3.0f);
+}
+
+//-------------------------------------
+//-	吹き飛ばしダメージの更新処理
+//-------------------------------------
+void CEnemyBoss::UpdateBigDamage(void)
+{
+
+}
+
+//-------------------------------------
+//-	コンボ設定処理
+//-------------------------------------
+void CEnemyBoss::SetCombo(void)
+{
+	if (m_infoAi.bCombo == false)
+	{
+		// 状態設定
+		SetState(MOTION_STATE_KICK_1);
+		m_infoAi.bCombo = true;
+
+		SetAttack(PARTS_LEG_R);
+	}
+	else if (m_infoAi.state == AI_STATE_KICK_1)
+	{
+		// 状態設定
+		SetState(MOTION_STATE_KICK_2);
+
+		SetAttack(PARTS_LEG_L);
+	}
+	else if (m_infoAi.state == AI_STATE_KICK_2)
+	{
+		// 状態設定
+		SetState(MOTION_STATE_KICK_3);
+
+		SetAttack(PARTS_LEG_R);
+	}
+	else if (m_infoAi.state == AI_STATE_KICK_3)
+	{
+		// 状態設定
+		SetState(MOTION_STATE_NEUTRAL);
+		m_infoAi.bCombo = false;
 	}
 }
 
 //-------------------------------------
 //-	行動AI設定処理
 //-------------------------------------
-void CEnemyBoss::SetAttack(void)
+void CEnemyBoss::SetAttack(int nPartsNum)
 {
-	if (m_pAttack == nullptr)
+	if (m_infoAttach.pAttack == nullptr)
 	{
-		m_pAttack = CCharge::Create();
+		m_infoAttach.pAttack = CCharge::Create();
 
 		if (m_infoVisual.pCharacter != nullptr)
 		{
-			if (m_infoVisual.pCharacter->GetModel(0) != nullptr)
+			if (m_infoVisual.pCharacter->GetModel(nPartsNum) != nullptr)
 			{
+				m_infoAttach.nPartsIdx = nPartsNum;
+
 				// 体の位置
 				D3DXVECTOR3 posBody = D3DXVECTOR3(
-					m_infoVisual.pCharacter->GetModel(0)->GetMtxWorld()._41,
-					m_infoVisual.pCharacter->GetModel(0)->GetMtxWorld()._42,
-					m_infoVisual.pCharacter->GetModel(0)->GetMtxWorld()._43);
+					m_infoVisual.pCharacter->GetModel(nPartsNum)->GetMtxWorld()._41,
+					m_infoVisual.pCharacter->GetModel(nPartsNum)->GetMtxWorld()._42,
+					m_infoVisual.pCharacter->GetModel(nPartsNum)->GetMtxWorld()._43);
 
 				// 攻撃の初期設定処理
-				m_pAttack->InitSet(
-					posBody,
-					D3DXVECTOR3(75.0f, 20.0f, 75.0f),
+				m_infoAttach.pAttack->InitSet(
+					posBody + PARTS_POS[nPartsNum],
+					PARTS_SIZE[nPartsNum],
 					10);
 			}
 
 		}
+	}
+}
+
+//-------------------------------------
+//-	行動AI設定処理
+//-------------------------------------
+void CEnemyBoss::SetState(MOTION_STATE motionState)
+{
+	switch (motionState)
+	{
+	case CEnemyBoss::MOTION_STATE_NEUTRAL:
+
+		m_infoVisual.motionState = motionState;
+		m_infoAi.state = AI_STATE_WAIT;
+
+		break;
+	case CEnemyBoss::MOTION_STATE_MOVE:
+
+		m_infoVisual.motionState = motionState;
+
+		break;
+	case CEnemyBoss::MOTION_STATE_KICK_1:
+
+		m_infoVisual.motionState = motionState;
+		m_infoAi.state = AI_STATE_KICK_1;
+
+		break;
+	case CEnemyBoss::MOTION_STATE_KICK_2:
+
+		m_infoVisual.motionState = motionState;
+		m_infoAi.state = AI_STATE_KICK_2;
+
+		break;
+	case CEnemyBoss::MOTION_STATE_KICK_3:
+
+		m_infoVisual.motionState = motionState;
+		m_infoAi.state = AI_STATE_KICK_3;
+
+		break;
+	case CEnemyBoss::MOTION_STATE_CHARGE:
+
+		m_infoVisual.motionState = motionState;
+		m_infoAi.state = AI_STATE_CHARGE;
+
+		break;
+	case CEnemyBoss::MOTION_STATE_CHARGE_ATTACK:
+
+		m_infoVisual.motionState = motionState;
+		m_infoAi.state = AI_STATE_CHARGE_ATTACK;
+
+		break;
+	case CEnemyBoss::MOTION_STATE_DAMAGE:
+
+		m_infoVisual.motionState = motionState;
+		m_info.state = STATE_DAMAGE;
+
+		break;
+	case CEnemyBoss::MOTION_STATE_BIG_DAMAGE:
+
+		m_infoVisual.motionState = motionState;
+		m_info.state = STATE_BIG_DAMAGE;
+
+		break;
 	}
 }
 
@@ -545,6 +704,7 @@ void CEnemyBoss::Debug(void)
 	pDebugProc->Print("\n");
 	pDebugProc->Print("プレイヤーのとの距離");
 	pDebugProc->Print("\n");
-	pDebugProc->Print("%f", m_infoTarger.fLength);
+	pDebugProc->Print("%f,%f,%f", GetRot().x, GetRot().y, GetRot().z);
 	pDebugProc->Print("\n");
+
 }

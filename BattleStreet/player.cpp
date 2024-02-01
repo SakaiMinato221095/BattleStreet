@@ -417,7 +417,7 @@ void CPlayer::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	m_data.rot = rot;
 	m_data.rotDest = rot;
 
-	m_data.size = D3DXVECTOR3(100.0f, 100.0f, 100.0f);
+	m_data.size = D3DXVECTOR3(40.0f, 200.0f, 40.0f);
 
 	m_data.nLife = 100;
 
@@ -1038,7 +1038,7 @@ void CPlayer::SetAttackPunch(void)
 			m_pAttack->InitSet(
 				posHand,
 				D3DXVECTOR3(20.0f,20.0f,20.0f),
-				5);
+				3);
 		}
 
 		// モーションの設定（パンチ）
@@ -1067,7 +1067,7 @@ void CPlayer::SetAttackKick(void)
 			m_pAttack->InitSet(
 				posShin,
 				D3DXVECTOR3(20.0f, 20.0f, 20.0f),
-				5);
+				1);
 		}
 
 		// モーションの設定（キック）
@@ -1121,7 +1121,7 @@ void CPlayer::SetAttackFinishPunch(void)
 			m_pAttack->InitSet(
 				posShin,
 				D3DXVECTOR3(20.0f, 20.0f, 20.0f),
-				20);
+				10);
 		}
 
 		// モーションの設定（パンチフィニッシュ）
@@ -1150,7 +1150,7 @@ void CPlayer::SetAttackFinishKick(void)
 			m_pAttack->InitSet(
 				posShin,
 				D3DXVECTOR3(50.0f, 20.0f, 50.0f),
-				10);
+				7);
 		}
 
 		// モーションの設定（パンチフィニッシュ）

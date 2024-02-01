@@ -21,6 +21,11 @@
 
 #include "particle.h"
 
+#include "player.h"
+#include "game.h"
+
+#include "helper_sakai.h"
+
 //-======================================
 //-	マクロ定義
 //-======================================
@@ -41,6 +46,7 @@ CEnemy::CEnemy()
 	m_pColl = NULL;
 
 	ZeroMemory(&m_data, sizeof(m_data));
+	ZeroMemory(&m_infoTarger, sizeof(m_infoTarger));
 }
 
 //-------------------------------------
@@ -104,6 +110,9 @@ void CEnemy::Update(void)
 	// 位置更新処理
 	UpdatePos();
 
+	// ターゲットとの情報更新処理
+	UpdateTargetPlayer();
+
 	// 当たり判定更新処理
 	UpdateCollision();
 }
@@ -124,9 +133,9 @@ void CEnemy::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	// データの代入
 	m_data.pos = pos;										// 位置
 	m_data.rot = rot;										// 向き
-	m_data.size = D3DXVECTOR3(60.0f, 150.0f, 50.0f);		// サイズ
+	m_data.size = D3DXVECTOR3(40.0f, 150.0f, 40.0f);		// サイズ
 
-	m_data.nLife = 100;
+	m_data.nLife = 30;
 }
 
 //-------------------------------------
@@ -134,53 +143,8 @@ void CEnemy::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 //-------------------------------------
 void CEnemy::HitDamage(int nDamage)
 {
-	if (nDamage == 20)
-	{
-		// パーティクルの設定
-		SetParticle(
-			64,
-			m_data.pos,
-			D3DXVECTOR3(10.0f, 10.0f, 0.0f),
-			D3DXVECTOR3(30.0f, 30.0f, 0.0f),
-			D3DXCOLOR(1.0f, 0.0, 0.0f, 1.0f),
-			45);
-	}
-	else
-	{
-		// パーティクルの設定
-		SetParticle(
-			8,
-			m_data.pos,
-			D3DXVECTOR3(10.0f, 10.0f, 0.0f),
-			D3DXVECTOR3(10.0f, 10.0f, 0.0f),
-			D3DXCOLOR(1.0f, 0.0, 0.0f, 1.0f),
-			30);
-	}
-
 	m_data.nLife -= nDamage;
-
-	// パーティクルの設定
-	SetParticle(
-		8,
-		m_data.pos,
-		D3DXVECTOR3(10.0f, 10.0f, 0.0f),
-		D3DXVECTOR3(10.0f, 10.0f, 0.0f),
-		D3DXCOLOR(1.0f, 0.0, 0.0f, 1.0f),
-		30);
-
-	if (m_data.nLife < 0)
-	{
-		if (CManager::GetInstance() != nullptr)
-		{
-			if (CManager::GetInstance()->GetFade() != nullptr)
-			{
-				// ゲームモード
-				CManager::GetInstance()->GetFade()->SetFade(CScene::MODE_RESULT);
-			}
-		}
-
-	}
-
+	m_data.bHit = true;
 }
 
 //-------------------------------------
@@ -226,8 +190,35 @@ void CEnemy::UpdatePos(void)
 	m_data.move.z += (0.0f - m_data.move.z) * 0.3f;
 }
 
+
 //-------------------------------------
-//- プレイヤーの当たり判定更新処理
+//-	プレイヤーターゲット処理
+//-------------------------------------
+void CEnemy::UpdateTargetPlayer(void)
+{
+	// プレイヤーの情報取得
+	CPlayer* pPlayer = CGame::GetPlayer();
+
+	// プレイヤーの情報取得の成功を判定
+	if (pPlayer == NULL)
+	{// 失敗時
+
+		// 追尾処理を抜ける
+		return;
+	}
+
+	// ターゲットの位置
+	D3DXVECTOR3 posTgt = pPlayer->GetData().pos;
+
+	// ターゲットへの向きを算出
+	m_infoTarger.rot.y = atan2f(GetPos().x - posTgt.x, GetPos().z - posTgt.z);
+
+	// ターゲットとの距離を算出
+	m_infoTarger.fLength = HelperSakai::CalculateLength(GetPos(), posTgt);
+}
+
+//-------------------------------------
+//- 壁との当たり判定更新処理
 //-------------------------------------
 void CEnemy::UpdateCollision(void)
 {
@@ -238,7 +229,7 @@ void CEnemy::UpdateCollision(void)
 			m_data.pos,
 			m_data.size);
 
-		// プレイヤーの当たり判定
+		// 壁との当たり判定
 		if (m_pColl->HitSide(CMgrColl::TAG_WALL_X, CMgrColl::EVENT_TYPE_PRESS, CMgrColl::TYPE_SXIS_X) == true)
 		{
 			// 移動量をなくす
@@ -248,7 +239,7 @@ void CEnemy::UpdateCollision(void)
 			m_data.pos.x = m_data.posOld.x;
 		}
 
-		// プレイヤーの当たり判定
+		// 壁との当たり判定
 		if (m_pColl->HitSide(CMgrColl::TAG_WALL_Z, CMgrColl::EVENT_TYPE_PRESS, CMgrColl::TYPE_SXIS_Z) == true)
 		{
 			// 移動量をなくす
@@ -256,6 +247,27 @@ void CEnemy::UpdateCollision(void)
 
 			// プレイヤーのY座標移動を停止
 			m_data.pos.z = m_data.posOld.z;
+		}
+	}
+}
+
+//-------------------------------------
+//- プレイヤーとの当たり判定更新処理
+//-------------------------------------
+void CEnemy::UpdateCollisionPlayer(void)
+{
+	if (m_pColl != nullptr)
+	{
+		// 当たり判定の情報更新処理
+		m_pColl->UpdateData(
+			m_data.pos,
+			m_data.size);
+
+		if (m_pColl->Hit(CMgrColl::TAG_PLAYER, CMgrColl::EVENT_TYPE_PRESS) == true)
+		{
+			// ターゲットから離れる
+			SetRot(GetTargetRot());
+			SetMoveForward(-10.0f);
 		}
 	}
 }

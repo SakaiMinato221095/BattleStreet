@@ -133,6 +133,7 @@ HRESULT CModel::Init(MODEL_TYPE modelType , int nCount)
 	// 情報を設定
 	m_data.pos = m_model[modelType].modelParts[nCount].pos;	// 位置
 	m_data.rot = m_model[modelType].modelParts[nCount].rot;	// 向き
+	m_data.color = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 
 	// 成功を返す
 	return S_OK;
@@ -254,8 +255,23 @@ void CModel::Draw(void)
 	// マテリアルごとの描画
 	for (int nCutMat = 0; nCutMat < (int)model.m_dwNumMat; nCutMat++)
 	{
-		// マテリアルの設定
-		pDevice->SetMaterial(&pMat[nCutMat].MatD3D);
+		if (m_data.color == D3DXCOLOR(1.0f,1.0f,1.0f,1.0f))
+		{
+			//デフォルト
+			pDevice->SetMaterial(&pMat[nCutMat].MatD3D);
+		}
+		else
+		{
+			//元の色を保存
+			D3DXCOLOR tempColor = pMat[nCutMat].MatD3D.Diffuse;
+
+			// 色を設定して描画
+			pMat[nCutMat].MatD3D.Diffuse = m_data.color;
+			pDevice->SetMaterial(&pMat[nCutMat].MatD3D);
+
+			// 元の色の戻す
+			pMat[nCutMat].MatD3D.Diffuse = tempColor;
+		}
 
 		// テクスチャの設定（仮）
 		pDevice->SetTexture(0, model.m_pTexture[nCutMat]);

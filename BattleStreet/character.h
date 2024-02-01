@@ -41,8 +41,9 @@ public:
 
 	struct Data
 	{
-		D3DXVECTOR3 pos;	// ˆÊ’u
-		D3DXVECTOR3 rot;	// Œü‚«
+		D3DXVECTOR3 pos;		// ˆÊ’u
+
+		D3DXVECTOR3 rot;		// Œü‚«
 	};
 
 	CCharacter();
@@ -59,6 +60,15 @@ public:
 
 	CMotion* GetMotion(void) { return m_pMotion; }
 	CModel* GetModel(int nNumParts) { return m_apModel[nNumParts]; }
+
+	void SetColorAll(D3DXCOLOR color) {
+		for (int nCnt = 0; nCnt < MODEL_PARTS_MAX; nCnt++)
+		{
+			if (m_apModel[nCnt] != nullptr)
+			{
+				m_apModel[nCnt]->SetColor(color);
+			}
+		};}
 
 private:
 

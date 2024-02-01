@@ -166,8 +166,11 @@ void CCharacter::Update(void)
 	// モーションの終了処理
 	if (m_pMotion != NULL)
 	{
-		// モーションの更新処理
-		m_pMotion->Update();
+		if (m_pMotion->IsFinsih())
+		{
+			// モーションの更新処理
+			m_pMotion->Update();
+		}
 	}
 }
 

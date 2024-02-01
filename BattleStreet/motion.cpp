@@ -596,8 +596,6 @@ void CMotion::UpdateChangeBlend(void)
 
 		// 情報更新（（パーツごとのモデル情報の取得）
 		m_ppModel[nCutModel]->SetData(modelData);
-
-
 	}
 
 	// カウンターを進める
