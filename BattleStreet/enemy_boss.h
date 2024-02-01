@@ -99,7 +99,6 @@ private:
 	struct Info
 	{
 		STATE state;	// 状態
-		int nCntHit;	// ヒット状態のカウント
 	};
 
 	// ターゲットとの情報
@@ -144,6 +143,7 @@ private:
 	void SetAttack(int nPartsNum);
 
 	void SetState(MOTION_STATE motionState);
+	void ReSetState(void);
 
 	void Debug(void);
 
