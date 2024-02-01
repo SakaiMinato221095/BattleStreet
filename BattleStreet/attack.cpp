@@ -94,28 +94,8 @@ void CAttack::Uninit(void)
 //-------------------------------------
 void CAttack::Update(void)
 {
-	if (m_pColl != nullptr)
-	{
-		// 当たり判定の情報更新処理
-		m_pColl->UpdateData(
-			m_data.pos,
-			m_data.size);
-
-		// ターゲットとの接触判定
-		if (m_pColl->Hit(m_tagTgt,CMgrColl::EVENT_TYPE_TRIGGER))
-		{
-			// 最大接触数を取得
-			CColl::Data data = m_pColl->GetData();
-			int nHitNldxMax = data.nHitNldxMax;
-
-			// 接触した敵のダメージ処理
-			for (int nCount = 0; nCount < nHitNldxMax; nCount++)
-			{
-				// 相手のダメージ処理
-				data.hitData[nCount].pObj->HitDamage(m_data.nDamage);
-			}
-		}
-	}
+	// 接触更新処理
+	UpdateHit();
 
 	// デバック
 	Debug();
@@ -137,6 +117,35 @@ void CAttack::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 size, int nDamage)
 	m_data.pos = pos;
 	m_data.size = size;
 	m_data.nDamage = nDamage;
+}
+
+//-------------------------------------
+//- 接触更新処理
+//-------------------------------------
+void CAttack::UpdateHit(void)
+{
+	if (m_pColl != nullptr)
+	{
+		// 当たり判定の情報更新処理
+		m_pColl->UpdateData(
+			m_data.pos,
+			m_data.size);
+
+		// ターゲットとの接触判定
+		if (m_pColl->Hit(m_tagTgt, CMgrColl::EVENT_TYPE_TRIGGER))
+		{
+			// 最大接触数を取得
+			CColl::Data data = m_pColl->GetData();
+			int nHitNldxMax = data.nHitNldxMax;
+
+			// 接触した敵のダメージ処理
+			for (int nCount = 0; nCount < nHitNldxMax; nCount++)
+			{
+				// 相手のダメージ処理
+				data.hitData[nCount].pObj->HitDamage(m_data.nDamage);
+			}
+		}
+	}
 }
 
 //-------------------------------------

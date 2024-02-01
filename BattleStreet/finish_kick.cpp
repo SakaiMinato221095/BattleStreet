@@ -68,8 +68,11 @@ void CFinishKick::Uninit(void)
 //-------------------------------------
 void CFinishKick::Update(void)
 {
-	// 親クラスの更新処理
-	CAttack::Update();
+	// 接触更新処理
+	UpdateHit();
+
+	// デバック
+	Debug();
 }
 
 //-------------------------------------

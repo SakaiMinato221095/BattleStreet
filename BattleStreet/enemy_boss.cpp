@@ -227,17 +227,11 @@ void CEnemyBoss::HitDamage(int nDamage)
 
 		// 状態設定
 		SetState(MOTION_STATE_BIG_DAMAGE);
-
-		// 色を変更
-		m_infoVisual.pCharacter->SetColorAll(D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
 	}
 	else
 	{
 		// 状態設定
 		SetState(MOTION_STATE_DAMAGE);
-
-		// 色を変更
-		m_infoVisual.pCharacter->SetColorAll(D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
 	}
 }
 
@@ -324,8 +318,11 @@ void CEnemyBoss::UpdateMotion(void)
 	if (pMotion->GetType() == MOTION_STATE_DAMAGE && m_infoVisual.motionState != MOTION_STATE_DAMAGE ||
 		pMotion->GetType() == MOTION_STATE_BIG_DAMAGE && m_infoVisual.motionState != MOTION_STATE_BIG_DAMAGE)
 	{
-		// 行動設定
-		SetAiActiv();
+		if (m_info.state == STATE_NORMAL)
+		{
+			// 行動設定
+			SetAiActiv();
+		}
 	}
 
 	// モーションの終了状況を判定
@@ -468,9 +465,11 @@ void CEnemyBoss::AiWait(void)
 //-------------------------------------
 void CEnemyBoss::AiKickCombo(void)
 {
+	float fLength = GetTargetLength() * 0.01f;
+
 	// ターゲットを向く・近づく
 	SetRot(GetTargetRot());
-	SetMoveForward(2.0f);
+	SetMoveForward(fLength);
 }
 
 //-------------------------------------
@@ -551,7 +550,11 @@ void CEnemyBoss::UpdateDamage(void)
 //-------------------------------------
 void CEnemyBoss::UpdateBigDamage(void)
 {
+	// ターゲットを向く
+	SetRot(GetTargetRot());
 
+	// 離れる
+	SetMoveForward(-10.0f);
 }
 
 //-------------------------------------

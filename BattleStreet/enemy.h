@@ -80,6 +80,8 @@ public:
 	D3DXVECTOR3 GetTargetRot(void) { return m_infoTarger.rot; }
 	float GetTargetLength(void) { return m_infoTarger.fLength; }
 
+	CColl* GetColl(void) { return m_pColl; }
+
 protected:
 
 	void UpdatePos(void);
@@ -115,8 +117,6 @@ private:
 	InfoTarget m_infoTarger;	// ターゲットとの情報
 
 	CColl* m_pColl;		// 当たり判定の情報
-
-
 };
 
 #endif	// 二重インクルード防止の終了

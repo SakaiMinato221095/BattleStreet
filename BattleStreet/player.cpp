@@ -575,9 +575,9 @@ void CPlayer::UpdateAttack(void)
 		{
 			// 手の位置
 			posParts = D3DXVECTOR3(
-				GetModel(11)->GetMtxWorld()._41,
-				GetModel(11)->GetMtxWorld()._42,
-				GetModel(11)->GetMtxWorld()._43);
+				GetModel(0)->GetMtxWorld()._41,
+				GetModel(0)->GetMtxWorld()._42,
+				GetModel(0)->GetMtxWorld()._43) + D3DXVECTOR3(0.0f, 50.0f, 0.0f);
 		}
 
 		if (m_pAttack->GetColl() != nullptr)
@@ -667,7 +667,7 @@ void CPlayer::UpdateCollision(void)
 				}
 
 				// プレイヤーの当たり判定
-				if (m_apColl[nCntColl]->Hit(CMgrColl::TAG_ENEMY, CMgrColl::EVENT_TYPE_PRESS) == true)
+				if (m_apColl[nCntColl]->Hit(CMgrColl::TAG_ENEMY, CMgrColl::EVENT_TYPE_PRESS))
 				{
 					float fLengthNear = 100000.0f;
 					int nHitMax = m_apColl[nCntColl]->GetData().nHitNldxMax;
@@ -1142,14 +1142,14 @@ void CPlayer::SetAttackFinishKick(void)
 		{
 			// 足の位置
 			D3DXVECTOR3 posShin = D3DXVECTOR3(
-				GetModel(11)->GetMtxWorld()._41,
-				GetModel(11)->GetMtxWorld()._42,
-				GetModel(11)->GetMtxWorld()._43);
+				GetModel(0)->GetMtxWorld()._41,
+				GetModel(0)->GetMtxWorld()._42,
+				GetModel(0)->GetMtxWorld()._43);
 
 			// 攻撃の初期設定処理
 			m_pAttack->InitSet(
-				posShin,
-				D3DXVECTOR3(50.0f, 20.0f, 50.0f),
+				posShin + D3DXVECTOR3(0.0f,50.0f,0.0f),
+				D3DXVECTOR3(100.0f, 40.0f, 100.0f),
 				7);
 		}
 

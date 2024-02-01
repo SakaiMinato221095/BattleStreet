@@ -59,6 +59,8 @@ public:
 
 	virtual void InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 size, int nDamage);
 
+	void UpdateHit(void);
+
 	void Debug(void);
 
 	void UpdateData(D3DXVECTOR3 pos, D3DXVECTOR3 size) { m_data.pos = pos, m_data.size = size; }

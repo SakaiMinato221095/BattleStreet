@@ -15,6 +15,8 @@
 #include "renderer.h"
 #include "manager.h"
 
+#include "helper_sakai.h"
+
 #include "fade.h"
 
 #include "coll.h"
@@ -133,7 +135,7 @@ void CEnemy::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	// データの代入
 	m_data.pos = pos;										// 位置
 	m_data.rot = rot;										// 向き
-	m_data.size = D3DXVECTOR3(40.0f, 150.0f, 40.0f);		// サイズ
+	m_data.size = D3DXVECTOR3(40.0f, 200.0f, 40.0f);		// サイズ
 
 	m_data.nLife = 30;
 }
@@ -265,9 +267,25 @@ void CEnemy::UpdateCollisionPlayer(void)
 
 		if (m_pColl->Hit(CMgrColl::TAG_PLAYER, CMgrColl::EVENT_TYPE_PRESS) == true)
 		{
+			float fSpeed = -5.0f;
+
+			if (HelperSakai::IfRangeFloat(GetTargetLength(),0.0f,10.0f))
+			{
+				fSpeed *= 5.0f;
+			}
+			else if (HelperSakai::IfRangeFloat(GetTargetLength(), 10.0f, 50.0f))
+			{
+				fSpeed *= 3.0f;
+			}
+			else if (HelperSakai::IfRangeFloat(GetTargetLength(), 50.0f, 100.0f))
+			{
+				fSpeed *= 2.0f;
+			}
+
 			// ターゲットから離れる
 			SetRot(GetTargetRot());
-			SetMoveForward(-10.0f);
+			SetMoveForward(fSpeed);
+
 		}
 	}
 }
