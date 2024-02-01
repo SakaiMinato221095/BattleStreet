@@ -27,9 +27,9 @@
 //-	前方宣言
 //-======================================
 
-class CPlayer;
+class CCharacter;
 
-class CObj2dNone;
+class CObject2d;
 
 //-======================================
 //-	クラス定義
@@ -42,13 +42,24 @@ public:
 
 	typedef enum
 	{
-		TYPE_NONE_2D_LOGO = 0,	// タイトルロゴ
-		TYPE_NONE_2D_BUTTON,	// タイトルボタン
-		TYPE_NONE_2D_MAX
-	}TYPE_NONE_2D;
+		TEX_NULL = 0,		// なし
+		TEX_LOGO_000,		// タイトルロゴ
+		TEX_BUTTON_000,		// タイトルボタン
+		TEX_MAX
+	}TEX;
+
+	typedef enum
+	{
+		TYPE_2D_LOGO = 0,	// タイトルロゴ
+		TYPE_2D_BUTTON,	// タイトルボタン
+		TYPE_2D_MAX
+	}TYPE_2D;
 
 	CTitle();
 	~CTitle();
+
+	static HRESULT Load(void);
+	static void Unload(void);
 
 	HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow);
 	void Uninit(void);
@@ -57,9 +68,10 @@ public:
 
 private:
 
-	static CPlayer *m_pPlayer;
+	static CCharacter *m_pCharacter;
+	static CObject2d *m_apObj2d[TYPE_2D_MAX];
 
-	static CObj2dNone *m_apObj2dNone[TYPE_NONE_2D_MAX];
+	static int m_aTextureNldx[TEX_MAX];		// テクスチャ番号
 };
 
 #endif	// 二重インクルード防止の終了

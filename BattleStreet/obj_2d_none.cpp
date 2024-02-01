@@ -29,8 +29,6 @@
 const char *pTextureObj2dNone[] =
 {
 	NULL,										// なし
-	"data\\TEXTURE\\TitleLogo000.png",			// タイトルロゴのテクスチャ
-	"data\\TEXTURE\\TitleButton000.png",		// タイトルボタンのテクスチャ
 	"data\\TEXTURE\\BgPause.jpg",				// ポーズの背景
 	"data\\TEXTURE\\PauseGame.png",				// ポーズのゲーム
 	"data\\TEXTURE\\PauseRetryText.png",		// ポーズのリトライ

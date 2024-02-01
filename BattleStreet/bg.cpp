@@ -30,7 +30,6 @@
 // 背景テクスチャのコンスト定義
 const char *pTextureBg[] =
 {
-	"data\\TEXTURE\\Title.png",		// タイトルのテクスチャ
 	"data\\TEXTURE\\Result.png",	// リザルトのテクスチャ
 };
 
@@ -38,12 +37,12 @@ const char *pTextureBg[] =
 //-	静的変数宣言
 //-======================================
 
-int CMapManager::m_nTextureNldx[TEX_MAX] = {};	// テクスチャ
+int CBg::m_nTextureNldx[TEX_MAX] = {};	// テクスチャ
 
 //-------------------------------------
 //-	コンストラクタ
 //-------------------------------------
-CMapManager::CMapManager(int nPriority) : CObject2d(nPriority)
+CBg::CBg(int nPriority) : CObject2d(nPriority)
 {
 	ZeroMemory(&m_vtxTexData, sizeof(m_vtxTexData));
 }
@@ -51,7 +50,7 @@ CMapManager::CMapManager(int nPriority) : CObject2d(nPriority)
 //-------------------------------------
 //-	デストラクタ
 //-------------------------------------
-CMapManager::~CMapManager()
+CBg::~CBg()
 {
 
 }
@@ -59,7 +58,7 @@ CMapManager::~CMapManager()
 //-------------------------------------
 //- 背景のテクスチャの読み込み
 //-------------------------------------
-HRESULT CMapManager::Load(void)
+HRESULT CBg::Load(void)
 {
 	// デバイスを取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
@@ -103,7 +102,7 @@ HRESULT CMapManager::Load(void)
 //-------------------------------------
 //- 背景の読み込んだテクスチャの破棄
 //-------------------------------------
-void CMapManager::Unload(void)
+void CBg::Unload(void)
 {
 
 }
@@ -111,7 +110,7 @@ void CMapManager::Unload(void)
 //-------------------------------------
 //- 背景の初期化処理
 //-------------------------------------
-HRESULT CMapManager::Init(TEX tex)
+HRESULT CBg::Init(TEX tex)
 {
 	// テクスチャ割当
 	BindTexture(m_nTextureNldx[tex]);
@@ -132,7 +131,7 @@ HRESULT CMapManager::Init(TEX tex)
 //-------------------------------------
 //- 背景の終了処理
 //-------------------------------------
-void CMapManager::Uninit(void)
+void CBg::Uninit(void)
 {
 	// 2Dオブジェクトの終了
 	CObject2d::Uninit();
@@ -141,7 +140,7 @@ void CMapManager::Uninit(void)
 //-------------------------------------
 //- 背景の更新処理
 //-------------------------------------
-void CMapManager::Update(void)
+void CBg::Update(void)
 {
 	// テクスチャ座標の更新処理
 	AddTexPos();
@@ -156,7 +155,7 @@ void CMapManager::Update(void)
 //-------------------------------------
 //- 背景の描画処理
 //-------------------------------------
-void CMapManager::Draw(void)
+void CBg::Draw(void)
 {
 	// 2Dオブジェクトの描画処理
 	CObject2d::Draw();
@@ -165,23 +164,23 @@ void CMapManager::Draw(void)
 //-------------------------------------
 //- 背景の生成処理
 //-------------------------------------
-CMapManager *CMapManager::Create(TEX tex)
+CBg *CBg::Create(TEX tex)
 {
 	// 背景のポインタを宣言
-	CMapManager *pCMapManager = DBG_NEW CMapManager;
+	CBg *pCBg = DBG_NEW CBg;
 
 	// 生成の成功の有無を判定
-	if (pCMapManager != NULL)
+	if (pCBg != NULL)
 	{
 		// 初期化処理 if(背景の初期化成功の有無を判定)
-		if (FAILED(pCMapManager->Init(tex)))
+		if (FAILED(pCBg->Init(tex)))
 		{// 失敗時
 
 			// 「なし」を返す
 			return NULL;
 		}
 	}
-	else if (pCMapManager == NULL)
+	else if (pCBg == NULL)
 	{// 失敗時
 
 		// 「なし」を返す
@@ -189,13 +188,13 @@ CMapManager *CMapManager::Create(TEX tex)
 	}
 
 	// 背景のポインタを返す
-	return pCMapManager;
+	return pCBg;
 }
 
 //-------------------------------------
 //- 背景の設定処理
 //-------------------------------------
-void CMapManager::Set(D3DXVECTOR3 pos, D3DXVECTOR3 size,D3DXCOLOR color, D3DXVECTOR2 texPos, D3DXVECTOR2 texMove)
+void CBg::Set(D3DXVECTOR3 pos, D3DXVECTOR3 size,D3DXCOLOR color, D3DXVECTOR2 texPos, D3DXVECTOR2 texMove)
 {
 	// 情報代入（頂点値情報）
 	CObject2d::VtxData vtxData = GetVtxData();
@@ -215,7 +214,7 @@ void CMapManager::Set(D3DXVECTOR3 pos, D3DXVECTOR3 size,D3DXCOLOR color, D3DXVEC
 //-------------------------------------
 //- 背景の頂点情報設定
 //-------------------------------------
-void CMapManager::SetVtx(void)
+void CBg::SetVtx(void)
 {
 	// 情報代入（頂点値情報）
 	CObject2d::VtxData vtxData = GetVtxData();
@@ -291,7 +290,7 @@ void CMapManager::SetVtx(void)
 //-------------------------------------
 //- 背景のテクスチャ座標の加算処理
 //-------------------------------------
-void CMapManager::AddTexPos(void)
+void CBg::AddTexPos(void)
 {
 	// 変数宣言（情報取得）
 	D3DXVECTOR2 texPos = m_vtxTexData.m_texPos;		// テクスチャ位置
@@ -308,7 +307,7 @@ void CMapManager::AddTexPos(void)
 //-------------------------------------
 //- 背景のテクスチャ座標の補正
 //-------------------------------------
-void CMapManager::DestTexPos(void)
+void CBg::DestTexPos(void)
 {
 	// 変数宣言（情報取得）
 	D3DXVECTOR2 texPos = m_vtxTexData.m_texPos;		// テクスチャ位置

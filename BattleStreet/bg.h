@@ -29,7 +29,7 @@
 //-	クラス定義
 //-======================================
 
-class CMapManager : public CObject2d
+class CBg : public CObject2d
 {
 
 public:
@@ -37,8 +37,7 @@ public:
 	// 背景のテクスチャ列挙型
 	typedef enum
 	{
-		TEX_TITLE = 0,		// タイトル
-		TEX_RESULT,			// リザルト
+		TEX_RESULT = 0,			// リザルト
 		TEX_MAX
 	}TEX;
 
@@ -49,8 +48,8 @@ public:
 		D3DXVECTOR2 m_texMove;		// テクスチャの移動量
 	}VtxTexData;
 
-	CMapManager(int nPriority = 0);
-	~CMapManager();
+	CBg(int nPriority = 0);
+	~CBg();
 
 	static HRESULT Load(void);
 	static void Unload(void);
@@ -60,7 +59,7 @@ public:
 	void Update(void);
 	void Draw(void);
 
-	static CMapManager * Create(TEX tex);
+	static CBg * Create(TEX tex);
 
 	void Set(
 		D3DXVECTOR3 pos = D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f),

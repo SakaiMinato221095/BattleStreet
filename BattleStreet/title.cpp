@@ -12,6 +12,11 @@
 
 #include "title.h"
 
+#include "manager.h"
+#include "renderer.h"
+
+#include "manager_texture.h"
+
 #include "camera.h"
 
 #include "fade.h"
@@ -20,24 +25,31 @@
 #include "xinput.h"
 #include "sound.h"
 
-
-#include "player.h"
+#include "character.h"
 
 #include "skybox.h"
 #include "obj_3d_field.h"
 
-#include "obj_2d_none.h"
+#include "object2d.h"
 
 //=======================================
-//=	マクロ定義
+//=	コンスト定義
 //=======================================
+
+// テクスチャ情報
+const char* pDataTexture[CTitle::TEX_MAX] =
+{
+	"data\\TEXTURE\\Title\\Logo000.png",		// タイトルロゴのテクスチャ
+	"data\\TEXTURE\\Title\\Button000.png",		// タイトルボタンのテクスチャ
+};
 
 //=======================================
 //=	静的変数宣言
 //=======================================
 
-CPlayer *CTitle::m_pPlayer = {};
-CObj2dNone *CTitle::m_apObj2dNone[TYPE_NONE_2D_MAX] = {};
+CCharacter *CTitle::m_pCharacter = {};
+CObject2d *CTitle::m_apObj2d[TYPE_2D_MAX] = {};
+int CTitle::m_aTextureNldx[TEX_MAX] = {};
 
 //-------------------------------------
 //-	タイトルのコンストラクタ
@@ -56,30 +68,70 @@ CTitle::~CTitle()
 }
 
 //-------------------------------------
+//- 通常2Dオブジェクトの読み込み処理
+//-------------------------------------
+HRESULT CTitle::Load(void)
+{
+	// 取得処理
+	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
+	CManagerTexture* pManagerTexture = CManager::GetInstance()->GetManagerTexture();
+
+	// 取得の有無を判定
+	if (pDevice == nullptr ||
+		pManagerTexture == nullptr)
+	{// 失敗時
+
+		// 初期化処理を抜ける
+		return E_FAIL;
+	}
+
+	// テクスチャ設定
+	for (int nCount = 0; nCount < TEX_MAX; nCount++)
+	{
+		// テクスチャ番号の取得（テクスチャの割当）
+		m_aTextureNldx[nCount] = pManagerTexture->Regist(pDataTexture[nCount]);
+
+		// テクスチャの読み込み成功の有無を確認
+		if (m_aTextureNldx[nCount] == -1)
+		{
+			// 失敗時に初期化処理を抜ける
+			return E_FAIL;
+		}
+	}
+
+	// 成功を返す
+	return S_OK;
+}
+
+//-------------------------------------
+//- 背景の読み込んだテクスチャの破棄
+//-------------------------------------
+void CTitle::Unload(void)
+{
+
+}
+
+//-------------------------------------
 //- タイトルの初期化処理
 //-------------------------------------
 HRESULT CTitle::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 {
-	// カメラ位置の設定処理
+	// 情報取得
 	CCamera *pCamera = CManager::GetInstance()->GetCamera();
+	CSound* pSound = CManager::GetInstance()->GetSound();
 
-	if (pCamera == NULL)
+	// 取得の有無を判定
+	if (pCamera == nullptr ||
+		pSound == nullptr)
 	{
-		return E_FAIL;
-	}
-
-	// サウンドのポインタを宣言
-	CSound *pSound = CManager::GetInstance()->GetSound();
-
-	// サウンドの情報取得の成功を判定
-	if (pSound == NULL)
-	{
-		// 処理を抜ける
 		return E_FAIL;
 	}
 
 	// カメラの設定処理
 	pCamera->SetMode(CCamera::MODE_TITLE);
+
+	// タイトルの再生
+	pSound->Play(CSound::LABEL_BGM_TITLE);
 
 	// スカイボックスの生成
 	CSkybox::Create(
@@ -100,64 +152,64 @@ HRESULT CTitle::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 			D3DXVECTOR2(10.0f, 10.0f));
 	}
 
-	if (m_pPlayer == NULL)
+	if (m_pCharacter == NULL)
 	{
 		// プレイヤーの生成
-		m_pPlayer = CPlayer::Create(
-			D3DXVECTOR3(0.0f, 0.0f, 0.0f),				// 位置
-			D3DXVECTOR3(0.0f, -D3DX_PI * 0.5f, 0.0f),	// 向き
+		m_pCharacter = CCharacter::Create(
 			CModel::MODEL_TYPE_PLAYER,			// モデル
-			CMotion::MOTION_TYPE_PLAYER);			// モーション
+			CMotion::MOTION_TYPE_PLAYER,
+			1);			// モーション
 	}
 
-	// オブジェクト管理の生成
-	m_apObj2dNone[TYPE_NONE_2D_LOGO] = CObj2dNone::Create(
-		CObj2dNone::TEX_TITLE_LOGO,
-		D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.3f, 0.0f),
-		D3DXVECTOR3(300.0f, 150.0f, 0.0f),
-		D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-
-	// オブジェクト管理の初期化処理
-	if (m_apObj2dNone[TYPE_NONE_2D_LOGO] == NULL)
-	{// 失敗時
-
-		// 失敗メッセージ
-		MessageBox(hWnd, "効果なし2Dオブジェクトの生成", "初期処理失敗！", MB_ICONWARNING);
-
-		// 初期化を抜ける
-		return E_FAIL;
-	}
-
-	// オブジェクト管理の有無を判定
-	if (m_apObj2dNone[TYPE_NONE_2D_BUTTON] == NULL)
+	for (int nCnt2d = 0; nCnt2d < TYPE_2D_MAX; nCnt2d++)
 	{
-		// オブジェクト管理の生成
-		m_apObj2dNone[TYPE_NONE_2D_BUTTON] = CObj2dNone::Create(
-			CObj2dNone::TEX_TITLE_BUTTON,
-			D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.8f, 0.0f),
-			D3DXVECTOR3(200.0f, 100.0f, 0.0f),
-			D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+		if (m_apObj2d[nCnt2d] == nullptr)
+		{
+			switch (nCnt2d)
+			{
+			case TYPE_2D_LOGO:
 
-		// オブジェクト管理の初期化処理
-		if (m_apObj2dNone[TYPE_NONE_2D_BUTTON] == NULL)
-		{// 失敗時
+				// オブジェクト管理の生成
+				m_apObj2d[nCnt2d] = CObject2d::Create(
+					D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.3f, 0.0f),
+					D3DXVECTOR3(300.0f, 150.0f, 0.0f),
+					D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 
+				m_apObj2d[nCnt2d]->BindTexture(m_aTextureNldx[nCnt2d]);
+
+				break;
+
+			case TYPE_2D_BUTTON:
+
+				// オブジェクト管理の生成
+				m_apObj2d[nCnt2d] = CObject2d::Create(
+					D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.8f, 0.0f),
+					D3DXVECTOR3(200.0f, 100.0f, 0.0f),
+					D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+
+				m_apObj2d[nCnt2d]->BindTexture(m_aTextureNldx[nCnt2d]);
+
+				break;
+			}
+
+			if (m_apObj2d[nCnt2d] == nullptr)
+			{
+				// 失敗メッセージ
+				MessageBox(hWnd, "2Dオブジェクトの生成", "初期処理失敗！", MB_ICONWARNING);
+
+				// 初期化を抜ける
+				return E_FAIL;
+			}
+		}
+		else
+		{
 			// 失敗メッセージ
-			MessageBox(hWnd, "効果なし2Dオブジェクトの生成", "初期処理失敗！", MB_ICONWARNING);
+			MessageBox(hWnd, "2Dオブジェクトの生成", "初期処理失敗！", MB_ICONWARNING);
 
 			// 初期化を抜ける
 			return E_FAIL;
 		}
 	}
-	else
-	{// ゴミが入っているとき
-
-	 // 初期化を抜ける
-		return E_FAIL;
-	}
-
-	// タイトルの再生
-	pSound->Play(CSound::LABEL_BGM_TITLE);
 
 	// 成功を返す
 	return S_OK;
@@ -168,14 +220,16 @@ HRESULT CTitle::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 //-------------------------------------
 void CTitle::Uninit(void)
 {
-	if (m_pPlayer != NULL)
+	if (m_pCharacter != NULL)
 	{
-		m_pPlayer->Uninit();
-		m_pPlayer = NULL;
+		m_pCharacter->Uninit();
+		m_pCharacter = NULL;
 	}
-	for (int nCount = 0; nCount < TYPE_NONE_2D_MAX; nCount++)
+
+	for (int nCount = 0; nCount < TYPE_2D_MAX; nCount++)
 	{
-		m_apObj2dNone[nCount] = NULL;
+		m_apObj2d[nCount]->Uninit();
+		m_apObj2d[nCount] = nullptr;
 	}
 
 	// オブジェクトの全開放処理

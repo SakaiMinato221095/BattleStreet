@@ -18,6 +18,7 @@
 #include "obj_3d_field.h"
 
 #include "obj_2d_none.h"
+#include "title.h"
 #include "number.h"
 #include "bg.h"
 #include "effect.h"
@@ -45,6 +46,16 @@ CManagerTexture::~CManagerTexture()
 HRESULT CManagerTexture::Load(HWND hWnd)
 {
 	// フィールド
+	if (FAILED(CTitle::Load()))
+	{
+		// 失敗メッセージ
+		MessageBox(hWnd, "タイトルのデータ", "データ読み込み処理失敗！", MB_ICONWARNING);
+
+		// データ読み込みを抜ける
+		return E_FAIL;
+	}
+
+	// フィールド
 	if (FAILED(CObj3dField::Load()))
 	{
 		// 失敗メッセージ
@@ -66,10 +77,10 @@ HRESULT CManagerTexture::Load(HWND hWnd)
 	}
 
 	// 背景
-	if (FAILED(CMapManager::Load()))
+	if (FAILED(CBg::Load()))
 	{// 失敗時
 
-	 // 失敗メッセージ
+		// 失敗メッセージ
 		MessageBox(hWnd, "背景のデータ", "データ読み込み処理失敗！", MB_ICONWARNING);
 
 		// データ読み込みを抜ける
@@ -92,7 +103,7 @@ HRESULT CManagerTexture::Load(HWND hWnd)
 	{// 失敗時
 
 		// 失敗メッセージ
-		MessageBox(hWnd, "数字のデータ", "データ読み込み処理失敗！", MB_ICONWARNING);
+		MessageBox(hWnd, "エフェクトのデータ", "データ読み込み処理失敗！", MB_ICONWARNING);
 
 		// データ読み込みを抜ける
 		return E_FAIL;

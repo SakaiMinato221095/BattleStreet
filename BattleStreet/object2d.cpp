@@ -160,21 +160,12 @@ void CObject2d::Draw(void)
 }
 
 //-------------------------------------
-//- 2Dオブジェクトのテクスチャ割当
-//-------------------------------------
-void CObject2d::BindTexture(int nTextureNldx)
-{
-	// テクスチャの番号割当
-	m_nTextureNldxUse = nTextureNldx;
-}
-
-//-------------------------------------
 //- 2Dオブジェクトの生成処理
 //-------------------------------------
 CObject2d * CObject2d::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXCOLOR color)
 {
 	// 2Dオブジェクトの生成
-	CObject2d *pObject2d = DBG_NEW CObject2d(3);
+	CObject2d *pObject2d = DBG_NEW CObject2d(7);
 
 	// 生成の成功の有無を判定
 	if (pObject2d != NULL)

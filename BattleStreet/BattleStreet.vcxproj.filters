@@ -34,9 +34,6 @@
     <Filter Include="Effect">
       <UniqueIdentifier>{733fcb27-9970-40e4-9975-856652c6b89a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="DataManager">
-      <UniqueIdentifier>{9efbb211-f816-4443-aeec-2149754a366c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Map">
       <UniqueIdentifier>{d8684553-66ee-42ab-ac83-68358fea487f}</UniqueIdentifier>
     </Filter>
@@ -72,6 +69,9 @@
     </Filter>
     <Filter Include="Template">
       <UniqueIdentifier>{1a67f52d-dcd8-434d-b6db-4412b2e282af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Data">
+      <UniqueIdentifier>{9efbb211-f816-4443-aeec-2149754a366c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -151,10 +151,10 @@
       <Filter>Attack</Filter>
     </ClCompile>
     <ClCompile Include="manager_texture.cpp">
-      <Filter>DataManager</Filter>
+      <Filter>Data</Filter>
     </ClCompile>
     <ClCompile Include="manager_model.cpp">
-      <Filter>DataManager</Filter>
+      <Filter>Data</Filter>
     </ClCompile>
     <ClCompile Include="map_manager.cpp">
       <Filter>Map</Filter>
@@ -318,10 +318,10 @@
       <Filter>Attack</Filter>
     </ClInclude>
     <ClInclude Include="manager_model.h">
-      <Filter>DataManager</Filter>
+      <Filter>Data</Filter>
     </ClInclude>
     <ClInclude Include="manager_texture.h">
-      <Filter>DataManager</Filter>
+      <Filter>Data</Filter>
     </ClInclude>
     <ClInclude Include="map_manager.h">
       <Filter>Map</Filter>

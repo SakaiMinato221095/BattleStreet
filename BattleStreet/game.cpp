@@ -205,10 +205,10 @@ HRESULT CGame::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	{
 		// プレイヤーの生成
 		m_pPlayer = CPlayer::Create(
-			D3DXVECTOR3(0.0f, 0.0f, 0.0f),				// 位置
-			D3DXVECTOR3(0.0f, -D3DX_PI * 0.5f, 0.0f),	// 向き
-			CModel::MODEL_TYPE_PLAYER,					// モデル
-			CMotion::MOTION_TYPE_PLAYER);				// モーション
+			D3DXVECTOR3(0.0f, 0.0f, 0.0f),		// 位置
+			D3DXVECTOR3(0.0f, D3DX_PI, 0.0f),	// 向き
+			CModel::MODEL_TYPE_PLAYER,			// モデル
+			CMotion::MOTION_TYPE_PLAYER);		// モーション
 	}
 
 	// ゲームの再生

@@ -31,7 +31,7 @@
 //=	静的変数宣言
 //=======================================
 
-CMapManager *CResult::m_pBg = NULL;			// 背景のポインタ
+CBg *CResult::m_pBg = NULL;			// 背景のポインタ
 
 //-------------------------------------
 //-	リザルトのコンストラクタ
@@ -68,7 +68,7 @@ HRESULT CResult::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	if (m_pBg == NULL)
 	{
 		// 背景の生成処理
-		m_pBg = CMapManager::Create(CMapManager::TEX_RESULT);
+		m_pBg = CBg::Create(CBg::TEX_RESULT);
 
 		// 背景の有無を判定
 		if (m_pBg == NULL)

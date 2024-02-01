@@ -51,7 +51,7 @@ public:
 
 	static CObject2d *Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXCOLOR color);
 
-	void BindTexture(int nTextureNldx);
+	void BindTexture(int nTextureNldx) { m_nTextureNldxUse = nTextureNldx; }
 
 	void SetVtxData(VtxData vtxData) { m_vtxData = vtxData; }
 	VtxData GetVtxData(void) { return m_vtxData; }
