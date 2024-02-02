@@ -44,12 +44,13 @@ public:
 	// 当たり判定タグ
 	typedef enum
 	{
-		TAG_NONE = 0,		// 効果なし
-		TAG_PLAYER,			// プレイヤー
-		TAG_ENEMY,			// 敵
-		TAG_ATTACK,			// 攻撃
-		TAG_WALL_X,			// X軸の壁
-		TAG_WALL_Z,			// Z軸の壁
+		TAG_NONE = 0,			// 効果なし
+		TAG_PLAYER,				// プレイヤー
+		TAG_ENEMY,				// 敵
+		TAG_ATTACK,				// 攻撃
+		TAG_WALL_X,				// X軸の壁
+		TAG_WALL_Z,				// Z軸の壁
+		TAG_SPAWN_ENEMY_WALL,	// 敵出現壁
 		TAG_MAX
 	}TAG;
 

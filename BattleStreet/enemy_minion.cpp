@@ -1,7 +1,7 @@
 
 //-===============================================
 //-
-//-	ボス敵の処理[enemy_boss.cpp]
+//-	雑魚敵の処理[enemy_minion.cpp]
 //- Author Sakai Minato
 //-
 //-===============================================
@@ -10,7 +10,7 @@
 //-	インクルード
 //-======================================
 
-#include "enemy_boss.h"
+#include "enemy_minion.h"
 
 #include "character.h"
 
@@ -62,7 +62,7 @@ const D3DXVECTOR3 PARTS_SIZE[5]
 	D3DXVECTOR3(20.0f,20.0f,20.0f),
 };
 
-const int AI_COUNT_CHANGE[CEnemyBoss::MOTION_STATE_MAX]
+const int AI_COUNT_CHANGE[CEnemyMinion::MOTION_STATE_MAX]
 {
 	120,
 	0,
@@ -82,7 +82,7 @@ const int AI_COUNT_CHANGE[CEnemyBoss::MOTION_STATE_MAX]
 //-------------------------------------
 //-	敵のコンストラクタ
 //-------------------------------------
-CEnemyBoss::CEnemyBoss()
+CEnemyMinion::CEnemyMinion()
 {
 	ZeroMemory(&m_info, sizeof(m_info));
 	ZeroMemory(&m_infoVisual, sizeof(m_infoVisual));
@@ -93,7 +93,7 @@ CEnemyBoss::CEnemyBoss()
 //-------------------------------------
 //-	敵のデストラクタ
 //-------------------------------------
-CEnemyBoss::~CEnemyBoss()
+CEnemyMinion::~CEnemyMinion()
 {
 
 }
@@ -101,7 +101,7 @@ CEnemyBoss::~CEnemyBoss()
 //-------------------------------------
 //- 敵の初期化処理
 //-------------------------------------
-HRESULT CEnemyBoss::Init(CModel::MODEL_TYPE modelType, CMotion::MOTION_TYPE motionType, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+HRESULT CEnemyMinion::Init(CModel::MODEL_TYPE modelType, CMotion::MOTION_TYPE motionType, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
 	// Xファイルオブジェクトの終了
 	CEnemy::Init(pos, rot);
@@ -120,7 +120,7 @@ HRESULT CEnemyBoss::Init(CModel::MODEL_TYPE modelType, CMotion::MOTION_TYPE moti
 		}
 
 		// 初期状態の設定
-		SetState(CEnemyBoss::MOTION_STATE_NEUTRAL);
+		SetState(CEnemyMinion::MOTION_STATE_NEUTRAL);
 	}
 
 	// 成功を返す
@@ -130,7 +130,7 @@ HRESULT CEnemyBoss::Init(CModel::MODEL_TYPE modelType, CMotion::MOTION_TYPE moti
 //-------------------------------------
 //- 敵の終了処理
 //-------------------------------------
-void CEnemyBoss::Uninit(void)
+void CEnemyMinion::Uninit(void)
 {
 	if (m_infoVisual.pCharacter != nullptr)
 	{
@@ -152,7 +152,7 @@ void CEnemyBoss::Uninit(void)
 //-------------------------------------
 //- 敵の更新処理
 //-------------------------------------
-void CEnemyBoss::Update(void)
+void CEnemyMinion::Update(void)
 {
 	// 前回の位置を更新
 	SetPosOld(GetPos());
@@ -185,10 +185,7 @@ void CEnemyBoss::Update(void)
 	// 当たり判定更新処理
 	UpdateCollision();
 
-	if (m_infoAi.state != AI_STATE_CHARGE_ATTACK || 
-		m_infoAi.state != AI_STATE_KICK_1 ||
-		m_infoAi.state != AI_STATE_KICK_2 ||
-		m_infoAi.state != AI_STATE_KICK_3)
+	if (m_infoAi.state != AI_STATE_KICK_1)
 	{
 		// 当たり判定更新処理
 		UpdateCollisionPlayer();
@@ -207,7 +204,7 @@ void CEnemyBoss::Update(void)
 //-------------------------------------
 //- 敵の描画処理
 //-------------------------------------
-void CEnemyBoss::Draw(void)
+void CEnemyMinion::Draw(void)
 {
 	// Xファイルオブジェクトの描画処理
 	CEnemy::Draw();
@@ -216,7 +213,7 @@ void CEnemyBoss::Draw(void)
 //-------------------------------------
 //-	敵のモデルの初期設定
 //-------------------------------------
-void CEnemyBoss::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+void CEnemyMinion::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
 	CEnemy::InitSet(pos, rot);
 }
@@ -224,7 +221,7 @@ void CEnemyBoss::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 //-------------------------------------
 //-	敵のダメージ処理
 //-------------------------------------
-void CEnemyBoss::HitDamage(int nDamage)
+void CEnemyMinion::HitDamage(int nDamage)
 {
 	SetLife(GetLife() - nDamage);
 
@@ -245,10 +242,10 @@ void CEnemyBoss::HitDamage(int nDamage)
 //-------------------------------------
 //- 通常敵の生成処理
 //-------------------------------------
-CEnemyBoss* CEnemyBoss::Create(CModel::MODEL_TYPE modelType, CMotion::MOTION_TYPE motionType, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+CEnemyMinion* CEnemyMinion::Create(CModel::MODEL_TYPE modelType, CMotion::MOTION_TYPE motionType, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
 	// 通常敵の生成
-	CEnemyBoss* pEnemyWeak = DBG_NEW CEnemyBoss;
+	CEnemyMinion* pEnemyWeak = DBG_NEW CEnemyMinion;
 
 	// 生成の成功の有無を判定
 	if (pEnemyWeak != NULL)
@@ -275,7 +272,7 @@ CEnemyBoss* CEnemyBoss::Create(CModel::MODEL_TYPE modelType, CMotion::MOTION_TYP
 //-------------------------------------
 //-	モーションの更新処理
 //-------------------------------------
-void CEnemyBoss::UpdateMotion(void)
+void CEnemyMinion::UpdateMotion(void)
 {
 	if (m_infoVisual.pCharacter == nullptr)
 	{
@@ -358,7 +355,7 @@ void CEnemyBoss::UpdateMotion(void)
 //-------------------------------------
 //-	見た目の更新処理
 //-------------------------------------
-void CEnemyBoss::UpdateVisual(void)
+void CEnemyMinion::UpdateVisual(void)
 {
 	if (m_infoVisual.pCharacter != nullptr)
 	{
@@ -372,48 +369,28 @@ void CEnemyBoss::UpdateVisual(void)
 //-------------------------------------
 //-	AI更新処理
 //-------------------------------------
-void CEnemyBoss::UpdateAi(void)
+void CEnemyMinion::UpdateAi(void)
 {
 	switch (m_infoAi.state)
 	{
-	case CEnemyBoss::AI_STATE_WAIT:
+	case CEnemyMinion::AI_STATE_WAIT:
 
 		// 待機AI
 		AiWait();
 
 		break;
 
-	case CEnemyBoss::AI_STATE_KICK_1:
+	case CEnemyMinion::AI_STATE_KICK_1:
 
 		// キックコンボAI
 		AiKickCombo();
 
 		break;
 
-	case CEnemyBoss::AI_STATE_KICK_2:
-
-		// キックコンボAI
-		AiKickCombo();
-
-		break;
-
-	case CEnemyBoss::AI_STATE_KICK_3:
-
-		// キックコンボAI
-		AiKickCombo();
-
-		break;
-
-	case CEnemyBoss::AI_STATE_CHARGE:
+	case CEnemyMinion::AI_STATE_CHARGE:
 
 		// 突進
 		AiCharge();
-
-		break;
-	case CEnemyBoss::AI_STATE_CHARGE_ATTACK:
-
-		// 突進攻撃
-		AiChargeAttack();
 
 		break;
 	}
@@ -422,7 +399,7 @@ void CEnemyBoss::UpdateAi(void)
 //-------------------------------------
 //- 通常状態プレイヤーの攻撃の更新処理
 //-------------------------------------
-void CEnemyBoss::UpdateAttack(void)
+void CEnemyMinion::UpdateAttack(void)
 {
 	// 攻撃の情報更新処理
 	if (m_infoAttach.pAttack != nullptr)
@@ -450,7 +427,7 @@ void CEnemyBoss::UpdateAttack(void)
 //-------------------------------------
 //-	待機AI
 //-------------------------------------
-void CEnemyBoss::AiWait(void)
+void CEnemyMinion::AiWait(void)
 {
 	if (m_infoAi.nCnt >= m_infoAi.nCntChange)
 	{
@@ -465,7 +442,7 @@ void CEnemyBoss::AiWait(void)
 
 		// ターゲットを向く
 		SetRot(GetTargetRot());
-		
+
 		// プレイヤーと遠い
 		if (HelperSakai::IfRangeFloat(GetTargetLength(), 500.0f, 1000.0f))
 		{
@@ -478,7 +455,7 @@ void CEnemyBoss::AiWait(void)
 //-------------------------------------
 //-	キックAI
 //-------------------------------------
-void CEnemyBoss::AiKickCombo(void)
+void CEnemyMinion::AiKickCombo(void)
 {
 	float fLength = GetTargetLength() * 0.01f;
 
@@ -490,12 +467,12 @@ void CEnemyBoss::AiKickCombo(void)
 //-------------------------------------
 //-	突進AI
 //-------------------------------------
-void CEnemyBoss::AiCharge(void)
+void CEnemyMinion::AiCharge(void)
 {
 	if (HelperSakai::IfRangeFloat(GetTargetLength(), 0.0f, 200.0f))
 	{
 		// 状態設定
-		SetState(MOTION_STATE_CHARGE_ATTACK);
+		SetAiActiv();
 	}
 	else
 	{
@@ -506,30 +483,9 @@ void CEnemyBoss::AiCharge(void)
 }
 
 //-------------------------------------
-//-	突進攻撃AI
-//-------------------------------------
-void CEnemyBoss::AiChargeAttack(void)
-{
-	if (m_infoAi.nCnt >= m_infoAi.nCntChange)
-	{
-		// 状態設定
-		SetState(MOTION_STATE_NEUTRAL);
-
-		m_infoAi.nCnt = 0;
-	}
-	else
-	{
-		m_infoAi.nCnt++;
-
-		// 近づく
-		SetMoveForward(17.5f);
-	}
-}
-
-//-------------------------------------
 //-	行動AI設定処理
 //-------------------------------------
-void CEnemyBoss::SetAiActiv(void)
+void CEnemyMinion::SetAiActiv(void)
 {
 	if (HelperSakai::IfRangeFloat(GetTargetLength(), 0.0f, 500.0f))
 	{
@@ -551,7 +507,7 @@ void CEnemyBoss::SetAiActiv(void)
 //-------------------------------------
 //-	ダメージの更新処理
 //-------------------------------------
-void CEnemyBoss::UpdateDamage(void)
+void CEnemyMinion::UpdateDamage(void)
 {
 	// ターゲットを向く
 	SetRot(GetTargetRot());
@@ -563,7 +519,7 @@ void CEnemyBoss::UpdateDamage(void)
 //-------------------------------------
 //-	吹き飛ばしダメージの更新処理
 //-------------------------------------
-void CEnemyBoss::UpdateBigDamage(void)
+void CEnemyMinion::UpdateBigDamage(void)
 {
 	// ターゲットを向く
 	SetRot(GetTargetRot());
@@ -575,34 +531,16 @@ void CEnemyBoss::UpdateBigDamage(void)
 //-------------------------------------
 //-	コンボ設定処理
 //-------------------------------------
-void CEnemyBoss::SetCombo(void)
+void CEnemyMinion::SetCombo(void)
 {
-	if (m_infoAi.bCombo == false)
-	{
-		// 状態設定
-		SetState(MOTION_STATE_KICK_1);
-	}
-	else if (m_infoAi.state == AI_STATE_KICK_1)
-	{
-		// 状態設定
-		SetState(MOTION_STATE_KICK_2);
-	}
-	else if (m_infoAi.state == AI_STATE_KICK_2)
-	{
-		// 状態設定
-		SetState(MOTION_STATE_KICK_3);
-	}
-	else if (m_infoAi.state == AI_STATE_KICK_3)
-	{
-		// 状態設定
-		SetState(MOTION_STATE_NEUTRAL);
-	}
+	// 状態設定
+	SetState(MOTION_STATE_KICK_1);
 }
 
 //-------------------------------------
 //-	行動AI設定処理
 //-------------------------------------
-void CEnemyBoss::SetAttack(int nPartsNum)
+void CEnemyMinion::SetAttack(int nPartsNum)
 {
 	if (m_infoAttach.pAttack == nullptr)
 	{
@@ -634,7 +572,7 @@ void CEnemyBoss::SetAttack(int nPartsNum)
 //-------------------------------------
 //-	行動状態設定処理
 //-------------------------------------
-void CEnemyBoss::SetState(MOTION_STATE motionState)
+void CEnemyMinion::SetState(MOTION_STATE motionState)
 {
 	// 現在の状態リセット処理
 	ReSetState();
@@ -645,45 +583,27 @@ void CEnemyBoss::SetState(MOTION_STATE motionState)
 
 	switch (motionState)
 	{
-	case CEnemyBoss::MOTION_STATE_NEUTRAL:
+	case CEnemyMinion::MOTION_STATE_NEUTRAL:
 
 		m_infoAi.state = AI_STATE_WAIT;
 
 		break;
-	case CEnemyBoss::MOTION_STATE_MOVE:
+	case CEnemyMinion::MOTION_STATE_MOVE:
 		break;
-	case CEnemyBoss::MOTION_STATE_KICK_1:
+	case CEnemyMinion::MOTION_STATE_KICK_1:
 
 		m_infoAi.state = AI_STATE_KICK_1;
-		m_infoAi.bCombo = true;
 		SetAttack(PARTS_FOOT_L);
 
 		break;
-	case CEnemyBoss::MOTION_STATE_KICK_2:
 
-		m_infoAi.state = AI_STATE_KICK_2;
-		m_infoAi.bCombo = true;
-		SetAttack(PARTS_FOOT_R);
-
-		break;
-	case CEnemyBoss::MOTION_STATE_KICK_3:
-
-		m_infoAi.state = AI_STATE_KICK_3;
-		SetAttack(PARTS_FOOT_L);
-
-		break;
-	case CEnemyBoss::MOTION_STATE_CHARGE:
+	case CEnemyMinion::MOTION_STATE_CHARGE:
 
 		m_infoAi.state = AI_STATE_CHARGE;
 
 		break;
-	case CEnemyBoss::MOTION_STATE_CHARGE_ATTACK:
 
-		m_infoAi.state = AI_STATE_CHARGE_ATTACK;
-		SetAttack(PARTS_BODY);
-
-		break;
-	case CEnemyBoss::MOTION_STATE_DAMAGE:
+	case CEnemyMinion::MOTION_STATE_DAMAGE:
 
 		m_info.state = STATE_DAMAGE;
 
@@ -693,7 +613,7 @@ void CEnemyBoss::SetState(MOTION_STATE motionState)
 		}
 
 		break;
-	case CEnemyBoss::MOTION_STATE_BIG_DAMAGE:
+	case CEnemyMinion::MOTION_STATE_BIG_DAMAGE:
 
 		m_info.state = STATE_BIG_DAMAGE;
 
@@ -709,11 +629,10 @@ void CEnemyBoss::SetState(MOTION_STATE motionState)
 //-------------------------------------
 //-	現在の状態リセット処理
 //-------------------------------------
-void CEnemyBoss::ReSetState(void)
+void CEnemyMinion::ReSetState(void)
 {
 	m_infoAi.nCnt = 0;
 	m_infoAi.nCntChange = 0;
-	m_infoAi.bCombo = false;
 	m_info.state = STATE_NORMAL;
 	m_infoAi.state = AI_STATE_WAIT;
 
@@ -721,7 +640,7 @@ void CEnemyBoss::ReSetState(void)
 	{
 		m_infoVisual.pCharacter->SetColorAll(D3DXCOLOR(1.0f, 1.0f, 1.0, 1.0f));
 	}
-	
+
 	if (m_infoAttach.pAttack != nullptr)
 	{
 		// 終了処理
@@ -733,7 +652,7 @@ void CEnemyBoss::ReSetState(void)
 //-------------------------------------
 //- プレイヤーのデバック表示
 //-------------------------------------
-void CEnemyBoss::Debug(void)
+void CEnemyMinion::Debug(void)
 {
 	// デバックプロックの取得
 	CDebugProc* pDebugProc = CManager::GetInstance()->GetDbugProc();

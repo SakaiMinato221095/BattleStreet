@@ -9,14 +9,16 @@ SCRIPT			# この行は絶対消さないこと！
 #------------------------------------------------------------------------------
 # モデル数
 #------------------------------------------------------------------------------
-NUM_MODEL = 3
+NUM_MODEL = 5
 
 #------------------------------------------------------------------------------
 # モデルファイル名
 #------------------------------------------------------------------------------
 MODEL_FILENAME = data/MODEL/alien000/alien000_head.x
-MODEL_FILENAME = data/MODEL/alien000/alien000_leg_L.x
 MODEL_FILENAME = data/MODEL/alien000/alien000_leg_R.x
+MODEL_FILENAME = data/MODEL/alien000/alien000_leg_L.x
+MODEL_FILENAME = data/MODEL/alien000/alien000_foot_L.x
+MODEL_FILENAME = data/MODEL/alien000/alien000_foot_L.x
 
 #------------------------------------------------------------------------------
 # キャラクター情報
@@ -26,7 +28,7 @@ CHARACTERSET
 	JUMP = 10.25					# ジャンプ量
 	RADIUS = 20.0					# 半径
 	HEIGHT = 40.0					# 高さ
-	NUM_PARTS = 3					# パーツ数
+	NUM_PARTS = 5					# パーツ数
 
 	PARTSSET
 		INDEX = 0					# 頭
@@ -48,4 +50,19 @@ CHARACTERSET
 		POS = 20.0 -28.0 0.0
 		ROT = 0.0 0.0 0.0
 	END_PARTSSET
+	
+	PARTSSET
+		INDEX = 3					# 右足
+		PARENT = 1					# (親)体
+		POS = 0.0 -50.0 0.0
+		ROT = 0.0 0.53 0.0
+	END_PARTSSET
+	
+		PARTSSET
+		INDEX = 4					# 右足
+		PARENT = 2					# (親)体
+		POS = 0.0 -50.0 0.0
+		ROT = 0.0 -0.53 0.0
+	END_PARTSSET
+	
 END_CHARACTERSET

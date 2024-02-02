@@ -32,6 +32,7 @@
     <ClCompile Include="effect.cpp" />
     <ClCompile Include="enemy.cpp" />
     <ClCompile Include="enemy_boss.cpp" />
+    <ClCompile Include="enemy_minion.cpp" />
     <ClCompile Include="fade.cpp" />
     <ClCompile Include="finish_kick.cpp" />
     <ClCompile Include="finish_punch.cpp" />
@@ -73,6 +74,7 @@
     <ClCompile Include="helper_sakai.cpp" />
     <ClCompile Include="skybox.cpp" />
     <ClCompile Include="sound.cpp" />
+    <ClCompile Include="spwan_wall.cpp" />
     <ClCompile Include="template.cpp" />
     <ClCompile Include="timer.cpp" />
     <ClCompile Include="title.cpp" />
@@ -92,6 +94,7 @@
     <ClInclude Include="effect.h" />
     <ClInclude Include="enemy.h" />
     <ClInclude Include="enemy_boss.h" />
+    <ClInclude Include="enemy_minion.h" />
     <ClInclude Include="fade.h" />
     <ClInclude Include="finish_kick.h" />
     <ClInclude Include="finish_punch.h" />
@@ -130,6 +133,7 @@
     <ClInclude Include="helper_sakai.h" />
     <ClInclude Include="skybox.h" />
     <ClInclude Include="sound.h" />
+    <ClInclude Include="spwan_wall.h" />
     <ClInclude Include="template.h" />
     <ClInclude Include="timer.h" />
     <ClInclude Include="title.h" />

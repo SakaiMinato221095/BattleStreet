@@ -73,6 +73,9 @@
     <Filter Include="Data">
       <UniqueIdentifier>{9efbb211-f816-4443-aeec-2149754a366c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="分類が今わからんから置いとく">
+      <UniqueIdentifier>{21b2ae7c-ff34-4de2-98e8-17031d4863d8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="debugproc.cpp">
@@ -240,6 +243,12 @@
     <ClCompile Include="template.cpp">
       <Filter>Template</Filter>
     </ClCompile>
+    <ClCompile Include="enemy_minion.cpp">
+      <Filter>Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="spwan_wall.cpp">
+      <Filter>分類が今わからんから置いとく</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="debugproc.h">
@@ -406,6 +415,12 @@
     </ClInclude>
     <ClInclude Include="template.h">
       <Filter>Template</Filter>
+    </ClInclude>
+    <ClInclude Include="enemy_minion.h">
+      <Filter>Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="spwan_wall.h">
+      <Filter>分類が今わからんから置いとく</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
