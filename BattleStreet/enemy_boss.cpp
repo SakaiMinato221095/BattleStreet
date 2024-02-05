@@ -16,6 +16,7 @@
 
 #include "renderer.h"
 #include "manager.h"
+#include "fade.h"
 
 #include "debugproc.h"
 

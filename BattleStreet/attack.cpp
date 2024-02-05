@@ -60,7 +60,7 @@ HRESULT CAttack::Init(void)
 			m_data.pos,
 			m_data.size);
 
-		m_pColl->SetIsVisualDrawStop(false);
+		//m_pColl->SetIsVisualDrawStop(false);
 	}
 	else
 	{
@@ -124,6 +124,20 @@ void CAttack::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 size, int nDamage)
 //-------------------------------------
 void CAttack::UpdateHit(void)
 {
+	CManager* pManager = CManager::GetInstance();
+
+	if (pManager == nullptr)
+	{
+		return;
+	}
+
+	CMgrColl* pMgrColl = pManager->GetMgrColl();
+
+	if (pMgrColl == nullptr)
+	{
+		return;
+	}
+
 	if (m_pColl != nullptr)
 	{
 		// 当たり判定の情報更新処理
@@ -141,10 +155,20 @@ void CAttack::UpdateHit(void)
 			// 接触した敵のダメージ処理
 			for (int nCount = 0; nCount < nHitNldxMax; nCount++)
 			{
-				// 相手のダメージ処理
-				data.hitData[nCount].pObj->HitDamage(m_data.nDamage);
+				CColl* pColl = pMgrColl->GetColl(data.hitData[nCount].nNldx);
+
+				if (pColl != nullptr)
+				{
+					CObject* pObj = pColl->GetData().pObj;
+
+					if (pObj != nullptr)
+					{
+						pObj->HitDamage(m_data.nDamage);
+					}
+				}
 			}
 		}
+
 	}
 }
 

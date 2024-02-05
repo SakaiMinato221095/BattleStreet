@@ -90,3 +90,46 @@ float HelperSakai::CalculateLength(D3DXVECTOR3 pos, D3DXVECTOR3 posTgt)
 	// 距離を返す
 	return std::sqrt(fLengthTgtSquared);
 }
+
+//-------------------------------------
+//-	最大値指定の加算処理（最大値時に停止）
+//-------------------------------------
+int HelperSakai::AddLimitStop(int nData, int nAdd, int nMin,int nMax)
+{
+	// 算出
+	int nDataCal = nData + nAdd;
+
+	// 最大値・最小値の判定
+	if (nDataCal > nMax)
+	{
+		nDataCal = nMax;
+	}
+	else if(nDataCal < nMin)
+	{
+		nDataCal = nMin;
+	}
+
+	return nDataCal;
+}
+
+//-------------------------------------
+//-	最大値指定の加算処理（最大値時に反転）
+//-------------------------------------
+int HelperSakai::AddLimitReturn(int nData, int nAdd, int nMin, int nMax)
+{
+	// 算出
+	int nDataCal = nData + nAdd;
+
+	// 最大値・最小値の判定
+	if (nDataCal > nMax)
+	{
+		nDataCal = nDataCal - nMax;
+	}
+	else if (nDataCal < nMin)
+	{
+		nDataCal = nDataCal + nMin;
+	}
+
+	return nDataCal;
+}
+

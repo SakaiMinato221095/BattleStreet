@@ -56,7 +56,7 @@ public:
 
 	void SetVtxTex(D3DXVECTOR2 texPos) { m_vtxData.texPos = texPos; }
 
-	void BindTexture(int nTextureNldx) { m_nTextureNldxUse = nTextureNldx; }
+	void BindTexture(int nTextureNldx) {m_nTextureNldxUse = nTextureNldx;}
 
 	void SetVtxData(VtxData vtxData) { m_vtxData = vtxData; }
 	VtxData GetVtxData(void) { return m_vtxData; }

@@ -63,6 +63,7 @@
     <ClCompile Include="obj_3d_wall.cpp" />
     <ClCompile Include="particle.cpp" />
     <ClCompile Include="pause.cpp" />
+    <ClCompile Include="phase_manager.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="precompile.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -125,6 +126,7 @@
     <ClInclude Include="obj_3d_wall.h" />
     <ClInclude Include="particle.h" />
     <ClInclude Include="pause.h" />
+    <ClInclude Include="phase_manager.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="precompile.h" />
     <ClInclude Include="punch.h" />

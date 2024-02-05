@@ -22,6 +22,7 @@
 #include "number.h"
 #include "bg.h"
 #include "effect.h"
+#include "spwan_wall.h"
 
 //-------------------------------------
 //-	テクスチャのコンストラクタ
@@ -104,6 +105,17 @@ HRESULT CManagerTexture::Load(HWND hWnd)
 
 		// 失敗メッセージ
 		MessageBox(hWnd, "エフェクトのデータ", "データ読み込み処理失敗！", MB_ICONWARNING);
+
+		// データ読み込みを抜ける
+		return E_FAIL;
+	}
+
+	// 出現壁
+	if (FAILED(CSpwanWall::Load()))
+	{// 失敗時
+
+		// 失敗メッセージ
+		MessageBox(hWnd, "出現壁のデータ", "データ読み込み処理失敗！", MB_ICONWARNING);
 
 		// データ読み込みを抜ける
 		return E_FAIL;

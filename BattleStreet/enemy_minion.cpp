@@ -32,6 +32,10 @@
 
 #include "life.h"
 
+#include "game.h"
+
+#include "spwan_wall.h"
+
 //-======================================
 //-	マクロ定義
 //-======================================
@@ -223,7 +227,8 @@ void CEnemyMinion::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 //-------------------------------------
 void CEnemyMinion::HitDamage(int nDamage)
 {
-	SetLife(GetLife() - nDamage);
+	// ダメージ処理
+	Damage(nDamage);
 
 	// 状態を設定
 	if (nDamage >= 5)
@@ -236,6 +241,18 @@ void CEnemyMinion::HitDamage(int nDamage)
 	{
 		// 状態設定
 		SetState(MOTION_STATE_DAMAGE);
+	}
+
+	if (GetLife() < 0)
+	{
+		if (GetIsPhaseTarget())
+		{
+			// ターゲットの撃破数加算処理
+			AddDeadNum();
+		}
+
+		// 敵の終了処理
+		Uninit();
 	}
 }
 

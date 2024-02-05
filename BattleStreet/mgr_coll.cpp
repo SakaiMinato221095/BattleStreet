@@ -304,7 +304,6 @@ void CMgrColl::SetHit(CColl* pCollMy,int nNldx,CObject* pObjPair,float fLength)
 	CColl::HitData hitData = {};
 
 	hitData.nNldx = nNldx;
-	hitData.pObj = pObjPair;
 	hitData.fLength = fLength;
 
 	// ÚG‘Šè‚Ì”Ô†‚ğ‘ã“ü

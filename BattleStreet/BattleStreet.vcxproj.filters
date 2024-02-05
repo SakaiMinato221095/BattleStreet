@@ -73,8 +73,11 @@
     <Filter Include="Data">
       <UniqueIdentifier>{9efbb211-f816-4443-aeec-2149754a366c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="分類が今わからんから置いとく">
-      <UniqueIdentifier>{21b2ae7c-ff34-4de2-98e8-17031d4863d8}</UniqueIdentifier>
+    <Filter Include="Spwan">
+      <UniqueIdentifier>{17145f92-55c3-4cfd-b225-3632d03ac32c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Phase">
+      <UniqueIdentifier>{1ece65c6-ec8d-4ff2-854a-44c1f6ab732b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -247,7 +250,10 @@
       <Filter>Enemy</Filter>
     </ClCompile>
     <ClCompile Include="spwan_wall.cpp">
-      <Filter>分類が今わからんから置いとく</Filter>
+      <Filter>Spwan</Filter>
+    </ClCompile>
+    <ClCompile Include="phase_manager.cpp">
+      <Filter>Phase</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -420,7 +426,10 @@
       <Filter>Enemy</Filter>
     </ClInclude>
     <ClInclude Include="spwan_wall.h">
-      <Filter>分類が今わからんから置いとく</Filter>
+      <Filter>Spwan</Filter>
+    </ClInclude>
+    <ClInclude Include="phase_manager.h">
+      <Filter>Phase</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

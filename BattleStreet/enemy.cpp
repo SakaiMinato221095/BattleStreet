@@ -28,6 +28,8 @@
 
 #include "helper_sakai.h"
 
+#include "spwan_wall.h"
+
 //-======================================
 //-	マクロ定義
 //-======================================
@@ -141,12 +143,12 @@ void CEnemy::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 }
 
 //-------------------------------------
-//- 通常敵のダメージ処理
+//- 通常敵の接触ダメージ処理
 //-------------------------------------
 void CEnemy::HitDamage(int nDamage)
 {
-	m_data.nLife -= nDamage;
-	m_data.bHit = true;
+	// ダメージ処理
+	Damage(nDamage);
 }
 
 //-------------------------------------
@@ -177,6 +179,28 @@ CEnemy * CEnemy::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 
 	// 通常敵のポインタを返す
 	return pEnemy;
+}
+
+//-------------------------------------
+//- 通常敵のダメージ処理
+//-------------------------------------
+void CEnemy::Damage(int nDamage)
+{
+	m_data.nLife -= nDamage;
+	m_data.bHit = true;
+}
+
+//-------------------------------------
+//- 通常敵の撃破数加算処理
+//-------------------------------------
+void CEnemy::AddDeadNum(void)
+{
+	CPhaseManager* pPhaseManager = CGame::GetPhaseManager();
+
+	if (pPhaseManager != nullptr)
+	{
+		pPhaseManager->AddDeadEnemy();
+	}
 }
 
 //-------------------------------------

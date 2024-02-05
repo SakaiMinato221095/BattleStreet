@@ -79,12 +79,12 @@ public:
 	static CObject* GetTop(int nPriority);
 	CObject* GetNext(void);
 
-	virtual void HitDamage(int nDamage) {};
+	virtual void Hit(void) {};
+	virtual void HitDamage(int nDamage) { ; }
 
 	void SetIsUpdateStop(bool bIsUpdateStop) { m_bIsUpdateStop = bIsUpdateStop; }
 	void SetIsUpdatePause(bool bIsUpdatePause) { m_bIsUpdatePause = bIsUpdatePause; }
 	void SetIsDrawStop(bool bIsDrawStop) { m_bIsDrawStop = bIsDrawStop; }
-
 
 	static bool GetIsUpdateAllStop(void) { return m_bIsUpdateAllStop; }
 	static void SetIsUpdateAllStop(bool bIsUpdateAllStop) { m_bIsUpdateAllStop = bIsUpdateAllStop; }

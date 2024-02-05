@@ -610,6 +610,20 @@ void CPlayer::UpdateCollision(void)
 	{
 		if (m_apColl[nCntColl] != NULL)
 		{
+			CManager* pManager = CManager::GetInstance();
+
+			if (pManager == nullptr)
+			{
+				return;
+			}
+
+			CMgrColl* pMgrColl = pManager->GetMgrColl();
+
+			if (pMgrColl == nullptr)
+			{
+				return;
+			}
+
 			switch (nCntColl)
 			{
 			case COLL_TYPE_NEUTRAL:
@@ -640,6 +654,34 @@ void CPlayer::UpdateCollision(void)
 					m_data.pos.z = m_data.posOld.z;
 				}
 
+				// 出現壁との当たり判定
+				if (m_apColl[nCntColl]->HitSide(CMgrColl::TAG_SPAWN_ENEMY_WALL, CMgrColl::EVENT_TYPE_TRIGGER, CMgrColl::TYPE_SXIS_X) == true)
+				{
+					// 最大接触数を取得
+					CColl::Data data = m_apColl[nCntColl]->GetData();
+					int nHitNldxMax = data.nHitNldxMax;
+
+					// 接触した敵のダメージ処理
+					for (int nCount = 0; nCount < nHitNldxMax; nCount++)
+					{
+						// 接触した敵のダメージ処理
+						for (int nCount = 0; nCount < nHitNldxMax; nCount++)
+						{
+							CColl* pColl = pMgrColl->GetColl(data.hitData[nCount].nNldx);
+
+							if (pColl != nullptr)
+							{
+								CObject* pObj = pColl->GetData().pObj;
+
+								if (pObj != nullptr)
+								{
+									pObj->Hit();
+								}
+							}
+						}
+					}
+				}
+
 				break;
 
 			case COLL_TYPE_SEARCH:
@@ -656,7 +698,7 @@ void CPlayer::UpdateCollision(void)
 						D3DXVECTOR3(200.0f, 50.0f, 100.0f));
 				}
 				else if (
-					m_data.rot.y >=  (D3DX_PI * 0.25f) && m_data.rot.y <=  (D3DX_PI * 0.75f) ||
+					m_data.rot.y >= (D3DX_PI * 0.25f) && m_data.rot.y <= (D3DX_PI * 0.75f) ||
 					m_data.rot.y <= -(D3DX_PI * 0.25f) && m_data.rot.y >= -(D3DX_PI * 0.75f))
 				{
 					// 当たり判定の情報更新処理
@@ -681,12 +723,15 @@ void CPlayer::UpdateCollision(void)
 							fLengthNear = fLength;
 
 							int hitNldx = m_apColl[nCntColl]->GetData().hitData[nCntLength].nNldx;
-							
-							CColl* pCollPair = CManager::GetInstance()->GetMgrColl()->GetColl(hitNldx);
 
-							m_data.posTgt = pCollPair->GetData().pos;
+							CColl* pCollPair = pMgrColl->GetColl(hitNldx);
 
-							m_data.bIsTarget = true;
+							if (pCollPair != nullptr)
+							{
+								m_data.posTgt = pCollPair->GetData().pos;
+
+								m_data.bIsTarget = true;
+							}
 						}
 					}
 				}
@@ -694,7 +739,7 @@ void CPlayer::UpdateCollision(void)
 				{
 					m_data.bIsTarget = false;
 				}
-				
+
 				break;
 			}
 

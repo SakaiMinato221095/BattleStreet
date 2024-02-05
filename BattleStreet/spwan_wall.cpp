@@ -15,9 +15,18 @@
 #include "renderer.h"
 #include "manager.h"
 
+#include "game.h"
+
 #include "manager_texture.h"
 
+#include "obj_3d_wall.h"
 #include "coll.h"
+
+#include "model.h"
+#include "motion.h"
+
+#include "enemy_minion.h"
+#include "enemy_boss.h"
 
 //-======================================
 //-	マクロ定義
@@ -26,6 +35,22 @@
 //=======================================
 //=	コンスト定義
 //=======================================
+
+// 出現壁のテクスチャ
+const char* DataTexture[] =
+{
+	nullptr,												// テクスチャなし
+	"data\\TEXTURE\\SpwanWall\\SpawnWall000.png",		// 出現壁のテクスチャ
+	"data\\TEXTURE\\SpwanWall\\BlockWall000.jpg",		// 封鎖壁のテクスチャ
+};
+
+// フェーズ2の敵の位置
+const D3DXVECTOR3 ENEMY_POS_PHASE_TWO[3] =
+{
+	D3DXVECTOR3(-300.0f,0.0f,300.0f),
+	D3DXVECTOR3(0.0f,0.0f,400.0f),
+	D3DXVECTOR3(500.0f,0.0f,700.0f),
+};
 
 //-======================================
 //-	静的変数宣言
@@ -73,7 +98,7 @@ HRESULT CSpwanWall::Load(void)
 	for (int nCount = 0; nCount < TEX_MAX; nCount++)
 	{
 		// テクスチャ番号の取得（テクスチャの割当）
-		m_nTextureNldx[nCount] = pManagerTexture->Regist(SPWAN_WALL::DataTexture[nCount]);
+		m_nTextureNldx[nCount] = pManagerTexture->Regist(DataTexture[nCount]);
 
 		// テクスチャの読み込み成功の有無を確認
 		if (m_nTextureNldx[nCount] == -1)
@@ -119,11 +144,13 @@ void CSpwanWall::Uninit(void)
 	{
 		// 当たり判定の終了処理
 		m_infoAttach.pColl->Uninit();
-
-		// 当たり判定の開放処理
+		
 		delete m_infoAttach.pColl;
 		m_infoAttach.pColl = NULL;
 	}
+
+	// 開放処理
+	Release();
 }
 
 //-------------------------------------
@@ -138,6 +165,9 @@ void CSpwanWall::Update(void)
 			GetPos(),
 			GetSize());
 	}
+
+	// 種類の更新処理
+	UpdateType();
 }
 
 //-------------------------------------
@@ -146,6 +176,26 @@ void CSpwanWall::Update(void)
 void CSpwanWall::Draw(void)
 {
 
+}
+
+//-------------------------------------
+//- 接触処理
+//-------------------------------------
+void CSpwanWall::Hit(void)
+{
+	// 敵の生成処理
+	SetPhase();
+
+	// ターゲット数の設定処理
+	CPhaseManager* pPhaseManager = CGame::GetPhaseManager();
+
+	if (pPhaseManager != nullptr)
+	{
+		pPhaseManager->SetTargetCompNum(m_info.nNumTarget);
+	}
+	
+	// 終了処理
+	Uninit();
 }
 
 //-------------------------------------
@@ -161,29 +211,23 @@ void CSpwanWall::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 rot, D3D
 
 	if (m_infoVisual.pObj3dWall == nullptr)
 	{
+		// 壁の生成・設定処理
 		m_infoVisual.pObj3dWall = CObj3dWall::Create(CObj3dWall::TEX_NULL);
-
 		m_infoVisual.pObj3dWall->InitSet(m_info.pos, m_info.size, m_info.rot, m_info.color, m_info.texPos);
-		m_infoVisual.pObj3dWall->BindTexture(TEX_SPWAN_000);
 	}
 
 	if (m_infoAttach.pColl == nullptr)
 	{
 		// 当たり判定設定
 		m_infoAttach.pColl = CColl::Create(
-			CMgrColl::TAG_WALL_X,
+			CMgrColl::TAG_SPAWN_ENEMY_WALL,
 			this,
 			m_info.pos,
 			m_info.size);
-
-		if (m_infoAttach.pColl != nullptr)
-		{
-			CColl::Data data = m_infoAttach.pColl->GetData();
-			data.tag = CMgrColl::TAG_SPAWN_ENEMY_WALL;
-
-			m_infoAttach.pColl->SetData(data);
-		}
 	}
+
+	// 種類の更新
+	UpdateType();
 }
 
 //-------------------------------------
@@ -214,4 +258,118 @@ CSpwanWall* CSpwanWall::Create(void)
 
 	// ポインタを返す
 	return pCSpwanWall;
+}
+
+//-------------------------------------
+//- 種類設定処理
+//-------------------------------------
+void CSpwanWall::UpdateType(void)
+{
+	// フェーズ管理を取得
+	CPhaseManager* pPhaseManager = CGame::GetPhaseManager();
+
+	if (pPhaseManager != nullptr)
+	{
+		if (m_info.typePhase == pPhaseManager->GetTypePhase())
+		{
+			if (m_infoVisual.pObj3dWall != nullptr)
+			{
+				m_infoVisual.pObj3dWall->BindTexture(m_nTextureNldx[TEX_SPWAN_000]);
+
+				CColl::Data data = m_infoVisual.pObj3dWall->GetColl()->GetData();
+				data.tag = CMgrColl::TAG_NONE;
+				m_infoVisual.pObj3dWall->GetColl()->SetData(data);
+			}
+		}
+		else
+		{
+			if (m_infoVisual.pObj3dWall != nullptr)
+			{
+				// 封鎖のテクスチャを設定
+				m_infoVisual.pObj3dWall->BindTexture(m_nTextureNldx[TEX_BLOCK_000]);
+			}
+		}
+
+	}
+}
+
+//-------------------------------------
+//- フェーズ1の敵の生成処理
+//-------------------------------------
+void CSpwanWall::SetPhase(void)
+{
+	// フェーズ1の生成処理
+	switch (m_info.typePhase)
+	{
+	case CPhaseManager::TYPE_PHASE_ONE:
+
+		SpwanEnemyPhaseOne();
+
+		break;
+
+	case CPhaseManager::TYPE_PHASE_TWO:
+
+		SpwanEnemyPhaseTwo();
+
+		break;
+
+	case CPhaseManager::TYPE_PHASE_THREE:
+
+		SpwanEnemyPhaseThree();
+
+		break;
+	}
+}
+//-------------------------------------
+//- フェーズ1の敵の生成処理
+//-------------------------------------
+void CSpwanWall::SpwanEnemyPhaseOne(void)
+{
+	CEnemy* pEnemy = CEnemyMinion::Create(
+		CModel::MODEL_TYPE_ALIEN_000,
+		CMotion::MOTION_TYPE_ALIEN_000,
+		D3DXVECTOR3(m_info.pos.x, 0.0f, m_info.pos.z) + D3DXVECTOR3(0.0f, 0.0f, 500.0f),
+		D3DXVECTOR3(0.0f, D3DX_PI,0.0f));
+
+	pEnemy->SetLife(30);
+	pEnemy->SetIsPhaseTarget(true);
+
+	m_info.nNumTarget++;
+}
+
+//-------------------------------------
+//- フェーズ2の敵の生成処理
+//-------------------------------------
+void CSpwanWall::SpwanEnemyPhaseTwo(void)
+{
+	for (int nCnt = 0; nCnt < 3; nCnt++)
+	{
+		CEnemy* pEnemy = CEnemyMinion::Create(
+			CModel::MODEL_TYPE_ALIEN_000,
+			CMotion::MOTION_TYPE_ALIEN_000,
+			D3DXVECTOR3(m_info.pos.x, 0.0f, m_info.pos.z) + ENEMY_POS_PHASE_TWO[nCnt],
+			D3DXVECTOR3(0.0f, D3DX_PI, 0.0f));
+
+		pEnemy->SetLife(30);
+		pEnemy->SetIsPhaseTarget(true);
+
+		m_info.nNumTarget++;
+
+	}
+}
+
+//-------------------------------------
+//- フェーズ3の敵の生成処理
+//-------------------------------------
+void CSpwanWall::SpwanEnemyPhaseThree(void)
+{
+	CEnemy* pEnemyBoss = CEnemyBoss::Create(
+		CModel::MODEL_TYPE_ALIEN_000,
+		CMotion::MOTION_TYPE_ALIEN_000,
+		D3DXVECTOR3(m_info.pos.x, 0.0f, m_info.pos.z) + D3DXVECTOR3(0.0f, 0.0f, 500.0f),
+		D3DXVECTOR3(0.0f, D3DX_PI, 0.0f));
+
+	pEnemyBoss->SetIsPhaseTarget(true);
+
+	m_info.nNumTarget++;
 }

@@ -48,7 +48,6 @@ public:
 	typedef struct
 	{
 		int nNldx;		// 番号
-		CObject* pObj;	// オブジェクトのポインタ
 		float fLength;	// 距離
 	}HitData;
 

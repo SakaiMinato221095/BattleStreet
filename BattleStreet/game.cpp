@@ -26,6 +26,7 @@
 
 #include "player.h"
 
+#include "spwan_wall.h"
 #include "enemy_boss.h"
 
 #include "obj_3d_field.h"
@@ -42,19 +43,25 @@
 //=	マクロ定義
 //=======================================
 
+const D3DXVECTOR3 SPWAN_WALL_POS[CPhaseManager::TYPE_PHASE_COMP] =
+{
+	D3DXVECTOR3(0.0f, 100.0f, 500.0f),
+	D3DXVECTOR3(0.0f, 100.0f, 3000.0f),
+	D3DXVECTOR3(0.0f, 100.0f, 5500.0f),
+};
+
 //=======================================
 //=	静的変数宣言
 //=======================================
 
-CPlayer *CGame::m_pPlayer = NULL;
-CPause *CGame::m_pPause = NULL;
+CGame::InfoPoint CGame::m_infoPoint = {};
 
 //-------------------------------------
 //-	ゲーム画面のコンストラクタ
 //-------------------------------------
 CGame::CGame()
 {
-	m_game = (GAME)0;
+	m_gameState = (GAME_STATE)0;
 }
 
 //-------------------------------------
@@ -70,32 +77,40 @@ CGame::~CGame()
 //-------------------------------------
 HRESULT CGame::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 {		
-	// カメラ位置の設定処理
+	// 情報取得の設定処理
 	CCamera *pCamera = CManager::GetInstance()->GetCamera();
+	CSound* pSound = CManager::GetInstance()->GetSound();
 
-	if (pCamera == NULL)
+	// 取得の有無判定
+	if (pCamera == NULL ||
+		pSound == NULL)
 	{
-		return E_FAIL;
-	}
-
-	// サウンドのポインタを宣言
-	CSound *pSound = CManager::GetInstance()->GetSound();
-
-	// サウンドの情報取得の成功を判定
-	if (pSound == NULL)
-	{
-		// 処理を抜ける
 		return E_FAIL;
 	}
 
 	// カメラの設定処理
 	pCamera->SetMode(CCamera::MODE_FOLLOWING);
 
-	// スカイボックスの生成
-	CSkybox::Create(
-		CSkybox::MODEL_SKYBOX_000,
-		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-		D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	if (m_infoPoint.pPhaseManager == nullptr)
+	{
+		// フェーズ管理の生成
+		m_infoPoint.pPhaseManager = CPhaseManager::Create();
+
+		if (m_infoPoint.pPhaseManager == nullptr)
+		{// 失敗時
+
+			return E_FAIL;
+		}
+	}
+
+	if (m_infoPoint.pSkyBox == nullptr)
+	{
+		// スカイボックスの生成
+		m_infoPoint.pSkyBox = CSkybox::Create(
+			CSkybox::MODEL_SKYBOX_000,
+			D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+			D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	}
 
 	{
 		// フィールドの生成
@@ -126,7 +141,6 @@ HRESULT CGame::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 				D3DXVECTOR2(1.0f, 1.0f));
 		}
 	}
-
 
 	// 前の壁
 	{
@@ -194,17 +208,30 @@ HRESULT CGame::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 	CMapManager::GameLoad();
 
-	// 敵の生成
-	CEnemyBoss::Create(
-		CModel::MODEL_TYPE_ALIEN_000,
-		CMotion::MOTION_TYPE_ALIEN_000,
-		D3DXVECTOR3(0.0f, 0.0f, 400.0f),
-		D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	for (int nCntSpnWall = 0; nCntSpnWall < CPhaseManager::TYPE_PHASE_COMP; nCntSpnWall++)
+	{
+		// 出現壁の生成
+		CSpwanWall* pSpwanWall = CSpwanWall::Create();
 
-	if (m_pPlayer == NULL)
+		if (pSpwanWall != nullptr)
+		{
+			// フェーズ設定処理
+			pSpwanWall->SetTypePhase((CPhaseManager::TYPE_PHASE)nCntSpnWall);
+
+			// 設定処理
+			pSpwanWall->InitSet(
+				SPWAN_WALL_POS[nCntSpnWall],
+				D3DXVECTOR3(1300.0f, 25.0f, 0.0f),
+				D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+				D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f),
+				D3DXVECTOR2(5.0f, 1.0f));
+		}
+	}
+
+	if (m_infoPoint.pPlayer == NULL)
 	{
 		// プレイヤーの生成
-		m_pPlayer = CPlayer::Create(
+		m_infoPoint.pPlayer = CPlayer::Create(
 			D3DXVECTOR3(0.0f, 0.0f, 0.0f),		// 位置
 			D3DXVECTOR3(0.0f, D3DX_PI, 0.0f),	// 向き
 			CModel::MODEL_TYPE_PLAYER,			// モデル
@@ -223,17 +250,50 @@ HRESULT CGame::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 //-------------------------------------
 void CGame::Uninit(void)
 {
-	if (m_pPlayer != NULL)
+	if (m_infoPoint.pPause != NULL)
 	{
-		m_pPlayer->Uninit();
-		m_pPlayer = NULL;
+		m_infoPoint.pPause->Uninit();
+
+		delete m_infoPoint.pPause;
+		m_infoPoint.pPause = NULL;
 	}
 
-	if (m_pPause != NULL)
+	if (m_infoPoint.pPhaseManager != NULL)
 	{
-		m_pPause->Uninit();	
-		delete m_pPause;
-		m_pPause = NULL;
+		m_infoPoint.pPhaseManager->Uninit();
+
+		delete m_infoPoint.pPhaseManager;
+		m_infoPoint.pPhaseManager = NULL;
+	}
+
+	if (m_infoPoint.pSkyBox != NULL)
+	{
+		m_infoPoint.pSkyBox->Uninit();
+		m_infoPoint.pSkyBox = NULL;
+	}
+
+	for (int nCnt = 0; nCnt < GAME::FIELD_NUM; nCnt++)
+	{
+		if (m_infoPoint.apField[nCnt] != NULL)
+		{
+			m_infoPoint.apField[nCnt]->Uninit();
+			m_infoPoint.apField[nCnt] = NULL;
+		}
+	}
+
+	for (int nCnt = 0; nCnt < GAME::WALL_NUM; nCnt++)
+	{
+		if (m_infoPoint.apWall[nCnt] != NULL)
+		{
+			m_infoPoint.apWall[nCnt]->Uninit();
+			m_infoPoint.apWall[nCnt] = NULL;
+		}
+	}
+
+	if (m_infoPoint.pPlayer != NULL)
+	{
+		m_infoPoint.pPlayer->Uninit();
+		m_infoPoint.pPlayer = NULL;
 	}
 
 	// オブジェクトの全開放処理
@@ -269,42 +329,42 @@ void CGame::Update(void)
 	// 仮の遷移ボタン（えんたー）
 	if (pInputKeyboard->GetTrigger(DIK_P) != NULL)
 	{
-		if (m_game == GAME_NONE)
+		if (m_gameState == GAME_STATE_NONE)
 		{
-			m_pPause = CPause::Create();
+			m_infoPoint.pPause = CPause::Create();
 
 			// ポーズ状態
-			m_game = GAME_PAUSE;
+			m_gameState = GAME_STATE_PAUSE;
 		}
-		else if (m_game == GAME_PAUSE)
+		else if (m_gameState == GAME_STATE_PAUSE)
 		{
-			if (m_pPause != NULL)
+			if (m_infoPoint.pPause != NULL)
 			{
-				m_pPause->Uninit();
-				delete m_pPause;
+				m_infoPoint.pPause->Uninit();
+				delete m_infoPoint.pPause;
 
-				m_pPause = NULL;
+				m_infoPoint.pPause = NULL;
 			}
 
 			// ゲーム状態
-			m_game = GAME_NONE;
+			m_gameState = GAME_STATE_NONE;
 		}
 	}
 
-	if (m_game == GAME_NONE)
+	if (m_gameState == GAME_STATE_NONE)
 	{
 
 	}
-	else if (m_game == GAME_PAUSE)
+	else if (m_gameState == GAME_STATE_PAUSE)
 	{
-		if (m_pPause != NULL)
+		if (m_infoPoint.pPause != NULL)
 		{
 			// ポーズの更新処理
-			m_pPause->Update();
+			m_infoPoint.pPause->Update();
 
-			if (m_pPause->GetOk() == true)
+			if (m_infoPoint.pPause->GetOk() == true)
 			{
-				switch (m_pPause->GetTypeSelect())
+				switch (m_infoPoint.pPause->GetTypeSelect())
 				{
 				case CPause::TYPE_SELECT_GAME:
 
@@ -326,12 +386,12 @@ void CGame::Update(void)
 				}
 
 				// ポーズの開放処理
-				m_pPause->Uninit();
-				delete m_pPause;
-				m_pPause = NULL;
+				m_infoPoint.pPause->Uninit();
+				delete m_infoPoint.pPause;
+				m_infoPoint.pPause = NULL;
 
 				// ゲーム状態
-				m_game = GAME_NONE;
+				m_gameState = GAME_STATE_NONE;
 			}
 		}
 	}

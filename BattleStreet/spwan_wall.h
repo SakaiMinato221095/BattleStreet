@@ -18,27 +18,16 @@
 //-======================================
 
 #include "object.h"
-#include "obj_3d_wall.h"
+
+#include "phase_manager.h"
 
 //-======================================
 //-	マクロ定義
 //-======================================
 
-
 //=======================================
 //=	コンスト定義
 //=======================================
-
-namespace SPWAN_WALL
-{
-	// 出現壁のテクスチャ
-	const char* DataTexture[] =
-	{
-		NULL,										// テクスチャなし
-		"data\\TEXTURE\\blockade_wall000.jpg",		// 封鎖壁のテクスチャ
-		"data\\TEXTURE\\dark_wall000.png",			// 闇壁のテクスチャ
-	};
-}
 
 //=======================================
 //=	前方宣言
@@ -59,6 +48,7 @@ public:
 	// フィールドのテクスチャの列挙型
 	typedef enum
 	{
+		TEX_NULL = 0,		// なし
 		TEX_SPWAN_000,		// 出現壁のテクスチャ
 		TEX_BLOCK_000,		// 封鎖壁のテクスチャ
 		TEX_MAX
@@ -74,6 +64,8 @@ public:
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
+
+	virtual void Hit(void);
 
 	void InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 rot, D3DXCOLOR color, D3DXVECTOR2 texPos);
 
@@ -94,7 +86,16 @@ public:
 	void SetTexPos(D3DXVECTOR2 texPos) { m_info.texPos = texPos; }
 	D3DXVECTOR2 GetTexPos(void) { return m_info.texPos; }
 
+	void SetTypePhase(CPhaseManager::TYPE_PHASE typePhase) { m_info.typePhase = typePhase; }
+	CPhaseManager::TYPE_PHASE SetTypePhase(void) { return m_info.typePhase; }
+
 private:
+
+	void UpdateType(void);
+	void SetPhase(void);
+	void SpwanEnemyPhaseOne(void);
+	void SpwanEnemyPhaseTwo(void);
+	void SpwanEnemyPhaseThree(void);
 
 	struct Info
 	{
@@ -103,6 +104,9 @@ private:
 		D3DXVECTOR3 size;	// 大きさ
 		D3DXCOLOR color;	// 色
 		D3DXVECTOR2 texPos;	// テクスチャ位置
+
+		int nNumTarget;							// ターゲットの数
+		CPhaseManager::TYPE_PHASE typePhase;	// フェーズ番号
 	};
 
 	struct InfoVisual
@@ -118,8 +122,8 @@ private:
 	Info m_info;
 	InfoVisual m_infoVisual;
 	InfoAttach m_infoAttach;
-	static int m_nTextureNldx[TEX_MAX];		// テクスチャの番号
 
+	static int m_nTextureNldx[TEX_MAX];		// テクスチャの番号
 };
 
 #endif	// 二重インクルード防止の終了

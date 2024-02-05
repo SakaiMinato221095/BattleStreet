@@ -53,6 +53,9 @@ public:
 
 	static CEnemy* Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot);
 	
+	void Damage(int nDamage);
+	void AddDeadNum(void);
+
 	// 前方に移動
 	void SetMoveForward(float fSpeed) { m_data.move = D3DXVECTOR3(-sinf(m_data.rot.y) * fSpeed, 0.0f, -cosf(m_data.rot.y) * fSpeed); }
 
@@ -82,6 +85,9 @@ public:
 
 	CColl* GetColl(void) { return m_pColl; }
 
+	void SetIsPhaseTarget(bool bIsPhaseTarget) { m_data.bIsPhaseTarget = bIsPhaseTarget; }
+	bool GetIsPhaseTarget(void) { return m_data.bIsPhaseTarget; }
+
 protected:
 
 	void UpdatePos(void);
@@ -94,15 +100,17 @@ private:
 	// モデル情報
 	typedef struct
 	{
-		D3DXVECTOR3 pos;	// 位置
-		D3DXVECTOR3 posOld;	// 前回の位置
-		D3DXVECTOR3 rot;	// 向き
-		D3DXVECTOR3 size;	// 大きさ
+		D3DXVECTOR3 pos;		// 位置
+		D3DXVECTOR3 posOld;		// 前回の位置
+		D3DXVECTOR3 rot;		// 向き
+		D3DXVECTOR3 size;		// 大きさ
 
-		D3DXVECTOR3 move;	// 移動量
+		D3DXVECTOR3 move;		// 移動量
 
-		int nLife;			// 体力
-		bool bHit;			// ヒットの有無
+		int nLife;				// 体力
+		bool bHit;				// ヒットの有無
+
+		bool bIsPhaseTarget;	// フェーズターゲット
 
 	}Data;
 

@@ -65,6 +65,8 @@ public:
 
 	virtual void SetVtx(void);
 
+	CColl* GetColl(void) { return m_pColl; }
+
 private:
 
 	CColl* m_pColl;		// “–‚½‚è”»’è‚Ìî•ñ
