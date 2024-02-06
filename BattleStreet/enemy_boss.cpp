@@ -192,7 +192,6 @@ void CEnemyBoss::Update(void)
 		m_infoAi.state != AI_STATE_KICK_3)
 	{
 		// 当たり判定更新処理
-
 		UpdateCollisionPlayer();
 	}
 
@@ -327,8 +326,8 @@ void CEnemyBoss::UpdateMotion(void)
 	{
 		if (m_info.state == STATE_NORMAL)
 		{
-			// 行動設定
-			SetAiActiv();
+			// 通常状態に変更
+			SetState(MOTION_STATE_NEUTRAL);
 		}
 	}
 
@@ -349,6 +348,11 @@ void CEnemyBoss::UpdateMotion(void)
 		{
 			// 行動設定
 			SetAiActiv();
+		}
+		else if (m_info.state == STATE_ATTACK)
+		{
+			// 通常状態に変更
+			SetState(MOTION_STATE_NEUTRAL);
 		}
 		else
 		{
@@ -453,7 +457,7 @@ void CEnemyBoss::UpdateAttack(void)
 
 		m_infoAttach.pAttack->UpdateData(
 			posParts + PARTS_POS[m_infoAttach.nPartsIdx],
-			m_infoAttach.pAttack->GetData().size);
+			m_infoAttach.pAttack->GetSize());
 	}
 }
 
@@ -616,7 +620,7 @@ void CEnemyBoss::SetAttack(int nPartsNum)
 {
 	if (m_infoAttach.pAttack == nullptr)
 	{
-		m_infoAttach.pAttack = CCharge::Create();
+		m_infoAttach.pAttack = CAttack::Create();
 
 		if (m_infoVisual.pCharacter != nullptr)
 		{
@@ -634,7 +638,8 @@ void CEnemyBoss::SetAttack(int nPartsNum)
 				m_infoAttach.pAttack->InitSet(
 					posBody + PARTS_POS[nPartsNum],
 					PARTS_SIZE[nPartsNum],
-					10);
+					10,
+					CMgrColl::TAG_PLAYER);
 			}
 
 		}
@@ -665,6 +670,7 @@ void CEnemyBoss::SetState(MOTION_STATE motionState)
 	case CEnemyBoss::MOTION_STATE_KICK_1:
 
 		m_infoAi.state = AI_STATE_KICK_1;
+		m_info.state = STATE_ATTACK;
 		m_infoAi.bCombo = true;
 		SetAttack(PARTS_FOOT_L);
 
@@ -672,6 +678,7 @@ void CEnemyBoss::SetState(MOTION_STATE motionState)
 	case CEnemyBoss::MOTION_STATE_KICK_2:
 
 		m_infoAi.state = AI_STATE_KICK_2;
+		m_info.state = STATE_ATTACK;
 		m_infoAi.bCombo = true;
 		SetAttack(PARTS_FOOT_R);
 
@@ -679,6 +686,7 @@ void CEnemyBoss::SetState(MOTION_STATE motionState)
 	case CEnemyBoss::MOTION_STATE_KICK_3:
 
 		m_infoAi.state = AI_STATE_KICK_3;
+		m_info.state = STATE_ATTACK;
 		SetAttack(PARTS_FOOT_L);
 
 		break;
@@ -690,6 +698,7 @@ void CEnemyBoss::SetState(MOTION_STATE motionState)
 	case CEnemyBoss::MOTION_STATE_CHARGE_ATTACK:
 
 		m_infoAi.state = AI_STATE_CHARGE_ATTACK;
+		m_info.state = STATE_ATTACK;
 		SetAttack(PARTS_BODY);
 
 		break;

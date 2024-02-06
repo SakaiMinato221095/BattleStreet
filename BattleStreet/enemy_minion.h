@@ -88,6 +88,7 @@ private:
 	{
 		STATE_NORMAL = 0,	// ’Êíó‘Ô
 		STATE_DAMAGE,		// ƒ_ƒ[ƒWó‘Ô
+		STATE_ATTACK,		// UŒ‚ó‘Ô
 		STATE_BIG_DAMAGE,	// ‚«”ò‚Ñó‘Ô
 		STATE_MAX
 	};

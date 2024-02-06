@@ -84,10 +84,10 @@ void CFinishPunch::Draw(void)
 //-------------------------------------
 //- タイマーの初期設定処理
 //-------------------------------------
-void CFinishPunch::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 size, int nDamage)
+void CFinishPunch::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 size, int nDamage, CMgrColl::TAG tagTgt)
 {
 	// 親クラスの初期設定処理
-	CAttack::InitSet(pos, size, nDamage);
+	CAttack::InitSet(pos, size, nDamage, tagTgt);
 
 	// ターゲットを敵に設定
 	SetTagTgt(CMgrColl::TAG_ENEMY);

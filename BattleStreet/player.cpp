@@ -581,7 +581,7 @@ void CPlayer::UpdateAttack(void)
 
 		if (m_pAttack->GetColl() != nullptr)
 		{
-			D3DXVECTOR3 size = m_pAttack->GetData().size;
+			D3DXVECTOR3 size = m_pAttack->GetSize();
 
 			m_pAttack->UpdateData(posParts, size);
 		}
@@ -663,19 +663,15 @@ void CPlayer::UpdateCollision(void)
 					// 接触した敵のダメージ処理
 					for (int nCount = 0; nCount < nHitNldxMax; nCount++)
 					{
-						// 接触した敵のダメージ処理
-						for (int nCount = 0; nCount < nHitNldxMax; nCount++)
+						CColl* pColl = pMgrColl->GetColl(data.hitData[nCount].nNldx);
+
+						if (pColl != nullptr)
 						{
-							CColl* pColl = pMgrColl->GetColl(data.hitData[nCount].nNldx);
+							CObject* pObj = pColl->GetData().pObj;
 
-							if (pColl != nullptr)
+							if (pObj != nullptr)
 							{
-								CObject* pObj = pColl->GetData().pObj;
-
-								if (pObj != nullptr)
-								{
-									pObj->Hit();
-								}
+								pObj->Hit();
 							}
 						}
 					}
@@ -1068,7 +1064,7 @@ void CPlayer::SetAttackPunch(void)
 {
 	if (m_pAttack == nullptr)
 	{
-		m_pAttack = CPunch::Create();
+		m_pAttack = CAttack::Create();
 
 		if (m_pAttack != nullptr)
 		{
@@ -1082,7 +1078,8 @@ void CPlayer::SetAttackPunch(void)
 			m_pAttack->InitSet(
 				posHand,
 				D3DXVECTOR3(20.0f,20.0f,20.0f),
-				3);
+				3,
+				CMgrColl::TAG_ENEMY);
 		}
 
 		// モーションの設定（パンチ）
@@ -1097,7 +1094,7 @@ void CPlayer::SetAttackKick(void)
 {
 	if (m_pAttack == nullptr)
 	{
-		m_pAttack = CPunch::Create();
+		m_pAttack = CAttack::Create();
 
 		if (m_pAttack != nullptr)
 		{
@@ -1111,7 +1108,8 @@ void CPlayer::SetAttackKick(void)
 			m_pAttack->InitSet(
 				posShin,
 				D3DXVECTOR3(20.0f, 20.0f, 20.0f),
-				1);
+				1,
+				CMgrColl::TAG_ENEMY);
 		}
 
 		// モーションの設定（キック）
@@ -1165,7 +1163,8 @@ void CPlayer::SetAttackFinishPunch(void)
 			m_pAttack->InitSet(
 				posShin,
 				D3DXVECTOR3(20.0f, 20.0f, 20.0f),
-				10);
+				10,
+				CMgrColl::TAG_ENEMY);
 		}
 
 		// モーションの設定（パンチフィニッシュ）
@@ -1194,7 +1193,8 @@ void CPlayer::SetAttackFinishKick(void)
 			m_pAttack->InitSet(
 				posShin + D3DXVECTOR3(0.0f,50.0f,0.0f),
 				D3DXVECTOR3(100.0f, 40.0f, 100.0f),
-				7);
+				7,
+				CMgrColl::TAG_ENEMY);
 		}
 
 		// モーションの設定（パンチフィニッシュ）

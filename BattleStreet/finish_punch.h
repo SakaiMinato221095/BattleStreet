@@ -46,7 +46,7 @@ public:
 	void Update(void);
 	void Draw(void);
 
-	void InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 size, int nDamage);
+	void InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 size, int nDamage, CMgrColl::TAG tagTgt);
 
 	static CFinishPunch* Create(void);
 

@@ -319,18 +319,6 @@ void CEnemyMinion::UpdateMotion(void)
 		}
 	}
 
-	if (pMotion->GetType() == MOTION_STATE_CHARGE_ATTACK && m_infoVisual.motionState != MOTION_STATE_CHARGE_ATTACK ||
-		pMotion->GetType() == MOTION_STATE_KICK_1 && m_infoVisual.motionState != MOTION_STATE_KICK_1 ||
-		pMotion->GetType() == MOTION_STATE_KICK_2 && m_infoVisual.motionState != MOTION_STATE_KICK_2 ||
-		pMotion->GetType() == MOTION_STATE_KICK_3 && m_infoVisual.motionState != MOTION_STATE_KICK_3)
-	{
-		if (m_info.state == STATE_NORMAL)
-		{
-			// s“®Ý’è
-			SetAiActiv();
-		}
-	}
-
 	if (pMotion->GetType() == MOTION_STATE_DAMAGE && m_infoVisual.motionState != MOTION_STATE_DAMAGE ||
 		pMotion->GetType() == MOTION_STATE_BIG_DAMAGE && m_infoVisual.motionState != MOTION_STATE_BIG_DAMAGE)
 	{
@@ -348,6 +336,11 @@ void CEnemyMinion::UpdateMotion(void)
 		{
 			// s“®Ý’è
 			SetAiActiv();
+		}
+		else if (m_info.state == STATE_ATTACK)
+		{
+			// ’Êíó‘Ô‚É•ÏX
+			SetState(MOTION_STATE_NEUTRAL);
 		}
 		else
 		{
@@ -432,7 +425,7 @@ void CEnemyMinion::UpdateAttack(void)
 
 		m_infoAttach.pAttack->UpdateData(
 			posParts + PARTS_POS[m_infoAttach.nPartsIdx],
-			m_infoAttach.pAttack->GetData().size);
+			m_infoAttach.pAttack->GetSize());
 	}
 }
 
@@ -556,7 +549,7 @@ void CEnemyMinion::SetAttack(int nPartsNum)
 {
 	if (m_infoAttach.pAttack == nullptr)
 	{
-		m_infoAttach.pAttack = CCharge::Create();
+		m_infoAttach.pAttack = CAttack::Create();
 
 		if (m_infoVisual.pCharacter != nullptr)
 		{
@@ -574,7 +567,8 @@ void CEnemyMinion::SetAttack(int nPartsNum)
 				m_infoAttach.pAttack->InitSet(
 					posBody + PARTS_POS[nPartsNum],
 					PARTS_SIZE[nPartsNum],
-					10);
+					10,
+					CMgrColl::TAG_PLAYER);
 			}
 
 		}
@@ -598,6 +592,7 @@ void CEnemyMinion::SetState(MOTION_STATE motionState)
 	case CEnemyMinion::MOTION_STATE_NEUTRAL:
 
 		m_infoAi.state = AI_STATE_WAIT;
+		m_info.state = STATE_ATTACK;
 
 		break;
 	case CEnemyMinion::MOTION_STATE_MOVE:
@@ -605,6 +600,7 @@ void CEnemyMinion::SetState(MOTION_STATE motionState)
 	case CEnemyMinion::MOTION_STATE_KICK_1:
 
 		m_infoAi.state = AI_STATE_KICK_1;
+		m_info.state = STATE_ATTACK;
 		SetAttack(PARTS_FOOT_L);
 
 		break;

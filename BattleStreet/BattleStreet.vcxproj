@@ -25,7 +25,6 @@
     <ClCompile Include="box_wall.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="character.cpp" />
-    <ClCompile Include="charge.cpp" />
     <ClCompile Include="coll.cpp" />
     <ClCompile Include="command.cpp" />
     <ClCompile Include="debugproc.cpp" />
@@ -38,7 +37,6 @@
     <ClCompile Include="finish_punch.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="Input.cpp" />
-    <ClCompile Include="kick.cpp" />
     <ClCompile Include="life.cpp" />
     <ClCompile Include="light.cpp" />
     <ClCompile Include="main.cpp" />
@@ -69,7 +67,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="punch.cpp" />
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="result.cpp" />
     <ClCompile Include="helper_sakai.cpp" />
@@ -88,7 +85,6 @@
     <ClInclude Include="box_wall.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="character.h" />
-    <ClInclude Include="charge.h" />
     <ClInclude Include="coll.h" />
     <ClInclude Include="command.h" />
     <ClInclude Include="debugproc.h" />
@@ -101,7 +97,6 @@
     <ClInclude Include="finish_punch.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="Input.h" />
-    <ClInclude Include="kick.h" />
     <ClInclude Include="life.h" />
     <ClInclude Include="light.h" />
     <ClInclude Include="main.h" />
@@ -129,7 +124,6 @@
     <ClInclude Include="phase_manager.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="precompile.h" />
-    <ClInclude Include="punch.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="result.h" />
     <ClInclude Include="helper_sakai.h" />

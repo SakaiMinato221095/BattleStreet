@@ -32,10 +32,8 @@
 CAttack::CAttack()
 {
 	// 値のクリア
-	ZeroMemory(&m_data, sizeof(m_data));
+	ZeroMemory(&m_info, sizeof(m_info));
 	m_pColl = nullptr;
-
-	m_tagTgt = CMgrColl::TAG_NONE;
 }
 
 //-------------------------------------
@@ -57,10 +55,10 @@ HRESULT CAttack::Init(void)
 		m_pColl = CColl::Create(
 			CMgrColl::TAG_ATTACK,
 			this,
-			m_data.pos,
-			m_data.size);
+			m_info.pos,
+			m_info.size);
 
-		//m_pColl->SetIsVisualDrawStop(false);
+		m_pColl->SetIsVisualDrawStop(false);
 	}
 	else
 	{
@@ -111,11 +109,42 @@ void CAttack::Draw(void)
 //-------------------------------------
 //- タイマーの位置情報の設定
 //-------------------------------------
-void CAttack::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 size, int nDamage)
+void CAttack::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 size, int nDamage, CMgrColl::TAG tagTgt)
 {
-	m_data.pos = pos;
-	m_data.size = size;
-	m_data.nDamage = nDamage;
+	m_info.pos = pos;
+	m_info.size = size;
+	m_info.nDamage = nDamage;
+	m_info.tagTgt = tagTgt;
+}
+
+//-------------------------------------
+//- タイマーの位置情報の設定
+//-------------------------------------
+CAttack* CAttack::Create(void)
+{
+	// 生成処理
+	CAttack* pAttack = DBG_NEW CAttack;
+
+	// 生成の成功の有無を判定
+	if (pAttack != NULL)
+	{
+		// 初期化処理
+		if (FAILED(pAttack->Init()))
+		{// 失敗時
+
+			// 「なし」を返す
+			return NULL;
+		}
+	}
+	else if (pAttack == NULL)
+	{// 失敗時
+
+		// 「なし」を返す
+		return NULL;
+	}
+
+	// ポインタを返す
+	return pAttack;
 }
 
 //-------------------------------------
@@ -141,11 +170,11 @@ void CAttack::UpdateHit(void)
 	{
 		// 当たり判定の情報更新処理
 		m_pColl->UpdateData(
-			m_data.pos,
-			m_data.size);
+			m_info.pos,
+			m_info.size);
 
 		// ターゲットとの接触判定
-		if (m_pColl->Hit(m_tagTgt, CMgrColl::EVENT_TYPE_TRIGGER))
+		if (m_pColl->Hit(m_info.tagTgt, CMgrColl::EVENT_TYPE_TRIGGER))
 		{
 			// 最大接触数を取得
 			CColl::Data data = m_pColl->GetData();
@@ -162,7 +191,7 @@ void CAttack::UpdateHit(void)
 
 					if (pObj != nullptr)
 					{
-						pObj->HitDamage(m_data.nDamage);
+						pObj->HitDamage(m_info.nDamage);
 					}
 				}
 			}
@@ -188,6 +217,6 @@ void CAttack::Debug(void)
 	pDebugProc->Print("\n");
 	pDebugProc->Print("攻撃の位置");
 	pDebugProc->Print("\n");
-	pDebugProc->Print("%f,%f,%f", m_data.pos.x, m_data.pos.y, m_data.pos.z);
+	pDebugProc->Print("%f,%f,%f", m_info.pos.x, m_info.pos.y, m_info.pos.z);
 	pDebugProc->Print("\n");
 }

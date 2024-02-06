@@ -49,9 +49,6 @@
     <Filter Include="Attack\Finish">
       <UniqueIdentifier>{2a901ad8-2c02-4283-b710-f179a932ee78}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Attack\Enemy">
-      <UniqueIdentifier>{d0a5b827-5a13-45c2-a1a3-abe666f0f168}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Ui">
       <UniqueIdentifier>{8dc67e90-3159-42d0-b1be-6f76320e7229}</UniqueIdentifier>
     </Filter>
@@ -63,9 +60,6 @@
     </Filter>
     <Filter Include="Object">
       <UniqueIdentifier>{c15e32dc-ecd7-4986-8321-28c0a4aa26be}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Attack\Player">
-      <UniqueIdentifier>{69212499-67eb-49a2-a1c7-fb394a60ff21}</UniqueIdentifier>
     </Filter>
     <Filter Include="Template">
       <UniqueIdentifier>{1a67f52d-dcd8-434d-b6db-4412b2e282af}</UniqueIdentifier>
@@ -206,15 +200,6 @@
     </ClCompile>
     <ClCompile Include="finish_kick.cpp">
       <Filter>Attack\Finish</Filter>
-    </ClCompile>
-    <ClCompile Include="kick.cpp">
-      <Filter>Attack\Player</Filter>
-    </ClCompile>
-    <ClCompile Include="punch.cpp">
-      <Filter>Attack\Player</Filter>
-    </ClCompile>
-    <ClCompile Include="charge.cpp">
-      <Filter>Attack\Enemy</Filter>
     </ClCompile>
     <ClCompile Include="life.cpp">
       <Filter>Ui</Filter>
@@ -379,15 +364,6 @@
     </ClInclude>
     <ClInclude Include="finish_kick.h">
       <Filter>Attack\Finish</Filter>
-    </ClInclude>
-    <ClInclude Include="kick.h">
-      <Filter>Attack\Player</Filter>
-    </ClInclude>
-    <ClInclude Include="punch.h">
-      <Filter>Attack\Player</Filter>
-    </ClInclude>
-    <ClInclude Include="charge.h">
-      <Filter>Attack\Enemy</Filter>
     </ClInclude>
     <ClInclude Include="life.h">
       <Filter>Ui</Filter>
