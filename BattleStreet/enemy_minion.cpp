@@ -243,14 +243,9 @@ void CEnemyMinion::HitDamage(int nDamage)
 		SetState(MOTION_STATE_DAMAGE);
 	}
 
-	if (GetLife() < 0)
+	// Ž€–S”»’èˆ—
+	if (Dead())
 	{
-		if (GetIsPhaseTarget())
-		{
-			// ƒ^[ƒQƒbƒg‚ÌŒ‚”j”‰ÁŽZˆ—
-			AddDeadNum();
-		}
-
 		// “G‚ÌI—¹ˆ—
 		Uninit();
 	}

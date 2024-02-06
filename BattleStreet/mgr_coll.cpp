@@ -33,7 +33,7 @@
 //-------------------------------------
 CMgrColl::CMgrColl()
 {
-	ZeroMemory(m_apColl, sizeof(m_apColl));
+	ZeroMemory(&m_apColl, sizeof(m_apColl));
 	m_nNldxMax = 0;
 }
 
@@ -290,7 +290,7 @@ int CMgrColl::Set(CColl *pColl)
 //-------------------------------------
 void CMgrColl::Reset(int nNldx)
 {
-	m_apColl[nNldx] = NULL;
+	m_apColl[nNldx] = nullptr;
 
 	m_nNldxMax--;
 }

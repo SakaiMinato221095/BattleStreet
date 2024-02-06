@@ -54,6 +54,7 @@ public:
 	static CEnemy* Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot);
 	
 	void Damage(int nDamage);
+	bool Dead(void);
 	void AddDeadNum(void);
 
 	// ‘O•û‚ÉˆÚ“®

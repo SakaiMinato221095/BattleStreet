@@ -96,8 +96,6 @@ void CEnemy::Uninit(void)
 	{
 		// “–‚½‚è”»’è‚ÌI—¹ˆ—
 		m_pColl->Uninit();
-
-		// “–‚½‚è”»’è‚ÌŠJ•úˆ—
 		delete m_pColl;
 		m_pColl = NULL;
 	}
@@ -188,6 +186,25 @@ void CEnemy::Damage(int nDamage)
 {
 	m_data.nLife -= nDamage;
 	m_data.bHit = true;
+}
+
+//-------------------------------------
+//- ’Êí“G‚Ì€–Sˆ—
+//-------------------------------------
+bool CEnemy::Dead(void)
+{
+	if (GetLife() < 0)
+	{
+		if (GetIsPhaseTarget())
+		{
+			// ƒ^[ƒQƒbƒg‚ÌŒ‚”j”‰ÁZˆ—
+			AddDeadNum();
+
+			return true;
+		}
+	}
+
+	return false;
 }
 
 //-------------------------------------

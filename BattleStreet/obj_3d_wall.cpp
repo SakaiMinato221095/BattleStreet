@@ -146,8 +146,6 @@ void CObj3dWall::Uninit(void)
 	{
 		// “–‚½‚è”»’è‚ÌI—¹ˆ—
 		m_pColl->Uninit();
-
-		// “–‚½‚è”»’è‚ÌŠJ•úˆ—
 		delete m_pColl;
 		m_pColl = NULL;
 	}

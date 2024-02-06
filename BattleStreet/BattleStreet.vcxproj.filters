@@ -329,9 +329,6 @@
     <ClInclude Include="particle.h">
       <Filter>Effect</Filter>
     </ClInclude>
-    <ClInclude Include="command.h">
-      <Filter>Attack</Filter>
-    </ClInclude>
     <ClInclude Include="manager_model.h">
       <Filter>Data</Filter>
     </ClInclude>
@@ -430,6 +427,9 @@
     </ClInclude>
     <ClInclude Include="phase_manager.h">
       <Filter>Phase</Filter>
+    </ClInclude>
+    <ClInclude Include="command.h">
+      <Filter>Attack</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

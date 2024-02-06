@@ -144,8 +144,6 @@ void CSpwanWall::Uninit(void)
 	{
 		// “–‚½‚è”»’è‚ÌI—¹ˆ—
 		m_infoAttach.pColl->Uninit();
-		
-		delete m_infoAttach.pColl;
 		m_infoAttach.pColl = NULL;
 	}
 

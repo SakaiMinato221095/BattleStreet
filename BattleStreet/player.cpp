@@ -186,7 +186,6 @@ void CPlayer::Uninit(void)
 			// “–‚½‚è”»’è‚ÌI—¹ˆ—
 			m_apColl[nCount]->Uninit();
 
-			// “–‚½‚è”»’è‚ÌŠJ•úˆ—
 			delete m_apColl[nCount];
 			m_apColl[nCount] = NULL;
 		}

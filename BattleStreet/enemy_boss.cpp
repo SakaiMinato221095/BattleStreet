@@ -192,6 +192,7 @@ void CEnemyBoss::Update(void)
 		m_infoAi.state != AI_STATE_KICK_3)
 	{
 		// 当たり判定更新処理
+
 		UpdateCollisionPlayer();
 	}
 
@@ -227,7 +228,8 @@ void CEnemyBoss::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 //-------------------------------------
 void CEnemyBoss::HitDamage(int nDamage)
 {
-	SetLife(GetLife() - nDamage);
+	// ダメージ処理
+	Damage(nDamage);
 
 	// 状態を設定
 	if (nDamage >= 5)
@@ -240,6 +242,13 @@ void CEnemyBoss::HitDamage(int nDamage)
 	{
 		// 状態設定
 		SetState(MOTION_STATE_DAMAGE);
+	}
+
+	// 死亡判定処理
+	if (Dead())
+	{
+		// 敵の終了処理
+		Uninit();
 	}
 }
 

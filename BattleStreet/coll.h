@@ -81,6 +81,7 @@ public:
 
 	HRESULT Init(CMgrColl::TAG tag, CObject* pObj, D3DXVECTOR3 pos, D3DXVECTOR3 size);
 	void Uninit(void);
+
 	void Update(void);
 	void Draw(void);
 
@@ -104,7 +105,7 @@ private:
 
 	void SetDataVisual(D3DXVECTOR3 pos, D3DXVECTOR3 size);
 
-	void InitSet(CMgrColl::TAG tag, CObject* pObj,D3DXVECTOR3 pos,  D3DXVECTOR3 size);
+	void InitSet(CMgrColl::TAG tag, CObject* pObj, D3DXVECTOR3 pos, D3DXVECTOR3 size);
 
 	Data m_data;
 };

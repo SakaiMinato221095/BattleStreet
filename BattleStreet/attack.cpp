@@ -81,7 +81,6 @@ void CAttack::Uninit(void)
 		// “–‚½‚è”»’è‚Ì‰Šú‰»
 		m_pColl->Uninit();
 		delete m_pColl;
-
 		m_pColl = nullptr;
 	}
 
