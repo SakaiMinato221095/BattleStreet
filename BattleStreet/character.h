@@ -56,7 +56,19 @@ public:
 
 	static CCharacter* Create(CModel::MODEL_TYPE modelType, CMotion::MOTION_TYPE motionType, int nMotionStateMax);
 
-	void UpdateData(D3DXVECTOR3 pos, D3DXVECTOR3 rot) { m_data.pos = pos, m_data.rot = rot ; }
+	void UpdateData(D3DXVECTOR3 pos, D3DXVECTOR3 rot) {
+
+		m_data.pos = pos; 
+		m_data.rot = rot;
+
+		for (int nCnt = 0; nCnt < MODEL_PARTS_MAX; nCnt++)
+		{
+			if (m_apModel[nCnt] != nullptr)
+			{
+				m_apModel[nCnt]->SetMatrix();
+			}
+		};
+	}
 
 	CMotion* GetMotion(void) { return m_pMotion; }
 	CModel* GetModel(int nNumParts) { return m_apModel[nNumParts]; }
@@ -71,6 +83,8 @@ public:
 		};}
 
 private:
+
+	void SetMatrix(void);
 
 	D3DXMATRIX m_mtxWorld;					// ワールドマトリックス
 

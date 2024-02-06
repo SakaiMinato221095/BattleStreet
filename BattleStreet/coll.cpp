@@ -243,6 +243,8 @@ void CColl::SetHitData(HitData data)
 		if (data.nNldx == m_data.hitData[nCount].nNldx)
 		{
 			m_data.nHitNldxMax--;
+
+			break;
 		}
 	}
 

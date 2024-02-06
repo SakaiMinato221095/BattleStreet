@@ -285,9 +285,6 @@ void CPlayer::Update(void)
 	// 当たり判定の更新処理
 	UpdateCollision();
 
-	// 状態更新処理
-	UpdateState();
-
 	// デバック表示
 	DebugPlayer();
 }
@@ -446,6 +443,7 @@ void CPlayer::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 					m_data.pos,
 					m_data.size + D3DXVECTOR3(100.0f,0.0f,100.0f));
 
+				m_apColl[nCount]->SetIsVisualDrawStop(false);
 				break;
 			}
 
@@ -707,9 +705,9 @@ void CPlayer::UpdateCollision(void)
 				if (m_apColl[nCntColl]->Hit(CMgrColl::TAG_ENEMY, CMgrColl::EVENT_TYPE_PRESS))
 				{
 					float fLengthNear = 100000.0f;
-					int nHitMax = m_apColl[nCntColl]->GetData().nHitNldxMax;
+					int nHitNldxMax = m_apColl[nCntColl]->GetData().nHitNldxMax;
 
-					for (int nCntLength = 0; nCntLength < nHitMax; nCntLength++)
+					for (int nCntLength = 0; nCntLength < nHitNldxMax; nCntLength++)
 					{
 						float fLength = m_apColl[nCntColl]->GetData().hitData[nCntLength].fLength;
 
@@ -802,24 +800,6 @@ void CPlayer::UpdateMotionNone(void)
 	{
 		// 待機状態を設定
 		m_data.motionState = MOTION_STATE_NEUTRAL;
-	}
-}
-
-//-------------------------------------
-//- 通常状態プレイヤーの状態更新処理
-//-------------------------------------
-void CPlayer::UpdateState(void)
-{
-	if (STATE_TIME[m_data.state] != 0)
-	{
-		m_data.stateTimeCnt++;
-
-		if (m_data.stateTimeCnt >= STATE_TIME[m_data.state])
-		{
-			m_data.state = STATE_NEUTRAL;
-
-			m_data.stateTimeCnt = 0;
-		}
 	}
 }
 
@@ -1014,11 +994,8 @@ void CPlayer::InputCombo(void)
 		if (bFinish)
 		{
 			// 状態設定
-			//m_data.state = STATE_FINISH;
-
-			// 状態設定
 			m_data.state = STATE_BATTLE;
-
+			 
 			// フィニッシュ攻撃
 			SetAttackFinish();
 		}
@@ -1217,16 +1194,8 @@ void CPlayer::DebugPlayer(void)
 	}
 
 	pDebugProc->Print("\n");
-	pDebugProc->Print("プレイヤーの位置");
+	pDebugProc->Print("プレイヤーの状態");
 	pDebugProc->Print("\n");
-	pDebugProc->Print("%f,%f,%f",m_data.pos.x, m_data.pos.y, m_data.pos.z);
-	pDebugProc->Print("\n");
-	pDebugProc->Print("プレイヤーの向き");
-	pDebugProc->Print("\n");
-	pDebugProc->Print("%f", m_data.rot.y);
-	pDebugProc->Print("\n");
-	pDebugProc->Print("プレイヤーの目標の向き");
-	pDebugProc->Print("\n");
-	pDebugProc->Print("%f", m_data.rotDest.y);
+	pDebugProc->Print("%d", m_data.state);
 	pDebugProc->Print("\n");
 }

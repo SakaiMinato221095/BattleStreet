@@ -109,7 +109,6 @@ public:
 		MOTION_STATE motionState;	// モーション状態の種類
 
 		bool bIsTarget;				// ターゲットの有無
-		int stateTimeCnt;			// 状態カウント
 
 	}Data;
 
@@ -133,7 +132,6 @@ public:
 	void SetData(Data data) { m_data = data; }
 	Data GetData(void) { return m_data; }
 
-	void SetMotionState(MOTION_STATE motionState) { m_data.motionState = motionState; }
 	MOTION_STATE GetMotionState(void) { return m_data.motionState; }
 
 	void SetPlus(float fRate, int nTime) { m_data.plus.speedRate = fRate, m_data.plus.sppedPlusTime = nTime; }
@@ -150,7 +148,6 @@ private:
 	void UpdateCommand(void);
 	void UpdateCollision(void);
 	void UpdateMotionNone(void);
-	void UpdateState(void);
 
 	void InputMove(void);
 	void InputCombo(void);

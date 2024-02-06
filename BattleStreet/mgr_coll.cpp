@@ -16,6 +16,8 @@
 
 #include "object.h"
 
+#include "helper_sakai.h"
+
 //=======================================
 //=	マクロ定義
 //=======================================
@@ -115,6 +117,8 @@ bool CMgrColl::Hit(int nNldxColl, TAG hitTag, EVENT_TYPE eventType)
 	CColl::Data dataMy = m_apColl[nNldxColl]->GetData();	// 自身の情報
 	int nHitNldxMax = dataMy.nHitNldxMax;					// 接触相手の最大数
 
+	CColl::Data dataOnceMy = {};
+
 	bool bHit = false;									// 接触の有無
 
 	for (int nCount = 0; nCount < COLLSION_NUM_MAX; nCount++)
@@ -160,9 +164,8 @@ bool CMgrColl::Hit(int nNldxColl, TAG hitTag, EVENT_TYPE eventType)
 					// 接触判定を設定
 					bHit = true;
 
-					//距離を測る変数
-					float fLength = ((posPair.x - posMy.x) * (posPair.x - posMy.x)
-						+ (posPair.z - posMy.z) * (posPair.z - posMy.z));
+					// ターゲットとの距離を算出
+					float fLength = HelperSakai::CalculateLength(posMy, posPair);
 
 					// 接触情報設定処理
 					SetHit(
@@ -186,8 +189,9 @@ bool CMgrColl::Hit(int nNldxColl, TAG hitTag, EVENT_TYPE eventType)
 bool CMgrColl::HitSide(int nNldxColl, CMgrColl::TAG hitTag, EVENT_TYPE eventType,CMgrColl::TYPE_SXIS typeSxis)
 {
 	// 変数宣言
-	CColl* pCollMy = m_apColl[nNldxColl];	// 自身の当たり判定情報
-	bool bHit = false;						// 接触の有無
+	CColl* pCollMy = m_apColl[nNldxColl];					// 自身の当たり判定情報
+	CColl::Data dataMy = m_apColl[nNldxColl]->GetData();	// 自身の情報
+	bool bHit = false;										// 接触の有無
 
 	for (int nCount = 0; nCount < COLLSION_NUM_MAX; nCount++)
 	{
@@ -247,9 +251,8 @@ bool CMgrColl::HitSide(int nNldxColl, CMgrColl::TAG hitTag, EVENT_TYPE eventType
 					// 接触判定を設定
 					bHit = true;
 
-					//距離を測る変数
-					float fLength = ((posPair.x - posMy.x) * (posPair.x - posMy.x)
-						+ (posPair.z - posMy.z) * (posPair.z - posMy.z));
+					// ターゲットとの距離を算出
+				 	float fLength = HelperSakai::CalculateLength(posMy, posPair);
 
 					// 接触情報設定処理
 					SetHit(
@@ -302,7 +305,7 @@ void CMgrColl::SetHit(CColl* pCollMy,int nNldx,CObject* pObjPair,float fLength)
 {
 	// 接触相手の当たり判定情報を設定
 	CColl::HitData hitData = {};
-
+	
 	hitData.nNldx = nNldx;
 	hitData.fLength = fLength;
 

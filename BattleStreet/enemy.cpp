@@ -64,11 +64,8 @@ CEnemy::~CEnemy()
 //-------------------------------------
 //- 敵の初期化処理
 //-------------------------------------
-HRESULT CEnemy::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+HRESULT CEnemy::Init(void)
 {
-	// 初期設定処理
-	InitSet(pos, rot);
-
 	if (m_pColl == NULL)
 	{
 		// 当たり判定設定
@@ -128,31 +125,9 @@ void CEnemy::Draw(void)
 }
 
 //-------------------------------------
-//-	敵のモデルの初期設定
-//-------------------------------------
-void CEnemy::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
-{
-	// データの代入
-	m_data.pos = pos;										// 位置
-	m_data.rot = rot;										// 向き
-	m_data.size = D3DXVECTOR3(40.0f, 200.0f, 40.0f);		// サイズ
-
-	m_data.nLife = 30;
-}
-
-//-------------------------------------
-//- 通常敵の接触ダメージ処理
-//-------------------------------------
-void CEnemy::HitDamage(int nDamage)
-{
-	// ダメージ処理
-	Damage(nDamage);
-}
-
-//-------------------------------------
 //- 通常敵の生成処理
 //-------------------------------------
-CEnemy * CEnemy::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+CEnemy * CEnemy::Create(void)
 {
 	// 通常敵の生成
 	CEnemy *pEnemy = DBG_NEW CEnemy;
@@ -161,7 +136,7 @@ CEnemy * CEnemy::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	if (pEnemy != NULL)
 	{
 		// 初期化処理
-		if (FAILED(pEnemy->Init(pos,rot)))
+		if (FAILED(pEnemy->Init()))
 		{// 失敗時
 
 			// 「なし」を返す
@@ -177,6 +152,28 @@ CEnemy * CEnemy::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 
 	// 通常敵のポインタを返す
 	return pEnemy;
+}
+
+//-------------------------------------
+//- 通常敵の接触ダメージ処理
+//-------------------------------------
+void CEnemy::HitDamage(int nDamage)
+{
+	// ダメージ処理
+	Damage(nDamage);
+}
+
+//-------------------------------------
+//-	敵のモデルの初期設定
+//-------------------------------------
+void CEnemy::SetInit(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+{
+	// データの代入
+	m_data.pos = pos;										// 位置
+	m_data.rot = rot;										// 向き
+	m_data.size = D3DXVECTOR3(40.0f, 200.0f, 40.0f);		// サイズ
+
+	m_data.nLife = 30;
 }
 
 //-------------------------------------

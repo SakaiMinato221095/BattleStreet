@@ -42,17 +42,17 @@ public:
 	CEnemy();
 	~CEnemy();
 
-	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot);
+	HRESULT Init(void);
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
 
-	void InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 rot);
-
+	static CEnemy* Create(void);
+	
 	virtual void HitDamage(int nDamage);
 
-	static CEnemy* Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot);
-	
+	void SetInit(D3DXVECTOR3 pos, D3DXVECTOR3 rot);
+
 	void Damage(int nDamage);
 	bool Dead(void);
 	void AddDeadNum(void);

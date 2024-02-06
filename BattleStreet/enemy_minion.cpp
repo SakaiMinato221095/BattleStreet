@@ -105,10 +105,10 @@ CEnemyMinion::~CEnemyMinion()
 //-------------------------------------
 //- 敵の初期化処理
 //-------------------------------------
-HRESULT CEnemyMinion::Init(CModel::MODEL_TYPE modelType, CMotion::MOTION_TYPE motionType, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+HRESULT CEnemyMinion::Init(CModel::MODEL_TYPE modelType, CMotion::MOTION_TYPE motionType)
 {
 	// Xファイルオブジェクトの終了
-	CEnemy::Init(pos, rot);
+	CEnemy::Init();
 
 	if (m_infoVisual.pCharacter == nullptr)
 	{
@@ -215,11 +215,33 @@ void CEnemyMinion::Draw(void)
 }
 
 //-------------------------------------
-//-	敵のモデルの初期設定
+//- 通常敵の生成処理
 //-------------------------------------
-void CEnemyMinion::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+CEnemyMinion* CEnemyMinion::Create(CModel::MODEL_TYPE modelType, CMotion::MOTION_TYPE motionType)
 {
-	CEnemy::InitSet(pos, rot);
+	// 通常敵の生成
+	CEnemyMinion* pEnemyWeak = DBG_NEW CEnemyMinion;
+
+	// 生成の成功の有無を判定
+	if (pEnemyWeak != NULL)
+	{
+		// 初期化処理
+		if (FAILED(pEnemyWeak->Init(modelType, motionType)))
+		{// 失敗時
+
+			// 「なし」を返す
+			return NULL;
+		}
+	}
+	else if (pEnemyWeak == NULL)
+	{// 失敗時
+
+		// 「なし」を返す
+		return NULL;
+	}
+
+	// 通常敵のポインタを返す
+	return pEnemyWeak;
 }
 
 //-------------------------------------
@@ -252,33 +274,17 @@ void CEnemyMinion::HitDamage(int nDamage)
 }
 
 //-------------------------------------
-//- 通常敵の生成処理
+//-	敵のモデルの初期設定
 //-------------------------------------
-CEnemyMinion* CEnemyMinion::Create(CModel::MODEL_TYPE modelType, CMotion::MOTION_TYPE motionType, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+void CEnemyMinion::SetInit(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
-	// 通常敵の生成
-	CEnemyMinion* pEnemyWeak = DBG_NEW CEnemyMinion;
+	CEnemy::SetInit(pos, rot);
 
-	// 生成の成功の有無を判定
-	if (pEnemyWeak != NULL)
+	if (m_infoVisual.pCharacter != nullptr)
 	{
-		// 初期化処理
-		if (FAILED(pEnemyWeak->Init(modelType, motionType, pos, rot)))
-		{// 失敗時
-
-			// 「なし」を返す
-			return NULL;
-		}
+		// キャラクターの生成処理
+		m_infoVisual.pCharacter->UpdateData(pos, rot);
 	}
-	else if (pEnemyWeak == NULL)
-	{// 失敗時
-
-		// 「なし」を返す
-		return NULL;
-	}
-
-	// 通常敵のポインタを返す
-	return pEnemyWeak;
 }
 
 //-------------------------------------

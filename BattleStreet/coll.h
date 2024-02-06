@@ -65,7 +65,7 @@ public:
 		int nNldx;							// 番号
 		CObject* pObj;						// オブジェクトのポインタ
 
-		HitData hitData[COLLSION_NUM_MAX];	// 接触相手の当たり判定情報
+		HitData hitData[COLLSION_NUM_MAX];	// 接触相手の接触情報
 		int nHitNldxMax;					// 接触相手の番号の最大数
 
 		D3DXVECTOR3 pos;					// 位置
@@ -100,6 +100,7 @@ public:
 
 	void SetData(Data data) { m_data = data; }
 	Data GetData(void) { return m_data; }
+
 
 private:
 

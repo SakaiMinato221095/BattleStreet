@@ -163,125 +163,12 @@ void CModel::Update(void)
 //-	階層構造のXファイルオブジェクトの描画処理
 //-------------------------------------
 void CModel::Draw(void)
-{
-	// デバイスを取得
-	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
+{		
+	// マトリックスの設定
+	SetMatrix();
 
-	// デバイスの情報取得の成功を判定
-	if (pDevice == NULL)
-	{// 失敗時
-
-	 // 初期化処理を抜ける
-		return;
-	}
-
-	// モデル管理の生成
-	CManagerModel *pManagerModel = CManager::GetInstance()->GetManagerModel();
-
-	// モデル管理の有無を判定
-	if (pManagerModel == NULL)
-	{
-		// 初期化処理を抜ける
-		return;
-	}
-
-	// モデル番号を取得
-	int nModelNldx = m_nModelNldx[m_modelType][m_nPartsNum];
-
-	// モデル情報を取得
-	CManagerModel::Model model = pManagerModel->GetAddress(nModelNldx);
-
-	// モデルの有無を判定
-	if (model.m_pMesh == NULL)
-	{
-		// 描画処理を抜ける
-		return;
-	}
-
-	// 変数宣言（情報取得）
-	D3DXVECTOR3 pos = m_data.pos + m_data.posMotion;	// 位置情報
-	D3DXVECTOR3 rot = m_data.rot + m_data.rotMotion;	// 向き情報
-		
-	// 変数宣言
-	D3DXMATRIX mtxRot, mtxTrans;	// 計算用マトリックス
-	D3DMATERIAL9 matDef;			// 現在のマテリアルの保存用
-	D3DXMATERIAL *pMat;				// マテリアルへのポインタ
-
-	// ワールドマトリックスの初期化
-	D3DXMatrixIdentity(&m_mtxWorld);
-
-	// 向きを反映
-	D3DXMatrixRotationYawPitchRoll(&mtxRot, rot.y, rot.x, rot.z);
-	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxRot);
-
-	// 位置反映
-	D3DXMatrixTranslation(&mtxTrans, pos.x, pos.y, pos.z);
-	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxTrans);
-
-	//親の計算用マトリックス
-	D3DXMATRIX mtxParent;
-
-	//パーツの「親マトリックス」を設定
-	if (m_pParent != NULL)
-	{//親モデルがある場合
-
-		// 親のマトリックスを代入
-		mtxParent = m_pParent->GetMtxWorld();
-	}
-	else
-	{//親モデルがない場合
-
-		//プレイヤーのマトリックスを設定
-		pDevice->GetTransform(D3DTS_WORLD,&mtxParent);
-	}
-
-	//算出したパーツのマトリックスと親のマトリックスを掛け合わせる
-	D3DXMatrixMultiply(
-		&m_mtxWorld,
-		&m_mtxWorld,
-		&mtxParent);
-
-	// ワールドマトリックスの設定
-	pDevice->SetTransform(
-		D3DTS_WORLD,
-		&m_mtxWorld);
-
-	// 現在のマテリアルの取得
-	pDevice->GetMaterial(&matDef);
-
-	// マテリアルのポインタを取得
-	pMat = (D3DXMATERIAL*)model.m_pBuffMat->GetBufferPointer();
-	
-	// マテリアルごとの描画
-	for (int nCutMat = 0; nCutMat < (int)model.m_dwNumMat; nCutMat++)
-	{
-		if (m_data.color == D3DXCOLOR(1.0f,1.0f,1.0f,1.0f))
-		{
-			//デフォルト
-			pDevice->SetMaterial(&pMat[nCutMat].MatD3D);
-		}
-		else
-		{
-			//元の色を保存
-			D3DXCOLOR tempColor = pMat[nCutMat].MatD3D.Diffuse;
-
-			// 色を設定して描画
-			pMat[nCutMat].MatD3D.Diffuse = m_data.color;
-			pDevice->SetMaterial(&pMat[nCutMat].MatD3D);
-
-			// 元の色の戻す
-			pMat[nCutMat].MatD3D.Diffuse = tempColor;
-		}
-
-		// テクスチャの設定（仮）
-		pDevice->SetTexture(0, model.m_pTexture[nCutMat]);
-
-		// 階層構造のXファイルオブジェクト（パーツ）の描画
-		model.m_pMesh->DrawSubset(nCutMat);
-	}
-
-	// 保存していたマテリアルに戻す
-	pDevice->SetMaterial(&matDef);
+	// マトリックスのメッシュ設定処理
+	SetMatrixMesh();
 }
 
 //-------------------------------------
@@ -289,29 +176,29 @@ void CModel::Draw(void)
 //-------------------------------------
 CModel *CModel::Create(MODEL_TYPE modelType, int nCount)
 {
-	// 階層構造のXファイルオブジェクトのポインタを宣言
-	CModel *pObjectX = DBG_NEW CModel;
+	// ポインタを宣言
+	CModel *pModel = DBG_NEW CModel;
 
 	// 生成の成功の有無を判定
-	if (pObjectX != NULL)
+	if (pModel != NULL)
 	{
 		// 初期化処理
-		if (FAILED(pObjectX->Init(modelType,nCount)))
+		if (FAILED(pModel->Init(modelType,nCount)))
 		{// 失敗時
 
 			// 「なし」を返す
 			return NULL;
 		}
 	}
-	else if (pObjectX == NULL)
+	else if (pModel == NULL)
 	{// 失敗時
 
 		// 「なし」を返す
 		return NULL;
 	}
 
-	// 階層構造のXファイルオブジェクトのポインタを返す
-	return pObjectX;
+	// ポインタを返す
+	return pModel;
 }
 
 //-------------------------------------
@@ -474,4 +361,146 @@ void CModel::SetFile(MODEL_TYPE modelType)
 	{
 
 	}
+}
+
+//-------------------------------------
+//- プレイヤーのマトリックス設定処理
+//-------------------------------------
+void CModel::SetMatrix(void)
+{
+	// デバイスを取得
+	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
+
+	// デバイスの情報取得の成功を判定
+	if (pDevice == NULL)
+	{// 失敗時
+
+		// 初期化処理を抜ける
+		return;
+	}
+
+	// 変数宣言（情報取得）
+	D3DXVECTOR3 pos = m_data.pos + m_data.posMotion;	// 位置情報
+	D3DXVECTOR3 rot = m_data.rot + m_data.rotMotion;	// 向き情報
+
+	// 変数宣言
+	D3DXMATRIX mtxRot, mtxTrans;	// 計算用マトリックス
+
+	// ワールドマトリックスの初期化
+	D3DXMatrixIdentity(&m_mtxWorld);
+
+	// 向きを反映
+	D3DXMatrixRotationYawPitchRoll(&mtxRot, rot.y, rot.x, rot.z);
+	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxRot);
+
+	// 位置反映
+	D3DXMatrixTranslation(&mtxTrans, pos.x, pos.y, pos.z);
+	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxTrans);
+
+	//親の計算用マトリックス
+	D3DXMATRIX mtxParent;
+
+	//パーツの「親マトリックス」を設定
+	if (m_pParent != NULL)
+	{//親モデルがある場合
+
+		// 親のマトリックスを代入
+		mtxParent = m_pParent->GetMtxWorld();
+	}
+	else
+	{//親モデルがない場合
+
+		//プレイヤーのマトリックスを設定
+		pDevice->GetTransform(D3DTS_WORLD, &mtxParent);
+	}
+
+	//算出したパーツのマトリックスと親のマトリックスを掛け合わせる
+	D3DXMatrixMultiply(
+		&m_mtxWorld,
+		&m_mtxWorld,
+		&mtxParent);
+
+	// ワールドマトリックスの設定
+	pDevice->SetTransform(
+		D3DTS_WORLD,
+		&m_mtxWorld);
+}
+
+//-------------------------------------
+//- プレイヤーのマトリックスのメッシュ設定処理
+//-------------------------------------
+void CModel::SetMatrixMesh(void)
+{
+	// デバイスを取得
+	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
+
+	// デバイスの情報取得の成功を判定
+	if (pDevice == NULL)
+	{// 失敗時
+
+		// 初期化処理を抜ける
+		return;
+	}
+
+	// モデル管理の生成
+	CManagerModel* pManagerModel = CManager::GetInstance()->GetManagerModel();
+
+	// モデル管理の有無を判定
+	if (pManagerModel == NULL)
+	{
+		// 初期化処理を抜ける
+		return;
+	}
+
+	// モデル情報を取得
+	int nModelNldx = m_nModelNldx[m_modelType][m_nPartsNum];	// モデル番号
+	CManagerModel::Model model = pManagerModel->GetAddress(nModelNldx);
+
+	// モデルの有無を判定
+	if (model.m_pMesh == NULL)
+	{
+		// 描画処理を抜ける
+		return;
+	}
+
+	// 変数宣言
+	D3DMATERIAL9 matDef;			// 現在のマテリアルの保存用
+	D3DXMATERIAL* pMat;				// マテリアルへのポインタ
+
+	// 現在のマテリアルの取得
+	pDevice->GetMaterial(&matDef);
+
+	// マテリアルのポインタを取得
+	pMat = (D3DXMATERIAL*)model.m_pBuffMat->GetBufferPointer();
+
+	// マテリアルごとの描画
+	for (int nCutMat = 0; nCutMat < (int)model.m_dwNumMat; nCutMat++)
+	{
+		if (m_data.color == D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f))
+		{
+			//デフォルト
+			pDevice->SetMaterial(&pMat[nCutMat].MatD3D);
+		}
+		else
+		{
+			//元の色を保存
+			D3DXCOLOR tempColor = pMat[nCutMat].MatD3D.Diffuse;
+
+			// 色を設定して描画
+			pMat[nCutMat].MatD3D.Diffuse = m_data.color;
+			pDevice->SetMaterial(&pMat[nCutMat].MatD3D);
+
+			// 元の色の戻す
+			pMat[nCutMat].MatD3D.Diffuse = tempColor;
+		}
+
+		// テクスチャの設定（仮）
+		pDevice->SetTexture(0, model.m_pTexture[nCutMat]);
+
+		// 階層構造のXファイルオブジェクト（パーツ）の描画
+		model.m_pMesh->DrawSubset(nCutMat);
+	}
+
+	// 保存していたマテリアルに戻す
+	pDevice->SetMaterial(&matDef);
 }

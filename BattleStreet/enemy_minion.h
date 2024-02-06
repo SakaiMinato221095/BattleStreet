@@ -71,16 +71,16 @@ public:
 	CEnemyMinion();
 	~CEnemyMinion();
 
-	HRESULT Init(CModel::MODEL_TYPE modelType, CMotion::MOTION_TYPE motionType, D3DXVECTOR3 pos, D3DXVECTOR3 rot);
+	HRESULT Init(CModel::MODEL_TYPE modelType, CMotion::MOTION_TYPE motionType);
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
 
-	void InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 rot);
+	static CEnemyMinion* Create(CModel::MODEL_TYPE modelType, CMotion::MOTION_TYPE motionType);
 
 	virtual void HitDamage(int nDamage);
 
-	static CEnemyMinion* Create(CModel::MODEL_TYPE modelType, CMotion::MOTION_TYPE motionType, D3DXVECTOR3 pos, D3DXVECTOR3 rot);
+	void SetInit(D3DXVECTOR3 pos, D3DXVECTOR3 rot);
 
 private:
 

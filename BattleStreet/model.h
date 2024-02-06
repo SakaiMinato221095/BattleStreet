@@ -86,6 +86,9 @@ public:
 
 	static void SetFile(MODEL_TYPE modelType);
 
+	void SetMatrix(void);
+	void SetMatrixMesh(void);
+
 	D3DXMATRIX GetMtxWorld(void) { return m_mtxWorld; }
 
 	void SetData(CModel::Data data) { m_data = data; }
