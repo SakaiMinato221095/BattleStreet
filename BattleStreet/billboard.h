@@ -50,6 +50,14 @@ public:
 
 	virtual void SetVtx(void);
 
+	void UpdateInfo(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXCOLOR color)
+	{
+		m_info.pos = pos;
+		m_info.size = size;
+		m_info.color = color;
+		SetVtx();
+	}
+
 	void BindTexture(int nTextureNldx) { m_nTextureNldxUse = nTextureNldx; };
 
 	void SetPos(D3DXVECTOR3 pos) { m_info.pos = pos; }
@@ -63,14 +71,6 @@ public:
 
 	LPDIRECT3DVERTEXBUFFER9 GetVtxBuff(void) { return m_pVtxBuff; }
 	D3DXMATRIX GetMtxWorld(void) { return m_mtxWorld; }
-
-	void UpdateInfo(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXCOLOR color) 
-	{ 
-		m_info.pos = pos;
-		m_info.size = size;
-		m_info.color = color;
-		SetVtx();
-	}
 
 private:
 

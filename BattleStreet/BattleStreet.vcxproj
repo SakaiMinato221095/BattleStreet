@@ -38,7 +38,6 @@
     <ClCompile Include="finish_punch.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="Input.cpp" />
-    <ClCompile Include="life.cpp" />
     <ClCompile Include="light.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="manager.cpp" />
@@ -99,7 +98,6 @@
     <ClInclude Include="finish_punch.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="Input.h" />
-    <ClInclude Include="life.h" />
     <ClInclude Include="light.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="manager.h" />

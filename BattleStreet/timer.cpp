@@ -233,16 +233,8 @@ void CTimer::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 interval, D3DXVECTOR3 between,
 				pos.y + (interval.y * nDigMax),
 				pos.z + (interval.z * nDigMax));
 
-			// 頂点値情報
-			CObject2d::VtxData vtxData = m_apNumber[nDigMax]->GetVtxData();
-
-			// 数字の位置情報を代入
-			vtxData.pos = numPos;
-			vtxData.size = size;
-			vtxData.color = color;
-
 			// 情報更新（頂点値情報）
-			m_apNumber[nDigMax]->SetVtxData(vtxData);
+			m_apNumber[nDigMax]->SetInit(numPos, size, color);
 		}
 
 		// 桁カウントを加算
@@ -263,16 +255,8 @@ void CTimer::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 interval, D3DXVECTOR3 between,
 				(pos.y + (between.y * nDigCarr)) + (interval.y * nDigMax),
 				(pos.z + (between.z * nDigCarr)) + (interval.z * nDigMax));
 
-			// 頂点値情報
-			CObject2d::VtxData vtxData = m_apNumber[nDigMax]->GetVtxData();
-
-			// 数字の位置情報を代入
-			vtxData.pos = numPos;
-			vtxData.size = size;
-			vtxData.color = color;
-
 			// 情報更新（頂点値情報）
-			m_apNumber[nDigMax]->SetVtxData(vtxData);
+			m_apNumber[nDigMax]->SetInit(numPos, size, color);
 		}
 
 		// 桁カウントを加算
@@ -293,16 +277,8 @@ void CTimer::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 interval, D3DXVECTOR3 between,
 				(pos.y + (between.y * nDigCarr)) + (interval.y * nDigMax),
 				(pos.z + (between.z * nDigCarr)) + (interval.z * nDigMax));
 
-			// 頂点値情報
-			CObject2d::VtxData vtxData = m_apNumber[nDigMax]->GetVtxData();
-
-			// 数字の位置情報を代入
-			vtxData.pos = numPos;
-			vtxData.size = size;
-			vtxData.color = color;
-
 			// 情報更新（頂点値情報）
-			m_apNumber[nDigMax]->SetVtxData(vtxData);
+			m_apNumber[nDigMax]->SetInit(numPos, size, color);
 		}
 
 		// 桁カウントを加算

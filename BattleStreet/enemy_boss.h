@@ -32,7 +32,8 @@
 
 class CCharacter;
 class CAttack;
-class CLife;
+
+class CObj2dGage;
 
 //-======================================
 //-	クラス定義
@@ -107,6 +108,8 @@ private:
 	{
 		CCharacter* pCharacter;		// キャラクターのポインタ
 		MOTION_STATE motionState;	// モーション状態
+
+		CObj2dGage* pLife2dGage;	// 2Dの体力ゲージ
 	};
 
 	// 付属情報

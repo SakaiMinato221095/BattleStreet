@@ -259,11 +259,11 @@ void CPause::Update(void)
 			m_typeSelect = TYPE_SELECT_TITLE;
 		}
 
-		CObject2d::VtxData vtxData = m_apObj2dNone[TYPE_CURSOR]->GetVtxData();
-
-		vtxData.pos = D3DXVECTOR3(MENU_POS_X - 250.0f, MENU_POS_Y + (MENU_INTERVAL_Y * m_typeSelect), 0.0f);
-
-		m_apObj2dNone[TYPE_CURSOR]->SetVtxData(vtxData);
+		m_apObj2dNone[TYPE_CURSOR]->SetPos(
+			D3DXVECTOR3(
+				MENU_POS_X - 250.0f, 
+				MENU_POS_Y + (MENU_INTERVAL_Y * m_typeSelect),
+				0.0f));
 
 	}
 	else if (pInputKeyboard->GetTrigger(DIK_S) != NULL)
@@ -276,11 +276,11 @@ void CPause::Update(void)
 			m_typeSelect = (TYPE_SELECT)0;
 		}
 
-		CObject2d::VtxData vtxData = m_apObj2dNone[TYPE_CURSOR]->GetVtxData();
-
-		vtxData.pos = D3DXVECTOR3(MENU_POS_X - 250.0f, MENU_POS_Y + (MENU_INTERVAL_Y * m_typeSelect), 0.0f);
-
-		m_apObj2dNone[TYPE_CURSOR]->SetVtxData(vtxData);
+		m_apObj2dNone[TYPE_CURSOR]->SetPos(
+			D3DXVECTOR3(
+				MENU_POS_X - 250.0f, 
+				MENU_POS_Y + (MENU_INTERVAL_Y * m_typeSelect), 
+				0.0f));
 	}
 	
 	if (pInputKeyboard->GetTrigger(DIK_RETURN) != NULL)

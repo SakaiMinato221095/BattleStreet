@@ -40,7 +40,7 @@
 
 #include "particle.h"
 
-#include "life.h"
+#include "obj_2d_gage.h"
 
 //-======================================
 //-	マクロ定義
@@ -82,7 +82,7 @@ CPlayer::CPlayer()
 
 	m_pAttack = nullptr;
 	m_pCommand = nullptr;
-	m_pLife = nullptr;
+	m_pLife2dGage = nullptr;
 }
 
 //-------------------------------------
@@ -98,9 +98,6 @@ CPlayer::~CPlayer()
 //-------------------------------------
 HRESULT CPlayer::Init(D3DXVECTOR3 pos , D3DXVECTOR3 rot,CModel::MODEL_TYPE modelType, CMotion::MOTION_TYPE motionType, int nStateMax)
 {
-	// 戦闘プレイヤーの設定処理
-	InitSet(pos, rot);
-
 	// モデルのパーツ数を取得
 	m_nNumModel = CModel::GetPartsNum(modelType);
 
@@ -154,21 +151,20 @@ HRESULT CPlayer::Init(D3DXVECTOR3 pos , D3DXVECTOR3 rot,CModel::MODEL_TYPE model
 		}
 	}
 
-	//// 体力
-	//if (m_pLife == nullptr)
-	//{
-	//	// 体力の生成
-	//	m_pLife = CLife::Create(
-	//		CLife::TEX_NULL,
-	//		D3DXVECTOR3(SCREEN_WIDTH * 0.85f,SCREEN_HEIGHT * 0.2f,0.0f),
-	//		D3DXVECTOR3(150.0f, 30.0f, 0.0f),
-	//		D3DXCOLOR(1.0f,0.0f,0.0f,1.0f));
+	// 体力
+	if (m_pLife2dGage == nullptr)
+	{
+		// 体力の生成
+		m_pLife2dGage = CObj2dGage::Create();
 
-	//	if (m_pLife == nullptr)
-	//	{
-	//		return E_FAIL;
-	//	}
-	//}
+		if (m_pLife2dGage == nullptr)
+		{
+			return E_FAIL;
+		}
+	}
+
+	// 戦闘プレイヤーの設定処理
+	InitSet(pos, rot);
 
 	// 成功を返す
 	return S_OK;
@@ -231,11 +227,11 @@ void CPlayer::Uninit(void)
 		m_pAttack = nullptr;
 	}
 
-	// 攻撃の終了処理
-	if (m_pLife != nullptr)
+	// 体力表示の終了処理
+	if (m_pLife2dGage != nullptr)
 	{
-		m_pLife->Uninit();
-		m_pLife = nullptr;
+		m_pLife2dGage->Uninit();
+		m_pLife2dGage = nullptr;
 	}
 
 	// 自分自身のポインタの開放
@@ -284,6 +280,15 @@ void CPlayer::Update(void)
 
 	// 当たり判定の更新処理
 	UpdateCollision();
+
+	if (m_pLife2dGage != nullptr)
+	{
+		m_pLife2dGage->UpdateInfo(
+			m_pLife2dGage->GetPos(),
+			m_pLife2dGage->GetSize(),
+			m_pLife2dGage->GetColor(),
+			m_data.nLife);
+	}
 
 	// デバック表示
 	DebugPlayer();
@@ -443,13 +448,22 @@ void CPlayer::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 					m_data.pos,
 					m_data.size + D3DXVECTOR3(100.0f,0.0f,100.0f));
 
-				m_apColl[nCount]->SetIsVisualDrawStop(false);
 				break;
 			}
 
 		}
 	}
 
+	if (m_pLife2dGage != NULL)
+	{
+		m_pLife2dGage->SetInit(
+			D3DXVECTOR3(SCREEN_WIDTH * 0.2f,SCREEN_HEIGHT * 0.1f,0.0f),
+			D3DXVECTOR3(150.0f, 15.0f, 0.0f),
+			D3DXCOLOR(0.0f,1.0f,0.0f,1.0f),
+			m_data.nLife,
+			m_data.nLife);
+	}
+	
 	m_data.plus.speedRate = 1.0f;
 }
 

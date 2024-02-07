@@ -38,7 +38,8 @@ class CObjectX;
 class CObject3d;
 class CColl;
 class CAttack;
-class CLife;
+
+class CObj2dGage;
 
 //-======================================
 //-	クラス定義
@@ -177,7 +178,7 @@ private:
 	CAttack* m_pAttack;						// 攻撃のポインタ
 	CCommand* m_pCommand;					// コマンドのポインタ
 
-	CLife* m_pLife;							// 体力表示のポインタ
+	CObj2dGage* m_pLife2dGage;				// 体力表示のポインタ
 };
 
 #endif	// 二重インクルード防止の終了

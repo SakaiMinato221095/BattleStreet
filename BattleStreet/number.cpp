@@ -115,10 +115,7 @@ HRESULT CNumber::Init(TEX tex)
 	BindTexture(m_nTextureNldx[tex]);
 
 	// 2Dオブジェクトの初期化
-	CObject2d::Init(
-		D3DXVECTOR3(0.0f,0.0f,0.0f),
-		D3DXVECTOR3(0.0f,0.0f,0.0f),
-		D3DXCOLOR(1.0f,1.0f,1.0f,1.0f));
+	CObject2d::Init();
 
 	// 成功を返す
 	return S_OK;
@@ -187,9 +184,9 @@ CNumber *CNumber::Create(TEX tex)
 void CNumber::SetVtx(void)
 {
 	// 変数宣言（情報の取得）
-	D3DXVECTOR3 pos = GetVtxData().pos;		// 位置情報
-	D3DXVECTOR3 size = GetVtxData().size;	// 大きさ
-	D3DXCOLOR color = GetVtxData().color;	// 色
+	D3DXVECTOR3 pos = GetPos();		// 位置情報
+	D3DXVECTOR3 size = GetSize();	// 大きさ
+	D3DXCOLOR color = GetColor();	// 色
 
 	// 頂点バッファをポインタを宣言
 	LPDIRECT3DVERTEXBUFFER9 vtxBuff = GetVtxBuff();

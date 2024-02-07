@@ -13,6 +13,7 @@
 #include "enemy_boss.h"
 
 #include "character.h"
+#include "obj_2d_gage.h"
 
 #include "renderer.h"
 #include "manager.h"
@@ -115,13 +116,26 @@ HRESULT CEnemyBoss::Init(CModel::MODEL_TYPE modelType, CMotion::MOTION_TYPE moti
 			motionType,
 			MOTION_STATE_MAX);
 
-		if (m_infoVisual.pCharacter == nullptr)
+		if (m_infoVisual.pCharacter != nullptr)
+		{
+			// 初期状態の設定
+			SetState(CEnemyBoss::MOTION_STATE_NEUTRAL);
+		}
+		else if (m_infoVisual.pCharacter == nullptr)
 		{
 			return E_FAIL;
 		}
 
-		// 初期状態の設定
-		SetState(CEnemyBoss::MOTION_STATE_NEUTRAL);
+		if (m_infoVisual.pLife2dGage == nullptr)
+		{
+			// 2D体力ゲージ
+			m_infoVisual.pLife2dGage = CObj2dGage::Create();
+
+			if (m_infoVisual.pLife2dGage == nullptr)
+			{
+				return E_FAIL;
+			}
+		}
 	}
 
 	// 成功を返す
@@ -285,6 +299,16 @@ void CEnemyBoss::SetInit(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nLife)
 		// キャラクターの生成処理
 		m_infoVisual.pCharacter->UpdateData(pos, rot);
 	}
+
+	if (m_infoVisual.pLife2dGage != nullptr)
+	{
+		m_infoVisual.pLife2dGage->SetInit(
+			D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.9f, 0.0f),
+			D3DXVECTOR3(250.0f, 25.0f, 0.0f),
+			D3DXCOLOR(1.0f, 0.0f, 0.0f,1.0f),
+			nLife,
+			nLife);
+	}
 }
 
 //-------------------------------------
@@ -386,6 +410,15 @@ void CEnemyBoss::UpdateVisual(void)
 		m_infoVisual.pCharacter->UpdateData(
 			GetPos(),
 			GetRot());
+	}
+
+	if (m_infoVisual.pLife2dGage != nullptr)
+	{
+		m_infoVisual.pLife2dGage->UpdateInfo(
+			m_infoVisual.pLife2dGage->GetPos(),
+			m_infoVisual.pLife2dGage->GetSize(),
+			m_infoVisual.pLife2dGage->GetColor(),
+			GetLife());
 	}
 }
 

@@ -31,7 +31,6 @@
 #include "attack.h"
 #include "charge.h"
 
-#include "life.h"
 
 #include "game.h"
 

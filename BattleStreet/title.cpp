@@ -170,24 +170,34 @@ HRESULT CTitle::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 			case TYPE_2D_LOGO:
 
 				// オブジェクト管理の生成
-				m_apObj2d[nCnt2d] = CObject2d::Create(
-					D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.3f, 0.0f),
-					D3DXVECTOR3(300.0f, 150.0f, 0.0f),
-					D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+				m_apObj2d[nCnt2d] = CObject2d::Create();
 
-				m_apObj2d[nCnt2d]->BindTexture(m_aTextureNldx[nCnt2d]);
+				if (m_apObj2d[nCnt2d] != nullptr)
+				{
+					m_apObj2d[nCnt2d]->SetInit(
+						D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.3f, 0.0f),
+						D3DXVECTOR3(300.0f, 150.0f, 0.0f),
+						D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+
+					m_apObj2d[nCnt2d]->BindTexture(m_aTextureNldx[nCnt2d]);
+				}
 
 				break;
 
 			case TYPE_2D_BUTTON:
 
 				// オブジェクト管理の生成
-				m_apObj2d[nCnt2d] = CObject2d::Create(
-					D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.8f, 0.0f),
-					D3DXVECTOR3(200.0f, 100.0f, 0.0f),
-					D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+				m_apObj2d[nCnt2d] = CObject2d::Create();
 
-				m_apObj2d[nCnt2d]->BindTexture(m_aTextureNldx[nCnt2d]);
+				if (m_apObj2d[nCnt2d] != nullptr)
+				{
+					m_apObj2d[nCnt2d]->SetInit(
+						D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.8f, 0.0f),
+						D3DXVECTOR3(200.0f, 100.0f, 0.0f),
+						D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+
+					m_apObj2d[nCnt2d]->BindTexture(m_aTextureNldx[nCnt2d]);
+				}
 
 				break;
 			}

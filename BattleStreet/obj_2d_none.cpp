@@ -119,7 +119,7 @@ HRESULT CObj2dNone::Init(TEX tex, D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXCOLOR c
 	BindTexture(m_nTextureNldx[tex]);
 
 	// 2Dオブジェクトの初期化
-	CObject2d::Init(pos,size,color);
+	CObject2d::Init();
 
 	// 成功を返す
 	return S_OK;

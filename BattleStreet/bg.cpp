@@ -116,10 +116,7 @@ HRESULT CBg::Init(TEX tex)
 	BindTexture(m_nTextureNldx[tex]);
 
 	// 2Dオブジェクトの初期化
-	CObject2d::Init(
-		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-		D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	CObject2d::Init();
 	
 	// 頂点情報の設定処理
 	SetVtx();
@@ -196,19 +193,16 @@ CBg *CBg::Create(TEX tex)
 //-------------------------------------
 void CBg::Set(D3DXVECTOR3 pos, D3DXVECTOR3 size,D3DXCOLOR color, D3DXVECTOR2 texPos, D3DXVECTOR2 texMove)
 {
-	// 情報代入（頂点値情報）
-	CObject2d::VtxData vtxData = GetVtxData();
-
-	vtxData.pos = pos;
-	vtxData.size = size;
-	vtxData.color = color;
-
-	// 情報更新（頂点値情報）
-	SetVtxData(vtxData);
+	SetPos(pos);
+	SetSize(size);
+	SetColor(color);
 
 	// 頂点テクスチャ情報
 	m_vtxTexData.m_texPos = texPos;
 	m_vtxTexData.m_texMove = texMove;
+
+	// 頂点情報設定処理
+	SetVtx();
 }
 
 //-------------------------------------
@@ -216,16 +210,10 @@ void CBg::Set(D3DXVECTOR3 pos, D3DXVECTOR3 size,D3DXCOLOR color, D3DXVECTOR2 tex
 //-------------------------------------
 void CBg::SetVtx(void)
 {
-	// 情報代入（頂点値情報）
-	CObject2d::VtxData vtxData = GetVtxData();
-
 	// 変数宣言（情報取得）
-	D3DXVECTOR3 pos = vtxData.pos;		// 位置
-	D3DXVECTOR3 size = vtxData.size;	// 大きさ
-	D3DXCOLOR color = vtxData.color;	// 色
-
-	D3DXVECTOR2 texPos = m_vtxTexData.m_texPos;		// テクスチャ位置
-	D3DXVECTOR2 texMove = m_vtxTexData.m_texMove;	// テクスチャ移動量
+	D3DXVECTOR3 pos = GetPos();		// 位置
+	D3DXVECTOR3 size = GetSize();	// 大きさ
+	D3DXCOLOR color = GetColor();	// 色
 
 	// 頂点バッファの取得
 	LPDIRECT3DVERTEXBUFFER9 vtxBuff = GetVtxBuff();
@@ -268,20 +256,20 @@ void CBg::SetVtx(void)
 
 	// テクスチャの座標を設定
 	pVtx[0].tex = D3DXVECTOR2(
-		0.0f + texPos.x,
-		0.0f + texPos.y);
+		0.0f + m_vtxTexData.m_texPos.x,
+		0.0f + m_vtxTexData.m_texPos.y);
 
 	pVtx[1].tex = D3DXVECTOR2(
-		1.0f + texPos.x,
-		0.0f + texPos.y);
+		1.0f + m_vtxTexData.m_texPos.x,
+		0.0f + m_vtxTexData.m_texPos.y);
 
 	pVtx[2].tex = D3DXVECTOR2(
-		0.0f + texPos.x,
-		1.0f + texPos.y);
+		0.0f + m_vtxTexData.m_texPos.x,
+		1.0f + m_vtxTexData.m_texPos.y);
 
 	pVtx[3].tex = D3DXVECTOR2(
-		1.0f + texPos.x,
-		1.0f + texPos.y);
+		1.0f + m_vtxTexData.m_texPos.x,
+		1.0f + m_vtxTexData.m_texPos.y);
 
 	// 頂点バッファをアンロックする
 	vtxBuff->Unlock();

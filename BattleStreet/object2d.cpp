@@ -27,7 +27,7 @@
 CObject2d::CObject2d(int nPriority) : CObject(nPriority)
 {
 	// 値をクリア
-	ZeroMemory(&m_vtxData, sizeof(m_vtxData));
+	ZeroMemory(&m_info, sizeof(m_info));
 
 	m_nTextureNldxUse = 0;
 	m_pVtxBuff = NULL;
@@ -44,7 +44,7 @@ CObject2d::~CObject2d()
 //-------------------------------------
 //- 2Dオブジェクトの初期化処理
 //-------------------------------------
-HRESULT CObject2d::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXCOLOR color)
+HRESULT CObject2d::Init(void)
 {
 	// デバイスを取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
@@ -56,9 +56,6 @@ HRESULT CObject2d::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXCOLOR color)
 	 // 初期化処理を抜ける
 		return E_FAIL;
 	}
-
-	// 初期設定処理
-	InitSet(pos,size,color);
 
 	// 頂点バッファの生成
 	pDevice->CreateVertexBuffer(
@@ -162,7 +159,7 @@ void CObject2d::Draw(void)
 //-------------------------------------
 //- 2Dオブジェクトの生成処理
 //-------------------------------------
-CObject2d * CObject2d::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXCOLOR color)
+CObject2d * CObject2d::Create(void)
 {
 	// 2Dオブジェクトの生成
 	CObject2d *pObject2d = DBG_NEW CObject2d(7);
@@ -171,7 +168,7 @@ CObject2d * CObject2d::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXCOLOR color
 	if (pObject2d != NULL)
 	{
 		// 初期化処理
-		if (FAILED(pObject2d->Init(pos,size,color)))
+		if (FAILED(pObject2d->Init()))
 		{// 失敗時
 
 			// 「なし」を返す
@@ -197,11 +194,6 @@ CObject2d * CObject2d::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXCOLOR color
 //-------------------------------------
 void CObject2d::SetVtx(void)
 {
-	// 変数宣言（情報取得）
-	D3DXVECTOR3 pos = m_vtxData.pos;	// 位置
-	D3DXVECTOR3 size = m_vtxData.size;	// 大きさ
-	D3DCOLOR color = m_vtxData.color;	// 色
-
 	if (m_pVtxBuff != nullptr)
 	{
 		// 2D頂点情報のポインタを宣言
@@ -215,10 +207,10 @@ void CObject2d::SetVtx(void)
 			0);
 
 		// 頂点座標を設定
-		pVtx[0].pos = D3DXVECTOR3(pos.x - size.x, pos.y - size.y, 0.0f);
-		pVtx[1].pos = D3DXVECTOR3(pos.x + size.x, pos.y - size.y, 0.0f);
-		pVtx[2].pos = D3DXVECTOR3(pos.x - size.x, pos.y + size.y, 0.0f);
-		pVtx[3].pos = D3DXVECTOR3(pos.x + size.x, pos.y + size.y, 0.0f);
+		pVtx[0].pos = D3DXVECTOR3(m_info.pos.x - m_info.size.x, m_info.pos.y - m_info.size.y, 0.0f);
+		pVtx[1].pos = D3DXVECTOR3(m_info.pos.x + m_info.size.x, m_info.pos.y - m_info.size.y, 0.0f);
+		pVtx[2].pos = D3DXVECTOR3(m_info.pos.x - m_info.size.x, m_info.pos.y + m_info.size.y, 0.0f);
+		pVtx[3].pos = D3DXVECTOR3(m_info.pos.x + m_info.size.x, m_info.pos.y + m_info.size.y, 0.0f);
 
 		// rhwの設定
 		pVtx[0].rhw = 1.0f;
@@ -227,10 +219,10 @@ void CObject2d::SetVtx(void)
 		pVtx[3].rhw = 1.0f;
 
 		// 頂点カラーを設定
-		pVtx[0].col = color;
-		pVtx[1].col = color;
-		pVtx[2].col = color;
-		pVtx[3].col = color;
+		pVtx[0].col = m_info.color;
+		pVtx[1].col = m_info.color;
+		pVtx[2].col = m_info.color;
+		pVtx[3].col = m_info.color;
 
 		// テクスチャの座標を設定
 		pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
@@ -241,14 +233,4 @@ void CObject2d::SetVtx(void)
 		// 頂点バッファをアンロックする
 		m_pVtxBuff->Unlock();
 	}
-}
-
-//-------------------------------------
-//- 2Dオブジェクトの初期設定処理
-//-------------------------------------
-void CObject2d::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXCOLOR color)
-{
-	m_vtxData.pos = pos;
-	m_vtxData.size = size;
-	m_vtxData.color = color;
 }

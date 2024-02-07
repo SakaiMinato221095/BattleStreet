@@ -46,10 +46,10 @@ CObj2dGage::~CObj2dGage()
 //-------------------------------------
 //- ゲージの初期化処理
 //-------------------------------------
-HRESULT CObj2dGage::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXCOLOR color)
+HRESULT CObj2dGage::Init(void)
 {
 	// 2Dオブジェクトの初期化
-	CObject2d::Init(pos,size,color);
+	CObject2d::Init();
 
 	// 成功を返す
 	return S_OK;
@@ -83,23 +83,9 @@ void CObj2dGage::Draw(void)
 }
 
 //-------------------------------------
-//- ゲージの設定処理
-//-------------------------------------
-void CObj2dGage::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXCOLOR color)
-{
-	CObject2d::VtxData vtxData = GetVtxData();
-
-	vtxData.pos = pos;
-	vtxData.size = size;
-	vtxData.color = color;
-
-	SetVtxData(vtxData);
-}
-
-//-------------------------------------
 //-	ゲージの生成処理
 //-------------------------------------
-CObj2dGage* CObj2dGage::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXCOLOR color)
+CObj2dGage* CObj2dGage::Create(void)
 {
 	// ゲージの生成
 	CObj2dGage *pNumber = DBG_NEW CObj2dGage(7);
@@ -108,7 +94,7 @@ CObj2dGage* CObj2dGage::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXCOLOR colo
 	if (pNumber != NULL)
 	{
 		// 初期化処理
-		if (FAILED(pNumber->Init(pos,size,color)))
+		if (FAILED(pNumber->Init()))
 		{// 失敗時
 
 			// 「なし」を返す
@@ -142,7 +128,10 @@ void CObj2dGage::SetVtx(void)
 		return;
 	}
 
-	CObject2d::VtxData vtxData = GetVtxData();
+	// 情報取得
+	D3DXVECTOR3 pos = GetPos();
+	D3DXVECTOR3 size = GetSize();
+	D3DXCOLOR color = GetColor();
 
 	// 2D頂点情報のポインタを宣言
 	VERTEX_2D* pVtx = NULL;
@@ -154,34 +143,34 @@ void CObj2dGage::SetVtx(void)
 		(void**)&pVtx,
 		0);
 
-	//pVtx[0].pos = D3DXVECTOR3(-size.x, size.y, 0.0f);
-	//pVtx[1].pos = D3DXVECTOR3(size.x * (-1.0f + (m_info.fRateData * 2)), size.y, 0.0f);
-	//pVtx[2].pos = D3DXVECTOR3(-size.x, -size.y, 0.0f);
-	//pVtx[3].pos = D3DXVECTOR3(size.x * (-1.0f + (m_info.fRateData * 2)), -size.y, 0.0f);
-	//
-	//  
-	//pVtx[0].pos = D3DXVECTOR3(vtxData.pos.x - (vtxData.size.x * 1.0f), vtxData.pos.y - vtxData.size.y, 0.0f);
-	//pVtx[1].pos = D3DXVECTOR3(vtxData.pos.x + (vtxData.size.x * 1.0f), vtxData.pos.y - vtxData.size.y, 0.0f);
-	//pVtx[2].pos = D3DXVECTOR3(vtxData.pos.x - (vtxData.size.x * 1.0f), vtxData.pos.y + vtxData.size.y, 0.0f);
-	//pVtx[3].pos = D3DXVECTOR3(vtxData.pos.x + (vtxData.size.x * 1.0f), vtxData.pos.y + vtxData.size.y, 0.0f);
+	pVtx[0].pos = D3DXVECTOR3(-size.x, size.y, 0.0f);
+	pVtx[1].pos = D3DXVECTOR3( size.x * (-1.0f + (m_info.fRateData * 2)), size.y, 0.0f);
+	pVtx[2].pos = D3DXVECTOR3(-size.x, -size.y, 0.0f);
+	pVtx[3].pos = D3DXVECTOR3( size.x * (-1.0f + (m_info.fRateData * 2)), -size.y, 0.0f);
+	
+	  
+	pVtx[0].pos = D3DXVECTOR3(pos.x -  size.x,										pos.y - size.y, 0.0f);
+	pVtx[1].pos = D3DXVECTOR3(pos.x + (size.x * (-1.0f + (m_info.fRateData * 2))),	pos.y - size.y, 0.0f);
+	pVtx[2].pos = D3DXVECTOR3(pos.x -  size.x,										pos.y + size.y, 0.0f);
+	pVtx[3].pos = D3DXVECTOR3(pos.x + (size.x * (-1.0f + (m_info.fRateData * 2))),	pos.y + size.y, 0.0f);
 
-	//// rhwの設定
-	//pVtx[0].rhw = 1.0f;
-	//pVtx[1].rhw = 1.0f;
-	//pVtx[2].rhw = 1.0f;
-	//pVtx[3].rhw = 1.0f;
+	// rhwの設定
+	pVtx[0].rhw = 1.0f;
+	pVtx[1].rhw = 1.0f;
+	pVtx[2].rhw = 1.0f;
+	pVtx[3].rhw = 1.0f;
 
-	//// 頂点カラーを設定
-	//pVtx[0].col = color;
-	//pVtx[1].col = color;
-	//pVtx[2].col = color;
-	//pVtx[3].col = color;
+	// 頂点カラーを設定
+	pVtx[0].col = color;
+	pVtx[1].col = color;
+	pVtx[2].col = color;
+	pVtx[3].col = color;
 
-	//// テクスチャの座標を設定
-	//pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
-	//pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
-	//pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
-	//pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
+	// テクスチャの座標を設定
+	pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
+	pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
+	pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
+	pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
 
 	// 頂点バッファをアンロックする
 	vtxBuff->Unlock();

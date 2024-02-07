@@ -31,16 +31,41 @@ public:
 	CObj2dGage(int nPriority = 3);
 	~CObj2dGage();
 
-	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXCOLOR color);
+	HRESULT Init(void);
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
 
-	void InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXCOLOR color);
-
-	static CObj2dGage *Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXCOLOR color);
+	static CObj2dGage *Create(void);
 
 	virtual void SetVtx(void);
+
+	void SetInit(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXCOLOR color, int nData, int nMaxData)
+	{
+		SetPos(pos);
+		SetSize(size);
+		SetColor(color);
+
+		m_info.nData = nData;
+		m_info.nMaxData = nMaxData;
+
+		if (m_info.nMaxData != 0)
+		{
+			m_info.fRateData = ((float)m_info.nData / (float)m_info.nMaxData);
+		}
+	}
+
+	void UpdateInfo(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXCOLOR color, int nData)
+	{
+		m_info.nData = nData;
+
+		if (m_info.nMaxData != 0)
+		{
+			m_info.fRateData = ((float)m_info.nData / (float)m_info.nMaxData);
+		}
+
+		CObject2d::UpdateInfo(pos, size, color);
+	}
 
 private:
 
