@@ -73,6 +73,9 @@
     <Filter Include="Phase">
       <UniqueIdentifier>{1ece65c6-ec8d-4ff2-854a-44c1f6ab732b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ObjBillboard">
+      <UniqueIdentifier>{3dc29f29-59c1-45dd-92f7-f106a30aa68e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="debugproc.cpp">
@@ -85,9 +88,6 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="number.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="object_billboard.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="objectx_none.cpp">
@@ -240,6 +240,12 @@
     <ClCompile Include="phase_manager.cpp">
       <Filter>Phase</Filter>
     </ClCompile>
+    <ClCompile Include="billboard.cpp">
+      <Filter>ObjBillboard</Filter>
+    </ClCompile>
+    <ClCompile Include="billboard_gage.cpp">
+      <Filter>ObjBillboard</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="debugproc.h">
@@ -252,9 +258,6 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="number.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="object_billboard.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="objectx_none.h">
@@ -406,6 +409,12 @@
     </ClInclude>
     <ClInclude Include="command.h">
       <Filter>Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="billboard.h">
+      <Filter>ObjBillboard</Filter>
+    </ClInclude>
+    <ClInclude Include="billboard_gage.h">
+      <Filter>ObjBillboard</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

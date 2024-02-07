@@ -39,7 +39,7 @@
 // 出現壁のテクスチャ
 const char* DataTexture[] =
 {
-	nullptr,												// テクスチャなし
+	nullptr,											// テクスチャなし
 	"data\\TEXTURE\\SpwanWall\\SpawnWall000.png",		// 出現壁のテクスチャ
 	"data\\TEXTURE\\SpwanWall\\BlockWall000.jpg",		// 封鎖壁のテクスチャ
 };
@@ -323,15 +323,16 @@ void CSpwanWall::SetPhase(void)
 //-------------------------------------
 void CSpwanWall::SpwanEnemyPhaseOne(void)
 {
-	CEnemy* pEnemy = CEnemyMinion::Create(
+	CEnemyMinion* pEnemy = CEnemyMinion::Create(
 		CModel::MODEL_TYPE_ALIEN_000,
 		CMotion::MOTION_TYPE_ALIEN_000);
 
 	pEnemy->SetInit(
 		D3DXVECTOR3(m_info.pos.x, 0.0f, m_info.pos.z) + D3DXVECTOR3(0.0f, 0.0f, 500.0f),
-		D3DXVECTOR3(0.0f, D3DX_PI, 0.0f));
+		D3DXVECTOR3(0.0f, D3DX_PI, 0.0f),
+		(16 * 3),
+		(16 * 3));
 
-	pEnemy->SetLife(30);
 	pEnemy->SetIsPhaseTarget(true);
 
 	m_info.nNumTarget++;
@@ -344,15 +345,16 @@ void CSpwanWall::SpwanEnemyPhaseTwo(void)
 {
 	for (int nCnt = 0; nCnt < 3; nCnt++)
 	{
-		CEnemy* pEnemy = CEnemyMinion::Create(
+		CEnemyMinion* pEnemy = CEnemyMinion::Create(
 			CModel::MODEL_TYPE_ALIEN_000,
 			CMotion::MOTION_TYPE_ALIEN_000);
 
 		pEnemy->SetInit(
 			D3DXVECTOR3(m_info.pos.x, 0.0f, m_info.pos.z) + ENEMY_POS_PHASE_TWO[nCnt],
-			D3DXVECTOR3(0.0f, D3DX_PI, 0.0f));
+			D3DXVECTOR3(0.0f, D3DX_PI, 0.0f),
+			(9 * 3),
+			(9 * 3));
 
-		pEnemy->SetLife(30);
 		pEnemy->SetIsPhaseTarget(true);
 
 		m_info.nNumTarget++;
@@ -364,13 +366,14 @@ void CSpwanWall::SpwanEnemyPhaseTwo(void)
 //-------------------------------------
 void CSpwanWall::SpwanEnemyPhaseThree(void)
 {
-	CEnemy* pEnemyBoss = CEnemyBoss::Create(
+	CEnemyBoss* pEnemyBoss = CEnemyBoss::Create(
 		CModel::MODEL_TYPE_ALIEN_000,
 		CMotion::MOTION_TYPE_ALIEN_000);
 
 	pEnemyBoss->SetInit(
 		D3DXVECTOR3(m_info.pos.x, 0.0f, m_info.pos.z) + D3DXVECTOR3(0.0f, 0.0f, 500.0f),
-		D3DXVECTOR3(0.0f, D3DX_PI, 0.0f));
+		D3DXVECTOR3(0.0f, D3DX_PI, 0.0f),
+		(16 * 7));
 
 	pEnemyBoss->SetIsPhaseTarget(true);
 

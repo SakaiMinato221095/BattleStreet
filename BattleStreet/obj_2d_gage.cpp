@@ -145,7 +145,7 @@ void CObj2dGage::SetVtx(void)
 	CObject2d::VtxData vtxData = GetVtxData();
 
 	// 2D頂点情報のポインタを宣言
-	VERTEX_2D *pVtx = NULL;
+	VERTEX_2D* pVtx = NULL;
 
 	// 頂点バッファをロックし、頂点情報のポインタを取得
 	vtxBuff->Lock(
@@ -154,6 +154,12 @@ void CObj2dGage::SetVtx(void)
 		(void**)&pVtx,
 		0);
 
+	//pVtx[0].pos = D3DXVECTOR3(-size.x, size.y, 0.0f);
+	//pVtx[1].pos = D3DXVECTOR3(size.x * (-1.0f + (m_info.fRateData * 2)), size.y, 0.0f);
+	//pVtx[2].pos = D3DXVECTOR3(-size.x, -size.y, 0.0f);
+	//pVtx[3].pos = D3DXVECTOR3(size.x * (-1.0f + (m_info.fRateData * 2)), -size.y, 0.0f);
+	//
+	//  
 	//pVtx[0].pos = D3DXVECTOR3(vtxData.pos.x - (vtxData.size.x * 1.0f), vtxData.pos.y - vtxData.size.y, 0.0f);
 	//pVtx[1].pos = D3DXVECTOR3(vtxData.pos.x + (vtxData.size.x * 1.0f), vtxData.pos.y - vtxData.size.y, 0.0f);
 	//pVtx[2].pos = D3DXVECTOR3(vtxData.pos.x - (vtxData.size.x * 1.0f), vtxData.pos.y + vtxData.size.y, 0.0f);

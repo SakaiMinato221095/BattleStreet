@@ -166,14 +166,14 @@ void CEnemy::HitDamage(int nDamage)
 //-------------------------------------
 //-	敵のモデルの初期設定
 //-------------------------------------
-void CEnemy::SetInit(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+void CEnemy::SetInit(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nLife)
 {
 	// データの代入
 	m_data.pos = pos;										// 位置
 	m_data.rot = rot;										// 向き
 	m_data.size = D3DXVECTOR3(40.0f, 200.0f, 40.0f);		// サイズ
 
-	m_data.nLife = 30;
+	m_data.nLife = nLife;
 }
 
 //-------------------------------------
@@ -190,7 +190,7 @@ void CEnemy::Damage(int nDamage)
 //-------------------------------------
 bool CEnemy::Dead(void)
 {
-	if (GetLife() < 0)
+	if (GetLife() <= 0)
 	{
 		if (GetIsPhaseTarget())
 		{

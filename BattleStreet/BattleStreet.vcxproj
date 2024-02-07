@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="attack.cpp" />
     <ClCompile Include="bg.cpp" />
+    <ClCompile Include="billboard_gage.cpp" />
     <ClCompile Include="box_field.cpp" />
     <ClCompile Include="box_wall.cpp" />
     <ClCompile Include="camera.cpp" />
@@ -53,7 +54,7 @@
     <ClCompile Include="object2d.cpp" />
     <ClCompile Include="object3d.cpp" />
     <ClCompile Include="objectx_none.cpp" />
-    <ClCompile Include="object_billboard.cpp" />
+    <ClCompile Include="billboard.cpp" />
     <ClCompile Include="object_x.cpp" />
     <ClCompile Include="obj_2d_gage.cpp" />
     <ClCompile Include="obj_2d_none.cpp" />
@@ -81,6 +82,7 @@
   <ItemGroup>
     <ClInclude Include="attack.h" />
     <ClInclude Include="bg.h" />
+    <ClInclude Include="billboard_gage.h" />
     <ClInclude Include="box_field.h" />
     <ClInclude Include="box_wall.h" />
     <ClInclude Include="camera.h" />
@@ -113,7 +115,7 @@
     <ClInclude Include="object2d.h" />
     <ClInclude Include="object3d.h" />
     <ClInclude Include="objectx_none.h" />
-    <ClInclude Include="object_billboard.h" />
+    <ClInclude Include="billboard.h" />
     <ClInclude Include="object_x.h" />
     <ClInclude Include="obj_2d_gage.h" />
     <ClInclude Include="obj_2d_none.h" />

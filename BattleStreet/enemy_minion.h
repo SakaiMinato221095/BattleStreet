@@ -31,8 +31,9 @@
 //=======================================
 
 class CCharacter;
+class CBillboardGage;
+
 class CAttack;
-class CLife;
 
 //-======================================
 //-	クラス定義
@@ -43,6 +44,13 @@ class CEnemyMinion : public CEnemy
 {
 
 public:
+
+	// テクスチャ
+	enum TEX
+	{
+		TEX_NULL = 0,	// なし
+		TEX_MAX
+	};
 
 	// モーション状態
 	enum MOTION_STATE
@@ -71,6 +79,9 @@ public:
 	CEnemyMinion();
 	~CEnemyMinion();
 
+	static HRESULT Load(void);
+	static void Unload(void);
+
 	HRESULT Init(CModel::MODEL_TYPE modelType, CMotion::MOTION_TYPE motionType);
 	void Uninit(void);
 	void Update(void);
@@ -80,7 +91,7 @@ public:
 
 	virtual void HitDamage(int nDamage);
 
-	void SetInit(D3DXVECTOR3 pos, D3DXVECTOR3 rot);
+	void SetInit(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nLife, int nMaxLife);
 
 private:
 
@@ -99,11 +110,13 @@ private:
 		STATE state;	// 状態
 	};
 
-	// ターゲットとの情報
+	// 見た目の情報
 	struct InfoVisual
 	{
-		CCharacter* pCharacter;		// キャラクターのポインタ
-		MOTION_STATE motionState;	// モーション状態
+		CCharacter* pCharacter;			// キャラクターのポインタ
+		MOTION_STATE motionState;		// モーション状態
+
+		CBillboardGage* pLifeBillGage;	// ビルボードの体力ゲージ
 	};
 
 	// 付属情報
@@ -132,7 +145,6 @@ private:
 	void AiWait(void);
 	void AiKickCombo(void);
 	void AiCharge(void);
-	void AiChargeAttack(void);
 
 	void SetAiActiv(void);
 	void SetCombo(void);
@@ -146,8 +158,9 @@ private:
 	Info m_info;				// 情報
 	InfoVisual m_infoVisual;	// 見た目情報
 	InfoAttach m_infoAttach;	// 付属情報
-
 	InfoAi m_infoAi;			// AIの情報
+
+	static int m_nTextureNldx[TEX_MAX];	// テクスチャ番号
 };
 
 #endif	// 二重インクルード防止の終了

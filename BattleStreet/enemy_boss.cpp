@@ -276,9 +276,9 @@ void CEnemyBoss::HitDamage(int nDamage)
 //-------------------------------------
 //-	“G‚Ìƒ‚ƒfƒ‹‚Ì‰Šúİ’è
 //-------------------------------------
-void CEnemyBoss::SetInit(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+void CEnemyBoss::SetInit(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nLife)
 {
-	CEnemy::SetInit(pos, rot);
+	CEnemy::SetInit(pos, rot, nLife);
 
 	if (m_infoVisual.pCharacter != nullptr)
 	{

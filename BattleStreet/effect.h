@@ -17,13 +17,13 @@
 //-	インクルード
 //-======================================
 
-#include "object_billboard.h"
+#include "billboard.h"
 
 //-======================================
 //-	クラス定義
 //-======================================
 
-class CEffect : public CObjectBillboard
+class CEffect : public CBillboard
 {
 
 public:

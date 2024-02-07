@@ -83,7 +83,7 @@ public:
 
 	virtual void HitDamage(int nDamage);
 
-	void SetInit(D3DXVECTOR3 pos, D3DXVECTOR3 rot);
+	void SetInit(D3DXVECTOR3 pos, D3DXVECTOR3 rot,int nData);
 
 private:
 
@@ -102,7 +102,7 @@ private:
 		STATE state;	// 状態
 	};
 
-	// ターゲットとの情報
+	// 見た目の情報
 	struct InfoVisual
 	{
 		CCharacter* pCharacter;		// キャラクターのポインタ

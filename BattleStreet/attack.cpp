@@ -57,8 +57,6 @@ HRESULT CAttack::Init(void)
 			this,
 			m_info.pos,
 			m_info.size);
-
-		m_pColl->SetIsVisualDrawStop(false);
 	}
 	else
 	{

@@ -13,15 +13,16 @@
 #include "enemy_minion.h"
 
 #include "character.h"
+#include "billboard_gage.h"
 
 #include "renderer.h"
 #include "manager.h"
 
 #include "debugproc.h"
-
 #include "helper_sakai.h"
 
 #include "manager_model.h"
+#include "manager_texture.h"
 
 #include "coll.h"
 
@@ -79,9 +80,68 @@ const int AI_COUNT_CHANGE[CEnemyMinion::MOTION_STATE_MAX]
 	0,
 };
 
+const char* pTexture[CEnemyMinion::TEX_MAX]
+{
+	nullptr,
+};
+
 //-======================================
 //-	静的変数宣言
 //-======================================
+
+int CEnemyMinion::m_nTextureNldx[CEnemyMinion::TEX_MAX] = {};
+
+//-------------------------------------
+//- エフェクトのテクスチャの読み込み
+//-------------------------------------
+HRESULT CEnemyMinion::Load(void)
+{
+	// デバイスを取得
+	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
+
+	// デバイスの情報取得の成功を判定
+	if (pDevice == NULL)
+	{// 失敗時
+
+	 // 初期化処理を抜ける
+		return E_FAIL;
+	}
+
+	// テクスチャ管理の生成
+	CManagerTexture* pManagerTexture = CManager::GetInstance()->GetManagerTexture();
+
+	// テクスチャ管理の有無を判定
+	if (pManagerTexture == NULL)
+	{
+		// 初期化処理を抜ける
+		return E_FAIL;
+	}
+
+	// テクスチャ設定
+	for (int nCount = 0; nCount < TEX_MAX; nCount++)
+	{
+		// テクスチャ番号の取得（テクスチャの割当）
+		m_nTextureNldx[nCount] = pManagerTexture->Regist(pTexture[nCount]);
+
+		// テクスチャの読み込み成功の有無を確認
+		if (m_nTextureNldx[nCount] == -1)
+		{
+			// 失敗時に初期化処理を抜ける
+			return E_FAIL;
+		}
+	}
+
+	// 成功を返す
+	return S_OK;
+}
+
+//-------------------------------------
+//- エフェクトの読み込んだテクスチャの破棄
+//-------------------------------------
+void CEnemyMinion::Unload(void)
+{
+
+}
 
 //-------------------------------------
 //-	敵のコンストラクタ
@@ -118,13 +178,26 @@ HRESULT CEnemyMinion::Init(CModel::MODEL_TYPE modelType, CMotion::MOTION_TYPE mo
 			motionType,
 			MOTION_STATE_MAX);
 
-		if (m_infoVisual.pCharacter == nullptr)
+		if (m_infoVisual.pCharacter != nullptr)
+		{
+			// 初期状態の設定
+			SetState(CEnemyMinion::MOTION_STATE_NEUTRAL);
+		}
+		else
 		{
 			return E_FAIL;
 		}
+	}
 
-		// 初期状態の設定
-		SetState(CEnemyMinion::MOTION_STATE_NEUTRAL);
+	if (m_infoVisual.pLifeBillGage == nullptr)
+	{
+		// キャラクターの生成処理
+		m_infoVisual.pLifeBillGage = CBillboardGage::Create();
+
+		if (m_infoVisual.pLifeBillGage == nullptr)
+		{
+			return E_FAIL;
+		}
 	}
 
 	// 成功を返す
@@ -140,6 +213,12 @@ void CEnemyMinion::Uninit(void)
 	{
 		m_infoVisual.pCharacter->Uninit();
 		m_infoVisual.pCharacter = nullptr;
+	}
+
+	if (m_infoVisual.pLifeBillGage != nullptr)
+	{
+		m_infoVisual.pLifeBillGage->Uninit();
+		m_infoVisual.pLifeBillGage = nullptr;
 	}
 
 	// 攻撃の終了処理
@@ -276,14 +355,24 @@ void CEnemyMinion::HitDamage(int nDamage)
 //-------------------------------------
 //-	敵のモデルの初期設定
 //-------------------------------------
-void CEnemyMinion::SetInit(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+void CEnemyMinion::SetInit(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nLife, int nMaxLife)
 {
-	CEnemy::SetInit(pos, rot);
+	CEnemy::SetInit(pos, rot, nLife);
 
 	if (m_infoVisual.pCharacter != nullptr)
 	{
 		// キャラクターの生成処理
 		m_infoVisual.pCharacter->UpdateData(pos, rot);
+	}
+
+	if (m_infoVisual.pLifeBillGage != nullptr)
+	{
+		m_infoVisual.pLifeBillGage->SetInit(
+			GetPos() + D3DXVECTOR3(0.0f, 30.0f, 0.0f),
+			D3DXVECTOR3(50.0f,10.0f,0.0f),
+			D3DXCOLOR(1.0f, 0.0f, 0.0f,1.0f),
+			nLife,
+			nMaxLife);
 	}
 }
 
@@ -374,6 +463,15 @@ void CEnemyMinion::UpdateVisual(void)
 		m_infoVisual.pCharacter->UpdateData(
 			GetPos(),
 			GetRot());
+	}
+
+	if (m_infoVisual.pLifeBillGage != nullptr)
+	{
+		m_infoVisual.pLifeBillGage->UpdateInfo(
+			GetPos() + D3DXVECTOR3(0.0f, 150.0f, 0.0f),
+			m_infoVisual.pLifeBillGage->GetSize(),
+			m_infoVisual.pLifeBillGage->GetColor(),
+			GetLife());
 	}
 }
 

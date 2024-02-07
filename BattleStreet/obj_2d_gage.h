@@ -40,10 +40,19 @@ public:
 
 	static CObj2dGage *Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXCOLOR color);
 
-	void SetVtx(void);
+	virtual void SetVtx(void);
 
 private:
 
+	// î•ñ
+	typedef struct
+	{
+		int nData;			// Œ»İ‚Ì’l
+		int nMaxData;		// Œ»İ‚ÌÅ‘å’l
+		float fRateData;	// Š„‡‚Ì’l
+	}Info;
+
+	Info m_info;	// î•ñ
 
 };
 

@@ -40,7 +40,7 @@ int CEffect::m_nTextureNldx[TEX_MAX] = {};	// テクスチャ
 //-------------------------------------
 //-	エフェクトのコンストラクタ
 //-------------------------------------
- CEffect::CEffect(int nPriority) : CObjectBillboard(nPriority)
+ CEffect::CEffect(int nPriority) : CBillboard(nPriority)
 {
 	 ZeroMemory(&m_data,sizeof(m_data));
 }
@@ -114,7 +114,7 @@ HRESULT CEffect::Init(TEX tex)
 	BindTexture(m_nTextureNldx[tex]);
 
 	// ビルボードオブジェクトの初期化
-	CObjectBillboard::Init();
+	CBillboard::Init();
 
 	// 成功を返す
 	return S_OK;
@@ -126,7 +126,7 @@ HRESULT CEffect::Init(TEX tex)
 void CEffect::Uninit(void)
 {
 	// ビルボードオブジェクトの終了
-	CObjectBillboard::Uninit();
+	CBillboard::Uninit();
 }
 
 //-------------------------------------
@@ -144,7 +144,7 @@ void CEffect::Update(void)
 	}
 
 	// ビルボードオブジェクトの更新処理
-	CObjectBillboard::Update();
+	CBillboard::Update();
 }
 
 //-------------------------------------
@@ -176,7 +176,7 @@ void CEffect::Draw(void)
 	}
 
 	// エフェクトの描画処理
-	CObjectBillboard::Draw();
+	CBillboard::Draw();
 
 	if (m_data.bIsZTestStop == false)
 	{
@@ -196,18 +196,13 @@ void CEffect::Draw(void)
 //-------------------------------------
 void CEffect::Set(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 move, D3DXCOLOR color, int nLife, bool bZTest)
 {
-	CObjectBillboard::VtxData vtxData = GetVtxData();
-
-	vtxData.pos = pos;
-	vtxData.size = size;
-	vtxData.color = color;
+	SetPos(pos);
+	SetSize(size);
+	SetColor(color);
 	
 	m_data.move = move;
 	m_data.nLife = nLife;
 	m_data.bIsZTestStop = bZTest;
-
-	// 情報設定
-	SetVtxData(vtxData);
 }
 
 //-------------------------------------
@@ -245,36 +240,29 @@ CEffect *CEffect::Create(TEX tex)
 //-------------------------------------
 void CEffect::Add(void)
 {
-	// 変数宣言（情報取得）
-	CObjectBillboard::VtxData vtxData = GetVtxData();
-
-	// 位置を更新
-	vtxData.pos += m_data.move;
-
-	// 情報代入
-	SetVtxData(vtxData);
+	// 位置の更新
+	SetPos(GetPos() + m_data.move);
 }
 
 //-------------------------------------
 //- エフェクトの減少処理
 //-------------------------------------
 bool CEffect::Sub(void)
-{
-	// 変数宣言（情報取得）
-	CObjectBillboard::VtxData vtxData = GetVtxData();
-	
-	// 大きさを減らす
-	vtxData.size.x -= (m_data.sizeHold.x / m_data.nLife);
-	vtxData.size.y -= (m_data.sizeHold.x / m_data.nLife);
+{	
+	D3DXVECTOR3 size = GetSize();
+	D3DXCOLOR color = GetColor();
 
-	// 色のα値を減少
-	vtxData.color.a -= (m_data.colorHold.a / m_data.nLife);
+	// 大きさを減らす
+	size.x -= (m_data.sizeHold.x / m_data.nLife);
+	size.z -= (m_data.sizeHold.z / m_data.nLife);
+	SetSize(size);
+
+	// α値を減らす
+	color.a -= (m_data.colorHold.a / m_data.nLife);
+	SetColor(color);
 
 	// 体力を減らす
 	m_data.nLife--;
-
-	// 情報更新
-	SetVtxData(vtxData);
 
 	// 体力の判定
 	if (m_data.nLife <= 0)

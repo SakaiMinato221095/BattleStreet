@@ -1,7 +1,7 @@
 
 //================================================
 //=
-//= ビルボードオブジェクトの処理[object_bullet.cpp]
+//= ビルボードの処理[billboard.cpp]
 //= Author Sakai Minato
 //=
 //================================================
@@ -10,7 +10,7 @@
 //=	インクルード
 //=======================================
 
-#include "object_billboard.h"
+#include "billboard.h"
 
 #include "renderer.h"
 #include "manager.h"
@@ -24,27 +24,27 @@
 //------------------------------------
 //- ビルボードオブジェクトのコンストラクタ
 //------------------------------------
-CObjectBillboard::CObjectBillboard(int nPriority) : CObject(nPriority)
+CBillboard::CBillboard(int nPriority) : CObject(nPriority)
 {
 	// 値をクリア
-	ZeroMemory(&m_vtxData, sizeof(m_vtxData));
+	ZeroMemory(&m_info, sizeof(m_info));
 	m_nTextureNldxUse = 0;
 
 	m_pVtxBuff = NULL;
-	ZeroMemory(m_mtxWorld, sizeof(D3DXMATRIX));
+	ZeroMemory(&m_mtxWorld, sizeof(m_mtxWorld));
 }
 
 //------------------------------------
 //- ビルボードオブジェクトのデストラクタ
 //------------------------------------
-CObjectBillboard::~CObjectBillboard()
+CBillboard::~CBillboard()
 {
 }
 
 //------------------------------------
 //- ビルボードオブジェクトの初期化処理
 //------------------------------------
-HRESULT CObjectBillboard::Init(void)
+HRESULT CBillboard::Init(void)
 {
 	// デバイスを取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
@@ -83,7 +83,7 @@ HRESULT CObjectBillboard::Init(void)
 //-------------------------------------
 //- ビルボードオブジェクトの終了処理
 //-------------------------------------
-void CObjectBillboard::Uninit(void)
+void CBillboard::Uninit(void)
 {
 	// 頂点バッファの有無を判定
 	if (m_pVtxBuff != NULL)
@@ -100,7 +100,7 @@ void CObjectBillboard::Uninit(void)
 //-------------------------------------
 //- ビルボードオブジェクトの更新処理
 //-------------------------------------
-void CObjectBillboard::Update(void)
+void CBillboard::Update(void)
 {
 	// 頂点情報を設定
 	SetVtx();
@@ -109,30 +109,18 @@ void CObjectBillboard::Update(void)
 //-------------------------------------
 //- ビルボードオブジェクトの描画処理
 //-------------------------------------
-void CObjectBillboard::Draw(void)
+void CBillboard::Draw(void)
 {
-	// 変数宣言（情報取得）
-	D3DXVECTOR3 pos = m_vtxData.pos;	// 位置
-
-	// デバイスを取得
+	// 情報を取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
+	CManagerTexture* pManagerTexture = CManager::GetInstance()->GetManagerTexture();
 
-	// デバイスの情報取得の成功を判定
-	if (pDevice == NULL)
+	// 情報の情報取得の成功を判定
+	if (pDevice == NULL ||
+		pManagerTexture == NULL)
 	{// 失敗時
 
 		// 初期化処理を抜ける
-		return;
-	}
-
-	// テクスチャ管理の取得
-	CManagerTexture *pManagerTexture = CManager::GetInstance()->GetManagerTexture();
-
-	// テクスチャ管理の情報取得の成功を判定
-	if (pManagerTexture == NULL)
-	{// 失敗時
-
-		// 描画処理を抜ける
 		return;
 	}
 
@@ -162,7 +150,7 @@ void CObjectBillboard::Draw(void)
 	m_mtxWorld._43 = 0.0f;
 
 	// 位置反映
-	D3DXMatrixTranslation(&mtxTrans, pos.x, pos.y, pos.z);
+	D3DXMatrixTranslation(&mtxTrans, m_info.pos.x, m_info.pos.y, m_info.pos.z);
 	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxTrans);
 
 	// ワールドマトリックスの設定
@@ -198,13 +186,13 @@ void CObjectBillboard::Draw(void)
 //-------------------------------------
 //-	ビルボードオブジェクトの生成処理
 //-------------------------------------
-CObjectBillboard * CObjectBillboard::Create(void)
+CBillboard * CBillboard::Create(void)
 {
 	// 3Dオブジェクトのポインタを宣言
-	CObjectBillboard *pObjectBillboard = NULL;
+	CBillboard *pObjectBillboard = NULL;
 
 	// 生成
-	pObjectBillboard = DBG_NEW CObjectBillboard;
+	pObjectBillboard = DBG_NEW CBillboard;
 
 	// 生成の成功の有無を判定
 	if (pObjectBillboard != NULL)
@@ -229,24 +217,23 @@ CObjectBillboard * CObjectBillboard::Create(void)
 }
 
 //-------------------------------------
-//- ビルボードオブジェクトのテクスチャ割当
+//- ビルボードオブジェクトの初期設定処理
 //-------------------------------------
-void CObjectBillboard::BindTexture(int nTextureNldx)
+void CBillboard::SetInit(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXCOLOR color)
 {
-	// テクスチャの番号割当
-	m_nTextureNldxUse = nTextureNldx;
+	SetPos(pos);
+	SetSize(size);
+	SetColor(color);
+
+	SetVtx();
 }
 
 //-------------------------------------
 //- ビルボードオブジェクトの頂点情報設定
 //-------------------------------------
-void CObjectBillboard::SetVtx(void)
+void CBillboard::SetVtx(void)
 {
-	// 変数宣言（情報取得）
-	D3DXVECTOR3 size = m_vtxData.size;		// 大きさ
-	D3DXCOLOR color = m_vtxData.color;		// 色
-
-	if (m_pVtxBuff)
+	if (m_pVtxBuff != nullptr)
 	{
 		// 3D頂点情報のポインタを宣言
 		VERTEX_3D* pVtx = nullptr;
@@ -259,10 +246,10 @@ void CObjectBillboard::SetVtx(void)
 			0);
 
 		//頂点座標を設定
-		pVtx[0].pos = D3DXVECTOR3(-size.x, size.y, 0.0f);
-		pVtx[1].pos = D3DXVECTOR3(+size.x, size.y, 0.0f);
-		pVtx[2].pos = D3DXVECTOR3(-size.x, -size.y, 0.0f);
-		pVtx[3].pos = D3DXVECTOR3(+size.x, -size.y, 0.0f);
+		pVtx[0].pos = D3DXVECTOR3(-m_info.size.x,  m_info.size.y, 0.0f);
+		pVtx[1].pos = D3DXVECTOR3( m_info.size.x,  m_info.size.y, 0.0f);
+		pVtx[2].pos = D3DXVECTOR3(-m_info.size.x, -m_info.size.y, 0.0f);
+		pVtx[3].pos = D3DXVECTOR3( m_info.size.x, -m_info.size.y, 0.0f);
 
 		//法線ベクトルの設定
 		pVtx[0].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
@@ -271,10 +258,10 @@ void CObjectBillboard::SetVtx(void)
 		pVtx[3].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 
 		//頂点カラーを設定
-		pVtx[0].col = color;
-		pVtx[1].col = color;
-		pVtx[2].col = color;
-		pVtx[3].col = color;
+		pVtx[0].col = m_info.color;
+		pVtx[1].col = m_info.color;
+		pVtx[2].col = m_info.color;
+		pVtx[3].col = m_info.color;
 
 		//テクスチャの座標を設定
 		pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
@@ -285,5 +272,4 @@ void CObjectBillboard::SetVtx(void)
 		// 頂点バッファをアンロックする
 		m_pVtxBuff->Unlock();
 	}
-
 }
