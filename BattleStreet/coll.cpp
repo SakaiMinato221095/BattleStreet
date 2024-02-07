@@ -236,9 +236,10 @@ bool CColl::HitSide(CMgrColl::TAG hitTag,CMgrColl::EVENT_TYPE eventType, CMgrCol
 void CColl::SetHitData(HitData data)
 {
 	// •Ï”éŒ¾iî•ñæ“¾j
-	int nHitNum = m_data.nHitNldxMax;	// Œ»İ‚ÌÅ‘åÚG”
+	int nHitNumMax = m_data.nHitNldxMax;			// Œ»İ‚ÌÅ‘åÚG”
+	int nHitNumMaxTemp = m_data.nHitNldxMaxTemp;	// ˆê“I‚ÈÅ‘åÚG”
 
-	for (int nCount = 0; nCount < nHitNum; nCount++)
+	for (int nCount = 0; nCount < nHitNumMax; nCount++)
 	{
 		if (data.nNldx == m_data.hitData[nCount].nNldx)
 		{
@@ -249,10 +250,12 @@ void CColl::SetHitData(HitData data)
 	}
 
 	// ÚG‘Šè‚Ì“–‚½‚è”»’èî•ñ‚ğ‘ã“ü
-	m_data.hitData[nHitNum] = data;		
+	m_data.hitData[nHitNumMax] = data;
+	m_data.hitDataTemp[nHitNumMaxTemp] = data;
 
 	// Å‘åÚG”‚ğ‰ÁZ
 	m_data.nHitNldxMax++;
+	m_data.nHitNldxMaxTemp++;
 }
 
 //-------------------------------------

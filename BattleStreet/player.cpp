@@ -705,17 +705,17 @@ void CPlayer::UpdateCollision(void)
 				if (m_apColl[nCntColl]->Hit(CMgrColl::TAG_ENEMY, CMgrColl::EVENT_TYPE_PRESS))
 				{
 					float fLengthNear = 100000.0f;
-					int nHitNldxMax = m_apColl[nCntColl]->GetData().nHitNldxMax;
+					int nHitNldxMaxTemp = m_apColl[nCntColl]->GetData().nHitNldxMaxTemp;
 
-					for (int nCntLength = 0; nCntLength < nHitNldxMax; nCntLength++)
+					for (int nCntLength = 0; nCntLength < nHitNldxMaxTemp; nCntLength++)
 					{
-						float fLength = m_apColl[nCntColl]->GetData().hitData[nCntLength].fLength;
+						float fLength = m_apColl[nCntColl]->GetData().hitDataTemp[nCntLength].fLength;
 
 						if (fLength < fLengthNear)
 						{
 							fLengthNear = fLength;
 
-							int hitNldx = m_apColl[nCntColl]->GetData().hitData[nCntLength].nNldx;
+							int hitNldx = m_apColl[nCntColl]->GetData().hitDataTemp[nCntLength].nNldx;
 
 							CColl* pCollPair = pMgrColl->GetColl(hitNldx);
 

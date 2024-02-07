@@ -61,19 +61,22 @@ public:
 	// 当たり判定情報
 	typedef struct
 	{
-		CMgrColl::TAG tag;					// タグ
-		int nNldx;							// 番号
-		CObject* pObj;						// オブジェクトのポインタ
+		CMgrColl::TAG tag;						// タグ
+		int nNldx;								// 番号
+		CObject* pObj;							// オブジェクトのポインタ
 
-		HitData hitData[COLLSION_NUM_MAX];	// 接触相手の接触情報
-		int nHitNldxMax;					// 接触相手の番号の最大数
+		HitData hitData[COLLSION_NUM_MAX];		// 接触相手の接触情報
+		int nHitNldxMax;						// 接触相手の番号の最大数
 
-		D3DXVECTOR3 pos;					// 位置
-		D3DXVECTOR3 posOld;					// 前回の位置
-		D3DXVECTOR3 size;					// 大きさ
-		D3DXVECTOR2 collVec;				// 接触方向ベクトル
+		HitData hitDataTemp[COLLSION_NUM_MAX];	// 一時的の接触相手の接触情報
+		int nHitNldxMaxTemp;					// 一時的の接触相手の番号の最大数
 
-		DataVisual dataVisual;				// 見た目情報
+		D3DXVECTOR3 pos;						// 位置
+		D3DXVECTOR3 posOld;						// 前回の位置
+		D3DXVECTOR3 size;						// 大きさ
+		D3DXVECTOR2 collVec;					// 接触方向ベクトル
+
+		DataVisual dataVisual;					// 見た目情報
 	}Data;
 
 	CColl();
@@ -85,7 +88,7 @@ public:
 	void Update(void);
 	void Draw(void);
 
-	static CColl *Create(CMgrColl::TAG tag, CObject* pObj,D3DXVECTOR3 pos, D3DXVECTOR3 size);
+	static CColl* Create(CMgrColl::TAG tag, CObject* pObj, D3DXVECTOR3 pos, D3DXVECTOR3 size);
 
 	bool Hit(CMgrColl::TAG hitTag, CMgrColl::EVENT_TYPE eventType);
 	bool HitSide(CMgrColl::TAG hitTag, CMgrColl::EVENT_TYPE eventType, CMgrColl::TYPE_SXIS typeSxis);
@@ -101,6 +104,11 @@ public:
 	void SetData(Data data) { m_data = data; }
 	Data GetData(void) { return m_data; }
 
+	void ResetHitDataTemp(void)
+	{
+		ZeroMemory(&m_data.hitDataTemp[0], sizeof(m_data.hitDataTemp));
+		m_data.nHitNldxMaxTemp = 0;
+	}
 
 private:
 

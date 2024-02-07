@@ -117,7 +117,8 @@ bool CMgrColl::Hit(int nNldxColl, TAG hitTag, EVENT_TYPE eventType)
 	CColl::Data dataMy = m_apColl[nNldxColl]->GetData();	// ©g‚Ìî•ñ
 	int nHitNldxMax = dataMy.nHitNldxMax;					// ÚG‘Šè‚ÌÅ‘å”
 
-	CColl::Data dataOnceMy = {};
+	// ˆê“I‚ÈÚGî•ñ‚Ì‰Šú‰»
+	pCollMy->ResetHitDataTemp();
 
 	bool bHit = false;									// ÚG‚Ì—L–³
 
