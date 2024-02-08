@@ -32,7 +32,6 @@
 #include "attack.h"
 #include "charge.h"
 
-#include "life.h"
 
 //-======================================
 //-	マクロ定義
@@ -267,7 +266,11 @@ void CEnemyBoss::HitDamage(int nDamage)
 	Damage(nDamage);
 
 	// 状態を設定
-	if (nDamage >= 5)
+	if (m_info.state == STATE_ATTACK)
+	{
+
+	}
+	else if (nDamage >= 5)
 	{// 大きいダメージ
 
 		// 状態設定

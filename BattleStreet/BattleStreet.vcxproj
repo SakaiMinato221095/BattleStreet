@@ -56,7 +56,6 @@
     <ClCompile Include="billboard.cpp" />
     <ClCompile Include="object_x.cpp" />
     <ClCompile Include="obj_2d_gage.cpp" />
-    <ClCompile Include="obj_2d_none.cpp" />
     <ClCompile Include="obj_3d_field.cpp" />
     <ClCompile Include="obj_3d_wall.cpp" />
     <ClCompile Include="particle.cpp" />
@@ -116,7 +115,6 @@
     <ClInclude Include="billboard.h" />
     <ClInclude Include="object_x.h" />
     <ClInclude Include="obj_2d_gage.h" />
-    <ClInclude Include="obj_2d_none.h" />
     <ClInclude Include="obj_3d_field.h" />
     <ClInclude Include="obj_3d_wall.h" />
     <ClInclude Include="particle.h" />

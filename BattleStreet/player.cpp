@@ -251,7 +251,8 @@ void CPlayer::Update(void)
 		// 移動の入力処理
 		InputMove();
 	}
-	else if (m_data.state == STATE_BATTLE)
+	else if (m_data.state == STATE_BATTLE ||
+			 m_data.state == STATE_FINISH)
 	{
 		// 攻撃処理
 		UpdateBattle();
@@ -493,27 +494,20 @@ void CPlayer::UpdatePos(void)
 //-------------------------------------
 void CPlayer::UpdateBattle(void)
 {
-	// 変数宣言（情報取得）
-	D3DXVECTOR3 pos = m_data.pos;	// 位置
-	D3DXVECTOR3 move = m_data.move;	// 移動量
-
 	if (m_data.bIsTarget)
 	{
 		// 位置情報に移動量を加算
-		float rotTgt = atan2f(pos.x - m_data.posTgt.x, pos.z - m_data.posTgt.z);
+		float rotTgt = atan2f(m_data.pos.x - m_data.posTgt.x, m_data.pos.z - m_data.posTgt.z);
 
 		m_data.rotDest.y = rotTgt;
 	}
 
-	pos += D3DXVECTOR3(-sinf(m_data.rot.y) * 3.0f, 0.0f, -cosf(m_data.rot.y) * 3.0f);
+	m_data.pos += D3DXVECTOR3(-sinf(m_data.rot.y) * 3.0f, 0.0f, -cosf(m_data.rot.y) * 3.0f);
 
 	// 移動量を減衰
-	move.x += (0.0f - move.x) * 0.3f;
-	move.z += (0.0f - move.z) * 0.3f;
+	m_data.move.x += (0.0f - m_data.move.x) * 0.3f;
+	m_data.move.z += (0.0f - m_data.move.z) * 0.3f;
 
-	// 情報更新
-	m_data.pos = pos;
-	m_data.move = move;
 }
 
 //-------------------------------------
@@ -1008,7 +1002,7 @@ void CPlayer::InputCombo(void)
 		if (bFinish)
 		{
 			// 状態設定
-			m_data.state = STATE_BATTLE;
+			m_data.state = STATE_FINISH;
 			 
 			// フィニッシュ攻撃
 			SetAttackFinish();

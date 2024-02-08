@@ -10,11 +10,15 @@
 //=	インクルード
 //=======================================
 
-#include "main.h"
-
 #include "pause.h"
 
+#include "object2d.h"
+
 #include "manager.h"
+#include "renderer.h"
+
+#include "manager_texture.h"
+
 #include "fade.h"
 
 #include "object.h"
@@ -23,8 +27,6 @@
 #include "Input.h"
 #include "xinput.h"
 #include "sound.h"
-
-#include "obj_2d_none.h"
 
 //=======================================
 //=	マクロ定義
@@ -41,17 +43,33 @@
 #define MENU_INTERVAL_Y		(130.0f)				//ポーズメニューの間隔（Y）
 
 //=======================================
+//=	コンスト定義
+//=======================================
+
+// ポーズのテクスチャ
+const char* Texture[] =
+{
+	"data\\TEXTURE\\Pause\\Bg.jpg",				// 背景
+	"data\\TEXTURE\\Pause\\BackToGame.png",		// ゲーム続行テクスチャ
+	"data\\TEXTURE\\Pause\\GameRetry.png",		// ゲームやり直しテクスチャ
+	"data\\TEXTURE\\Pause\\QuitTitle.png",		// タイトルに戻るテクスチャ
+	"data\\TEXTURE\\Pause\\Cursor.png",			// カーソルテクスチャ
+};
+
+//=======================================
 //=	静的変数宣言
 //=======================================
 
-CObj2dNone *CPause::m_apObj2dNone[TYPE_MAX] = {};
+int CPause::m_nTextureNldx[TEX_MAX] = {};
 
 //-------------------------------------
 //-	ポーズのコンストラクタ
 //-------------------------------------
 CPause::CPause()
 {
+	ZeroMemory(&m_infoVisual,sizeof(m_infoVisual));
 	m_typeSelect = (TYPE_SELECT)0;
+	m_bOk = false;
 }
 
 //-------------------------------------
@@ -63,70 +81,62 @@ CPause::~CPause()
 }
 
 //-------------------------------------
+//-	ポーズのデータ読み込み
+//-------------------------------------
+HRESULT CPause::Load(void)
+{
+	// 情報取得
+	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
+	CManagerTexture* pManagerTexture = CManager::GetInstance()->GetManagerTexture();
+
+	// 情報取得の成功を判定
+	if (pDevice == nullptr ||
+		pManagerTexture == nullptr)
+	{// 失敗時
+
+		// 初期化処理を抜ける
+		return E_FAIL;
+	}
+
+	// テクスチャ設定
+	for (int nCount = 0; nCount < TEX_MAX; nCount++)
+	{
+		// テクスチャ番号の取得（テクスチャの割当）
+		m_nTextureNldx[nCount] = pManagerTexture->Regist(Texture[nCount]);
+
+		// テクスチャの読み込み成功の有無を確認
+		if (m_nTextureNldx[nCount] == -1)
+		{
+			// 失敗時に初期化処理を抜ける
+			return E_FAIL;
+		}
+	}
+
+	// 成功を返す
+	return S_OK;
+}
+
+//-------------------------------------
+//-	ポーズのデータ破棄
+//-------------------------------------
+void CPause::Unload(void)
+{
+}
+
+//-------------------------------------
 //- ポーズの初期化処理
 //-------------------------------------
 HRESULT CPause::Init(void)
 {
-	// オブジェクト管理の有無を判定
-	if (m_apObj2dNone[TYPE_BG] == NULL)
+	for (int nCnt = 0; nCnt < TYPE_MAX; nCnt++)
 	{
-		// オブジェクト管理の生成
-		m_apObj2dNone[TYPE_BG] = CObj2dNone::Create(
-			CObj2dNone::TEX_PAUSE_BG,
-			D3DXVECTOR3(WINDOW_POS_X, WINDOW_POS_Y, 0.0f),
-			D3DXVECTOR3(WINDOW_SIZE_X, WINDOW_SIZE_Y, 0.0f),
-			D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-
-		// オブジェクト管理の初期化処理
-		if (m_apObj2dNone[TYPE_BG] == NULL)
-		{// 失敗時
-
-			// 初期化を抜ける
-			return E_FAIL;
-		}
-	}
-	else
-	{// ゴミが入っているとき
-
-		// 初期化を抜ける
-		return E_FAIL;
-	}
-
-	for (int nCutPause = TYPE_GAME; nCutPause < TYPE_TITLE + 1; nCutPause++)
-	{
-		// オブジェクト管理の有無を判定
-		if (m_apObj2dNone[nCutPause] == NULL)
+		if (m_infoVisual.apObj2d[nCnt] == NULL)
 		{
-			if (nCutPause == TYPE_GAME)
-			{
-				// オブジェクト管理の生成
-				m_apObj2dNone[nCutPause] = CObj2dNone::Create(
-					CObj2dNone::TEX_PAUSE_GAME,
-					D3DXVECTOR3(MENU_POS_X, MENU_POS_Y + (MENU_INTERVAL_Y * (nCutPause - 1)), 0.0f),
-					D3DXVECTOR3(MENU_SIZE_X, MENU_SIZE_Y, 0.0f),
-					D3DXCOLOR(1.0f,1.0f,1.0f,1.0f));
-			}
-			else if (nCutPause == TYPE_RETRY)
-			{
-				// オブジェクト管理の生成
-				m_apObj2dNone[nCutPause] = CObj2dNone::Create(
-					CObj2dNone::TEX_PAUSE_RETRY,
-					D3DXVECTOR3(MENU_POS_X, MENU_POS_Y + (MENU_INTERVAL_Y * (nCutPause - 1)), 0.0f),
-					D3DXVECTOR3(MENU_SIZE_X, MENU_SIZE_Y, 0.0f),
-					D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-			}
-			else if (nCutPause == TYPE_TITLE)
-			{
-				// オブジェクト管理の生成
-				m_apObj2dNone[nCutPause] = CObj2dNone::Create(
-					CObj2dNone::TEX_PAUSE_TITLE,
-					D3DXVECTOR3(MENU_POS_X, MENU_POS_Y + (MENU_INTERVAL_Y * (nCutPause - 1)), 0.0f),
-					D3DXVECTOR3(MENU_SIZE_X, MENU_SIZE_Y, 0.0f),
-					D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-			}
+			// オブジェクト管理の生成
+			m_infoVisual.apObj2d[nCnt] = CObject2d::Create();
 
 			// オブジェクト管理の初期化処理
-			if (m_apObj2dNone[nCutPause] == NULL)
+			if (m_infoVisual.apObj2d[nCnt] == NULL)
 			{// 失敗時
 
 				// 初期化を抜ける
@@ -136,35 +146,41 @@ HRESULT CPause::Init(void)
 		else
 		{// ゴミが入っているとき
 
-		 // 初期化を抜ける
-			return E_FAIL;
-		}
-	}
-
-	// オブジェクト管理の有無を判定
-	if (m_apObj2dNone[TYPE_CURSOR] == NULL)
-	{
-		// オブジェクト管理の生成
-		m_apObj2dNone[TYPE_CURSOR] = CObj2dNone::Create(
-			CObj2dNone::TEX_PAUSE_CURSOR,
-			D3DXVECTOR3(MENU_POS_X - 250.0f, MENU_POS_Y, 0.0f),
-			D3DXVECTOR3(30.0f, 30.0f, 0.0f),
-			D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-
-		// オブジェクト管理の初期化処理
-		if (m_apObj2dNone[TYPE_CURSOR] == NULL)
-		{// 失敗時
-
 			// 初期化を抜ける
 			return E_FAIL;
 		}
-
 	}
-	else
-	{// ゴミが入っているとき
 
-		// 初期化を抜ける
-		return E_FAIL;
+	for (int nCutPause = 0; nCutPause < TYPE_MAX; nCutPause++)
+	{
+		if (m_infoVisual.apObj2d[nCutPause] != nullptr)
+		{
+			if (nCutPause == TYPE_BG)
+			{
+				m_infoVisual.apObj2d[nCutPause]->SetInit(
+					D3DXVECTOR3(WINDOW_POS_X, WINDOW_POS_Y, 0.0f),
+					D3DXVECTOR3(WINDOW_SIZE_X, WINDOW_SIZE_Y, 0.0f),
+					D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+			}
+			else if (nCutPause == TYPE_CURSOR)
+			{
+				m_infoVisual.apObj2d[nCutPause]->SetInit(
+					D3DXVECTOR3(MENU_POS_X - 250.0f, MENU_POS_Y, 0.0f),
+					D3DXVECTOR3(30.0f, 30.0f, 0.0f),
+					D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+			}
+			else
+			{
+				m_infoVisual.apObj2d[nCutPause]->SetInit(
+					D3DXVECTOR3(MENU_POS_X, MENU_POS_Y + (MENU_INTERVAL_Y * (nCutPause - 1)), 0.0f),
+					D3DXVECTOR3(MENU_SIZE_X, MENU_SIZE_Y, 0.0f),
+					D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+			}
+
+			m_infoVisual.apObj2d[nCutPause]->BindTexture(m_nTextureNldx[nCutPause]);
+		}
+
+
 	}
 
 	CCamera* pCamera = CManager::GetInstance()->GetCamera();
@@ -180,8 +196,9 @@ HRESULT CPause::Init(void)
 	// オブジェクトの更新停止除外
 	for (int nCutPause = 0; nCutPause < TYPE_MAX; nCutPause++)
 	{
-		m_apObj2dNone[nCutPause]->SetIsUpdatePause(true);
+		m_infoVisual.apObj2d[nCutPause]->SetIsUpdatePause(true);
 	}
+
 
 	// 成功を返す
 	return S_OK;
@@ -192,13 +209,13 @@ HRESULT CPause::Init(void)
 //-------------------------------------
 void CPause::Uninit(void)
 {
-	for (int nCount = 0; nCount < TYPE_MAX; nCount++)
+	for (int nCutPause = 0; nCutPause < TYPE_MAX; nCutPause++)
 	{
-		if (m_apObj2dNone[nCount] != NULL)
+		if (m_infoVisual.apObj2d[nCutPause] != NULL)
 		{
 			// 効果なし2Dオブジェクトの開放処理
-			m_apObj2dNone[nCount]->Uninit();
-			m_apObj2dNone[nCount] = NULL;
+			m_infoVisual.apObj2d[nCutPause]->Uninit();
+			m_infoVisual.apObj2d[nCutPause] = NULL;
 		}
 	}
 
@@ -219,34 +236,17 @@ void CPause::Uninit(void)
 //-------------------------------------
 void CPause::Update(void)
 {
-	// キーボードのポインタを宣言
+	// 情報取得
 	CInputKeyboard *pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
+	CXInput* pXInput = CManager::GetInstance()->GetXInput();
 
-	// キーボードの情報取得の成功を判定
-	if (pInputKeyboard == NULL)
+	// 情報取得の成功を判定
+	if (pInputKeyboard == NULL ||
+		pXInput == NULL)
 	{// 失敗時
 
 		// 更新処理を抜ける
 		return;
-	}
-
-	// X入力のポインタを宣言
-	CXInput *pXInput = CManager::GetInstance()->GetXInput();
-
-	// X入力の情報取得の成功を判定
-	if (pXInput == NULL)
-	{
-		// 処理を抜ける
-		return;
-	}
-
-	for (int nCutPause = 0; nCutPause < TYPE_MAX; nCutPause++)
-	{
-		if (m_apObj2dNone[nCutPause] != NULL)
-		{
-			// 2Dの更新処理
-			m_apObj2dNone[nCutPause]->Update();
-		}
 	}
 
 	if (pInputKeyboard->GetTrigger(DIK_W) != NULL)
@@ -259,7 +259,7 @@ void CPause::Update(void)
 			m_typeSelect = TYPE_SELECT_TITLE;
 		}
 
-		m_apObj2dNone[TYPE_CURSOR]->SetPos(
+		m_infoVisual.apObj2d[TYPE_CURSOR]->SetPos(
 			D3DXVECTOR3(
 				MENU_POS_X - 250.0f, 
 				MENU_POS_Y + (MENU_INTERVAL_Y * m_typeSelect),
@@ -276,7 +276,7 @@ void CPause::Update(void)
 			m_typeSelect = (TYPE_SELECT)0;
 		}
 
-		m_apObj2dNone[TYPE_CURSOR]->SetPos(
+		m_infoVisual.apObj2d[TYPE_CURSOR]->SetPos(
 			D3DXVECTOR3(
 				MENU_POS_X - 250.0f, 
 				MENU_POS_Y + (MENU_INTERVAL_Y * m_typeSelect), 

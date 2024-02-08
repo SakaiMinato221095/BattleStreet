@@ -27,7 +27,7 @@
 //-	前方宣言
 //-======================================
 
-class CObj2dNone;
+class CObject2d;
 
 //-======================================
 //-	クラス定義
@@ -38,7 +38,17 @@ class CPause
 
 public:
 
-	typedef enum
+	enum TEX
+	{
+		TEX_BG = 0,	// 背景
+		TEX_GAME,	// ゲーム
+		TEX_RETRY,	// リトライ
+		TEX_TITLE,	// タイトル
+		TEX_CURSOR,	// カーソル
+		TEX_MAX
+	};
+
+	enum TYPE
 	{
 		TYPE_BG = 0,	// 背景
 		TYPE_GAME,		// ゲーム
@@ -46,7 +56,7 @@ public:
 		TYPE_TITLE,		// タイトル
 		TYPE_CURSOR,	// カーソル
 		TYPE_MAX
-	}TYPE;
+	};
 
 	typedef enum
 	{
@@ -59,6 +69,9 @@ public:
 	CPause();
 	~CPause();
 
+	static HRESULT Load(void);
+	static void Unload(void);
+
 	HRESULT Init(void);
 	void Uninit(void);
 	void Update(void);
@@ -66,16 +79,23 @@ public:
 
 	static CPause * Create(void);
 
-	static CObj2dNone* GetObj2dNone(int nNum) { return m_apObj2dNone[nNum]; }
-	TYPE_SELECT GetTypeSelect(void) { return m_typeSelect; }
 	bool GetOk(void) { return m_bOk; }
+	TYPE_SELECT GetTypeSelect(void) { return m_typeSelect; }
 
 private:
 
-	static CObj2dNone *m_apObj2dNone[TYPE_MAX];	// 効果なし2Dオブジェクトのポインタ
-	TYPE_SELECT m_typeSelect;					// 現在の選択の種類
+	// 見た目の情報
+	struct InfoVisual
+	{
+		CObject2d* apObj2d[TYPE_MAX];		// 2Dオブジェクトのポインタ
+	};
+
+	InfoVisual m_infoVisual;			// 見た目の情報
+	TYPE_SELECT m_typeSelect;			// 現在の選択の種類
 
 	bool m_bOk;
+
+	static int m_nTextureNldx[TEX_MAX];
 
 };
 

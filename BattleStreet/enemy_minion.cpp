@@ -331,7 +331,11 @@ void CEnemyMinion::HitDamage(int nDamage)
 	Damage(nDamage);
 
 	// 状態を設定
-	if (nDamage >= 5)
+	if (m_info.state == STATE_ATTACK)
+	{
+		
+	}
+	else if (nDamage >= 5)
 	{// 大きいダメージ
 
 		// 状態設定
@@ -565,7 +569,7 @@ void CEnemyMinion::AiWait(void)
 //-------------------------------------
 void CEnemyMinion::AiKickCombo(void)
 {
-	float fLength = GetTargetLength() * 0.01f;
+	float fLength = GetTargetLength() * 0.03f;
 
 	// ターゲットを向く・近づく
 	SetRot(GetTargetRot());
@@ -695,7 +699,7 @@ void CEnemyMinion::SetState(MOTION_STATE motionState)
 	case CEnemyMinion::MOTION_STATE_NEUTRAL:
 
 		m_infoAi.state = AI_STATE_WAIT;
-		m_info.state = STATE_ATTACK;
+		m_info.state = STATE_NORMAL;
 
 		break;
 	case CEnemyMinion::MOTION_STATE_MOVE:
@@ -711,6 +715,7 @@ void CEnemyMinion::SetState(MOTION_STATE motionState)
 	case CEnemyMinion::MOTION_STATE_CHARGE:
 
 		m_infoAi.state = AI_STATE_CHARGE;
+		m_info.state = STATE_NORMAL;
 
 		break;
 

@@ -619,7 +619,7 @@ void CMotion::UpdateChangeBlend(void)
 void CMotion::UpdateBlend(void)
 {
 	// ƒtƒŒ[ƒ€”‚ğæ“¾
-	int nFrame = 10;
+	int nFrame = 100;
 
 	for (int nCutModel = 0; nCutModel < m_nNumModel; nCutModel++)
 	{

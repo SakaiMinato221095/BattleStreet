@@ -201,9 +201,6 @@
     <ClCompile Include="finish_kick.cpp">
       <Filter>Attack\Finish</Filter>
     </ClCompile>
-    <ClCompile Include="obj_2d_none.cpp">
-      <Filter>Obj2d</Filter>
-    </ClCompile>
     <ClCompile Include="object2d.cpp">
       <Filter>Obj2d</Filter>
     </ClCompile>
@@ -364,9 +361,6 @@
     </ClInclude>
     <ClInclude Include="finish_kick.h">
       <Filter>Attack\Finish</Filter>
-    </ClInclude>
-    <ClInclude Include="obj_2d_none.h">
-      <Filter>Obj2d</Filter>
     </ClInclude>
     <ClInclude Include="object2d.h">
       <Filter>Obj2d</Filter>
