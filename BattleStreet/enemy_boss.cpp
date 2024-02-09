@@ -41,27 +41,9 @@
 //=	コンスト定義
 //=======================================
 
-const int PARTS_BODY = 0;
-const int PARTS_FOOT_R = 3;
-const int PARTS_FOOT_L = 4;
+const int PARTS_ATTACK = 15;
 
-const D3DXVECTOR3 PARTS_POS[5]
-{
-	D3DXVECTOR3(0.0f,0.0f,0.0f),
-	D3DXVECTOR3(0.0f,0.0f,0.0f),
-	D3DXVECTOR3(0.0f,0.0f,0.0f),
-	D3DXVECTOR3(0.0f,0.0f,0.0f),
-	D3DXVECTOR3(0.0f,0.0f,0.0f),
-};
-
-const D3DXVECTOR3 PARTS_SIZE[5]
-{
-	D3DXVECTOR3(50.0f,30.0f,50.0f),
-	D3DXVECTOR3(25.0f,100.0f,25.0f),
-	D3DXVECTOR3(25.0f,100.0f,25.0f),
-	D3DXVECTOR3(20.0f,20.0f,20.0f),
-	D3DXVECTOR3(20.0f,20.0f,20.0f),
-};
+const D3DXVECTOR3 PARTS_SIZE = D3DXVECTOR3(10.0f, 10.0f, 10.0f);
 
 const int AI_COUNT_CHANGE[CEnemyBoss::MOTION_STATE_MAX]
 {
@@ -355,18 +337,6 @@ void CEnemyBoss::UpdateMotion(void)
 		}
 	}
 
-	if (pMotion->GetType() == MOTION_STATE_CHARGE_ATTACK && m_infoVisual.motionState != MOTION_STATE_CHARGE_ATTACK ||
-		pMotion->GetType() == MOTION_STATE_KICK_1 && m_infoVisual.motionState != MOTION_STATE_KICK_1 ||
-		pMotion->GetType() == MOTION_STATE_KICK_2 && m_infoVisual.motionState != MOTION_STATE_KICK_2 ||
-		pMotion->GetType() == MOTION_STATE_KICK_3 && m_infoVisual.motionState != MOTION_STATE_KICK_3)
-	{
-		if (m_info.state == STATE_NORMAL)
-		{
-			// 通常状態に変更
-			SetState(MOTION_STATE_NEUTRAL);
-		}
-	}
-
 	if (pMotion->GetType() == MOTION_STATE_DAMAGE && m_infoVisual.motionState != MOTION_STATE_DAMAGE ||
 		pMotion->GetType() == MOTION_STATE_BIG_DAMAGE && m_infoVisual.motionState != MOTION_STATE_BIG_DAMAGE)
 	{
@@ -387,8 +357,16 @@ void CEnemyBoss::UpdateMotion(void)
 		}
 		else if (m_info.state == STATE_ATTACK)
 		{
-			// 通常状態に変更
-			SetState(MOTION_STATE_NEUTRAL);
+			if (m_infoAi.bCombo)
+			{
+				// 行動設定
+				SetAiActiv();
+			}
+			else
+			{
+				// 通常状態に変更
+				SetState(MOTION_STATE_NEUTRAL);
+			}
 		}
 		else
 		{
@@ -501,7 +479,7 @@ void CEnemyBoss::UpdateAttack(void)
 		}
 
 		m_infoAttach.pAttack->UpdateData(
-			posParts + PARTS_POS[m_infoAttach.nPartsIdx],
+			posParts,
 			m_infoAttach.pAttack->GetSize());
 	}
 }
@@ -681,8 +659,8 @@ void CEnemyBoss::SetAttack(int nPartsNum)
 
 				// 攻撃の初期設定処理
 				m_infoAttach.pAttack->InitSet(
-					posBody + PARTS_POS[nPartsNum],
-					PARTS_SIZE[nPartsNum],
+					posBody,
+					PARTS_SIZE,
 					10,
 					CMgrColl::TAG_PLAYER);
 			}
@@ -717,7 +695,7 @@ void CEnemyBoss::SetState(MOTION_STATE motionState)
 		m_infoAi.state = AI_STATE_KICK_1;
 		m_info.state = STATE_ATTACK;
 		m_infoAi.bCombo = true;
-		SetAttack(PARTS_FOOT_L);
+		SetAttack(PARTS_ATTACK);
 
 		break;
 	case CEnemyBoss::MOTION_STATE_KICK_2:
@@ -725,14 +703,14 @@ void CEnemyBoss::SetState(MOTION_STATE motionState)
 		m_infoAi.state = AI_STATE_KICK_2;
 		m_info.state = STATE_ATTACK;
 		m_infoAi.bCombo = true;
-		SetAttack(PARTS_FOOT_R);
+		SetAttack(PARTS_ATTACK);
 
 		break;
 	case CEnemyBoss::MOTION_STATE_KICK_3:
 
 		m_infoAi.state = AI_STATE_KICK_3;
 		m_info.state = STATE_ATTACK;
-		SetAttack(PARTS_FOOT_L);
+		SetAttack(PARTS_ATTACK);
 
 		break;
 	case CEnemyBoss::MOTION_STATE_CHARGE:
@@ -744,7 +722,7 @@ void CEnemyBoss::SetState(MOTION_STATE motionState)
 
 		m_infoAi.state = AI_STATE_CHARGE_ATTACK;
 		m_info.state = STATE_ATTACK;
-		SetAttack(PARTS_BODY);
+		SetAttack(PARTS_ATTACK);
 
 		break;
 	case CEnemyBoss::MOTION_STATE_DAMAGE:
