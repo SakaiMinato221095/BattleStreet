@@ -22,6 +22,7 @@
 //=======================================
 //=	コンスト定義
 //=======================================
+
 namespace GAME
 {
 	const int FIELD_NUM = 2;
@@ -81,9 +82,9 @@ private:
 		CPause* pPause;					// ポーズ
 		CPhaseManager* pPhaseManager;	// フェーズ管理
 
-		CSkybox* pSkyBox;					// スカイボックス
+		CSkybox* pSkyBox;						// スカイボックス
 		CObj3dField* apField[GAME::FIELD_NUM];	// 床
-		CObj3dWall* apWall[GAME::FIELD_NUM];		// 壁
+		CObj3dWall* apWall[GAME::WALL_NUM];		// 壁
 
 		CPlayer* pPlayer;					// プレイヤー
 	};

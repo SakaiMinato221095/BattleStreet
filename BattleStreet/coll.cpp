@@ -40,7 +40,10 @@ CColl::CColl()
 	m_data.nNldx = -1;
 
 	// ÚG‘Šè”Ô†‚Ì‰Šú’l‚ğ‘ã“ü
-	memset(&m_data.hitData[0].nNldx,-1,sizeof(m_data.hitData));
+	for (int nCnt = 0; nCnt < COLLSION_NUM_MAX; nCnt++)
+	{
+		m_data.hitData[nCnt].nNldx = -1;
+	}
 }
 
 //-------------------------------------

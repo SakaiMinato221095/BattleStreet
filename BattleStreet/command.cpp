@@ -206,7 +206,7 @@ bool CCommand::SetInput(INPUT_TYPE inputType)
 CCommand* CCommand::Create(void)
 {
 	// 戦闘プレイヤーのポインタを宣言
-	CCommand* pCCommand = new CCommand;
+	CCommand* pCCommand = DBG_NEW CCommand;
 
 	// 生成の成功の有無を判定
 	if (pCCommand != NULL)

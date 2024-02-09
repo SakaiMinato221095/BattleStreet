@@ -195,7 +195,7 @@ void CObject3d::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 rot, D3DX
 CObject3d * CObject3d::Create(void)
 {
 	// 3Dオブジェクトの生成
-	CObject3d *pObject3d = new CObject3d;
+	CObject3d *pObject3d = DBG_NEW CObject3d;
 
 	// 生成の成功の有無を判定
 	if (pObject3d != NULL)

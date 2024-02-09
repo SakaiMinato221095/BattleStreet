@@ -156,7 +156,7 @@ void CObj3dField::Draw(void)
 CObj3dField *CObj3dField::Create(TEX tex)
 {
 	// フィールドのポインタを宣言
-	CObj3dField *pCObj3dField = new CObj3dField(4);
+	CObj3dField *pCObj3dField = DBG_NEW CObj3dField(4);
 
 	// 生成の成功の有無を判定
 	if (pCObj3dField != NULL)

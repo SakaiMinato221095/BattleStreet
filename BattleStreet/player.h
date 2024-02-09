@@ -162,19 +162,15 @@ private:
 	void DebugPlayer(void);
 
 	Data m_data;							// 値を格納
-
-	CColl* m_apColl[COLL_TYPE_MAX];			// 当たり判定情報
-
 	D3DXMATRIX m_mtxWorld;					// ワールドマトリックス
 
 	CModel *m_apModel[MODEL_PARTS_MAX];		// モデル（パーツ）のポインタ
 	int m_nNumModel;						// モデル（パーツ）の総数
 
+	CColl* m_apColl[COLL_TYPE_MAX];			// 当たり判定情報
 	CMotion *m_pMotion;						// モーションのポインタ
-
 	CAttack* m_pAttack;						// 攻撃のポインタ
 	CCommand* m_pCommand;					// コマンドのポインタ
-
 	CObj2dGage* m_pLife2dGage;				// 体力表示のポインタ
 };
 

@@ -89,7 +89,7 @@ void CBoxField::Draw(void)
 CBoxField* CBoxField::Create(void)
 {
 	// フィールドのポインタを宣言
-	CBoxField* pCBoxField = new CBoxField(2);
+	CBoxField* pCBoxField = DBG_NEW CBoxField(2);
 
 	// 生成の成功の有無を判定
 	if (pCBoxField != NULL)

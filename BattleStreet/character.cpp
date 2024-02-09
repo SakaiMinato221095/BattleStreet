@@ -198,7 +198,7 @@ void CCharacter::Draw(void)
 CCharacter* CCharacter::Create(CModel::MODEL_TYPE modelType, CMotion::MOTION_TYPE motionType,int nMotionStateMax)
 {
 	// プレイヤーのポインタを宣言
-	CCharacter* pPlayer = new CCharacter;
+	CCharacter* pPlayer = DBG_NEW CCharacter;
 
 	// 生成の成功の有無を判定
 	if (pPlayer != NULL)

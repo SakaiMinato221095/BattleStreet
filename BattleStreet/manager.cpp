@@ -827,7 +827,7 @@ CManager * CManager::GetInstance()
 	if (m_pManager == NULL)
 	{
 		// ŠÇ—‚Ì¶¬
-		return m_pManager = new CManager;
+		return m_pManager = DBG_NEW CManager;
 	}
 	else
 	{

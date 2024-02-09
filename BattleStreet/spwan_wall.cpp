@@ -144,6 +144,8 @@ void CSpwanWall::Uninit(void)
 	{
 		// 当たり判定の終了処理
 		m_infoAttach.pColl->Uninit();
+
+		delete m_infoAttach.pColl;
 		m_infoAttach.pColl = NULL;
 	}
 
@@ -234,7 +236,7 @@ void CSpwanWall::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 rot, D3D
 CSpwanWall* CSpwanWall::Create(void)
 {
 	// ポインタを宣言
-	CSpwanWall* pCSpwanWall = new CSpwanWall(1);
+	CSpwanWall* pCSpwanWall = DBG_NEW CSpwanWall(1);
 
 	// 生成の成功の有無を判定
 	if (pCSpwanWall != NULL)

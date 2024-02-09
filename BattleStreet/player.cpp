@@ -90,15 +90,14 @@ CPlayer::CPlayer()
 {
 	// 値をクリア
 	ZeroMemory(&m_data, sizeof(m_data));
+	ZeroMemory(&m_mtxWorld, sizeof(m_mtxWorld));
 
-	ZeroMemory(m_mtxWorld, sizeof(D3DXMATRIX));
 
-	ZeroMemory(m_apModel, sizeof(m_apModel));
-
+	ZeroMemory(&m_apModel, sizeof(m_apModel));
 	m_nNumModel = 0;
 
-	m_pMotion = NULL;
-
+	ZeroMemory(&m_apColl, sizeof(m_apColl));
+	m_pMotion = nullptr;
 	m_pAttack = nullptr;
 	m_pCommand = nullptr;
 	m_pLife2dGage = nullptr;
@@ -404,7 +403,7 @@ void CPlayer::HitDamage(int nDamage)
 CPlayer *CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, CModel::MODEL_TYPE modelType, CMotion::MOTION_TYPE motionType)
 {
 	// プレイヤーのポインタを宣言
-	CPlayer *pPlayer = new CPlayer;
+	CPlayer *pPlayer = DBG_NEW CPlayer;
 
 	// 生成の成功の有無を判定
 	if (pPlayer != NULL)
@@ -440,7 +439,7 @@ void CPlayer::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 
 	m_data.size = D3DXVECTOR3(40.0f, 200.0f, 40.0f);
 
-	m_data.nLife = 100;
+	m_data.nLife = 50;
 
 	for (int nCount = 0; nCount < COLL_TYPE_MAX; nCount++)
 	{

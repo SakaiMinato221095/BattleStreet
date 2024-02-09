@@ -89,7 +89,7 @@ void CBoxWall::Draw(void)
 CBoxWall* CBoxWall::Create(void)
 {
 	// フィールドのポインタを宣言
-	CBoxWall* pCBoxWall = new CBoxWall(2);
+	CBoxWall* pCBoxWall = DBG_NEW CBoxWall(2);
 
 	// 生成の成功の有無を判定
 	if (pCBoxWall != NULL)

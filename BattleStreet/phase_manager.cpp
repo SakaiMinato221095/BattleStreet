@@ -126,7 +126,7 @@ void CPhaseManager::AddDeadEnemy(void)
 CPhaseManager* CPhaseManager::Create(void)
 {
 	// ポインタを宣言
-	CPhaseManager* pCPhaseManager = new CPhaseManager(1);
+	CPhaseManager* pCPhaseManager = DBG_NEW CPhaseManager(1);
 
 	// 生成の成功の有無を判定
 	if (pCPhaseManager != NULL)

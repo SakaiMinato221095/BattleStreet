@@ -78,7 +78,7 @@ private:
 
 	struct Info
 	{
-		int nTargetCompNum;				// ターゲットの最大数
+		int nTargetCompNum;			// ターゲットの最大数
 		int nTargetCompCnt;			// ターゲットの撃破数
 		TYPE_PHASE typePhaseNew;	// 現在のフェーズ
 	};
