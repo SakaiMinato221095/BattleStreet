@@ -64,6 +64,25 @@ const int STATE_TIME[CPlayer::STATE_MAX]
 	0,
 };
 
+const int PARTS_NUM_PUNCH = 4;
+const int PARTS_NUM_PUNCH_FINISH = 7;
+const int PARTS_NUM_KICK = 11;
+const int PARTS_NUM_KICK_FINISH = 0;
+
+// フィニッシュ時の位置の追加量
+const D3DXVECTOR3 FINISH_POS_PLUS[CCommand::COMMAND_TYPE_MAX]
+{
+	D3DXVECTOR3(0.0f,0.0f,0.0f),
+	D3DXVECTOR3(0.0f,50.0f,0.0f),
+};
+
+// フィニッシュ時の大きさ
+const D3DXVECTOR3 FINISH_SIZE[CCommand::COMMAND_TYPE_MAX]
+{
+	D3DXVECTOR3(20.0f, 20.0f, 20.0f),
+	D3DXVECTOR3(100.0f, 40.0f, 100.0f),
+};
+
 //-------------------------------------
 //-	コンストラクタ
 //-------------------------------------
@@ -551,39 +570,12 @@ void CPlayer::UpdateAttack(void)
 	if (m_pAttack != nullptr)
 	{
 		D3DXVECTOR3 posParts = {};
-
-		if (m_data.motionState == MOTION_STATE_PUNCH)
-		{
-			// 手の位置
-			posParts = D3DXVECTOR3(
-				GetModel(7)->GetMtxWorld()._41,
-				GetModel(7)->GetMtxWorld()._42,
-				GetModel(7)->GetMtxWorld()._43);
-		}
-		else if (m_data.motionState == MOTION_STATE_KICK)
-		{
-			// 足の位置
-			posParts = D3DXVECTOR3(
-				GetModel(11)->GetMtxWorld()._41,
-				GetModel(11)->GetMtxWorld()._42,
-				GetModel(11)->GetMtxWorld()._43);
-		}
-		else if (m_data.motionState == MOTION_STATE_PUNCH_FINISH)
-		{
-			// 手の位置
-			posParts = D3DXVECTOR3(
-				GetModel(7)->GetMtxWorld()._41,
-				GetModel(7)->GetMtxWorld()._42,
-				GetModel(7)->GetMtxWorld()._43);
-		}
-		else if (m_data.motionState == MOTION_STATE_KICK_FINISH)
-		{
-			// 手の位置
-			posParts = D3DXVECTOR3(
-				GetModel(0)->GetMtxWorld()._41,
-				GetModel(0)->GetMtxWorld()._42,
-				GetModel(0)->GetMtxWorld()._43) + D3DXVECTOR3(0.0f, 50.0f, 0.0f);
-		}
+		
+		// パーツの位置
+		posParts = D3DXVECTOR3(
+			GetModel(m_data.nAttackPartsNldx)->GetMtxWorld()._41,
+			GetModel(m_data.nAttackPartsNldx)->GetMtxWorld()._42,
+			GetModel(m_data.nAttackPartsNldx)->GetMtxWorld()._43);
 
 		if (m_pAttack->GetColl() != nullptr)
 		{
@@ -1013,92 +1005,53 @@ void CPlayer::InputCombo(void)
 			m_data.state = STATE_BATTLE;
 
 			// 入力の設定処理
-			SetInput(inputType);
+			SetAttack(inputType);
 		}
-	}
-}
-
-//-------------------------------------
-//- プレイヤーの入力設定処理
-//-------------------------------------
-void CPlayer::SetInput(CCommand::INPUT_TYPE inputType)
-{
-	switch (inputType)
-	{
-	case CCommand::INPUT_TYPE_NONE:
-		break;
-	case CCommand::INPUT_TYPE_PUNCH:
-
-		// パンチ攻撃の設定
-		SetAttackPunch();
-
-		break;
-	case CCommand::INPUT_TYPE_KICK:
-
-		// キック攻撃
-		SetAttackKick();
-
-		break;
 	}
 }
 
 //-------------------------------------
 //- プレイヤーのパンチ攻撃設定処理
 //-------------------------------------
-void CPlayer::SetAttackPunch(void)
+void CPlayer::SetAttack(CCommand::INPUT_TYPE inputType)
 {
+	switch (inputType)
+	{
+	case CCommand::INPUT_TYPE_PUNCH:
+
+		// モーションの設定（パンチ）
+		m_data.motionState = MOTION_STATE_PUNCH;
+		m_data.nAttackPartsNldx = PARTS_NUM_PUNCH;
+
+		break;
+	case CCommand::INPUT_TYPE_KICK:
+
+		// モーションの設定（パンチ）
+		m_data.motionState = MOTION_STATE_KICK;
+		m_data.nAttackPartsNldx = PARTS_NUM_KICK;
+
+		break;
+	}
+
 	if (m_pAttack == nullptr)
 	{
 		m_pAttack = CAttack::Create();
 
 		if (m_pAttack != nullptr)
 		{
-			// 手の位置
-			D3DXVECTOR3 posHand = D3DXVECTOR3(
-				GetModel(7)->GetMtxWorld()._41,
-				GetModel(7)->GetMtxWorld()._42,
-				GetModel(7)->GetMtxWorld()._43);
+			// パーツの位置
+			D3DXVECTOR3 posParts = D3DXVECTOR3(
+				GetModel(m_data.nAttackPartsNldx)->GetMtxWorld()._41,
+				GetModel(m_data.nAttackPartsNldx)->GetMtxWorld()._42,
+				GetModel(m_data.nAttackPartsNldx)->GetMtxWorld()._43);
 
 			// 攻撃の初期設定処理
 			m_pAttack->InitSet(
-				posHand,
+				posParts,
 				D3DXVECTOR3(20.0f,20.0f,20.0f),
 				3,
 				CMgrColl::TAG_ENEMY);
 		}
-
-		// モーションの設定（パンチ）
-		m_data.motionState = MOTION_STATE_PUNCH;
-	}
-}
-
-//-------------------------------------
-//- プレイヤーのキック攻撃設定処理
-//-------------------------------------
-void CPlayer::SetAttackKick(void)
-{
-	if (m_pAttack == nullptr)
-	{
-		m_pAttack = CAttack::Create();
-
-		if (m_pAttack != nullptr)
-		{
-			// 足の位置
-			D3DXVECTOR3 posShin = D3DXVECTOR3(
-				GetModel(11)->GetMtxWorld()._41,
-				GetModel(11)->GetMtxWorld()._42,
-				GetModel(11)->GetMtxWorld()._43);
-
-			// 攻撃の初期設定処理
-			m_pAttack->InitSet(
-				posShin,
-				D3DXVECTOR3(20.0f, 20.0f, 20.0f),
-				1,
-				CMgrColl::TAG_ENEMY);
-		}
-
-		// モーションの設定（キック）
-		m_data.motionState = MOTION_STATE_KICK;
 	}
 }
 
@@ -1113,77 +1066,52 @@ void CPlayer::SetAttackFinish(void)
 	{
 	case CCommand::COMMAND_TYPE_PUNCH_NOR:
 
-		// パンチフィニッシュ攻撃
-		SetAttackFinishPunch();
+		m_pAttack = CFinishPunch::Create();
+
+		if (m_pAttack != nullptr)
+		{
+			// モーションの設定（パンチフィニッシュ）
+			m_data.motionState = MOTION_STATE_PUNCH_FINISH;
+
+			// パーツ位置
+			m_data.nAttackPartsNldx = PARTS_NUM_PUNCH_FINISH;
+		}
 
 		break;
 
 	case CCommand::COMMAND_TYPE_KICK_NOR:
 
-		// パンチフィニッシュ攻撃
-		SetAttackFinishKick();
-
-		break;
-	}
-}
-
-//-------------------------------------
-//- プレイヤーのフィニッシュ攻撃（パンチフィニッシュ）
-//-------------------------------------
-void CPlayer::SetAttackFinishPunch(void)
-{
-	if (m_pAttack == nullptr)
-	{
-		m_pAttack = CFinishPunch::Create();
-
-		if (m_pAttack != nullptr)
-		{
-			// 手の位置
-			D3DXVECTOR3 posShin = D3DXVECTOR3(
-				GetModel(7)->GetMtxWorld()._41,
-				GetModel(7)->GetMtxWorld()._42,
-				GetModel(7)->GetMtxWorld()._43);
-
-			// 攻撃の初期設定処理
-			m_pAttack->InitSet(
-				posShin,
-				D3DXVECTOR3(20.0f, 20.0f, 20.0f),
-				10,
-				CMgrColl::TAG_ENEMY);
-		}
-
-		// モーションの設定（パンチフィニッシュ）
-		m_data.motionState = MOTION_STATE_PUNCH_FINISH;
-	}
-}
-
-//-------------------------------------
-//- プレイヤーのフィニッシュ攻撃（キックフィニッシュ）
-//-------------------------------------
-void CPlayer::SetAttackFinishKick(void)
-{
-	if (m_pAttack == nullptr)
-	{
 		m_pAttack = CFinishKick::Create();
 
 		if (m_pAttack != nullptr)
 		{
-			// 足の位置
-			D3DXVECTOR3 posShin = D3DXVECTOR3(
-				GetModel(0)->GetMtxWorld()._41,
-				GetModel(0)->GetMtxWorld()._42,
-				GetModel(0)->GetMtxWorld()._43);
+			// モーションの設定（パンチフィニッシュ）
+			m_data.motionState = MOTION_STATE_KICK_FINISH;
 
-			// 攻撃の初期設定処理
-			m_pAttack->InitSet(
-				posShin + D3DXVECTOR3(0.0f,50.0f,0.0f),
-				D3DXVECTOR3(100.0f, 40.0f, 100.0f),
-				7,
-				CMgrColl::TAG_ENEMY);
+			// パーツ位置
+			m_data.nAttackPartsNldx = PARTS_NUM_KICK_FINISH;
 		}
 
-		// モーションの設定（パンチフィニッシュ）
-		m_data.motionState = MOTION_STATE_KICK_FINISH;
+		break;
+	}
+
+	if (m_pAttack != nullptr)
+	{
+		// パーツの位置
+		D3DXVECTOR3 posParts = D3DXVECTOR3(
+			GetModel(m_data.nAttackPartsNldx)->GetMtxWorld()._41,
+			GetModel(m_data.nAttackPartsNldx)->GetMtxWorld()._42,
+			GetModel(m_data.nAttackPartsNldx)->GetMtxWorld()._43);
+
+		// 攻撃の初期設定処理
+		m_pAttack->InitSet(
+			posParts,
+			FINISH_SIZE[infoFinish.type],
+			10,
+			CMgrColl::TAG_ENEMY);
+
+		// 追加の位置設定
+		m_pAttack->SetPosPlus(FINISH_POS_PLUS[infoFinish.type]);
 	}
 }
 

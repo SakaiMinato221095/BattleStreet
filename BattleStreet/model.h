@@ -38,6 +38,7 @@ public:
 	{
 		MODEL_TYPE_PLAYER = 0,	// プレイヤー
 		MODEL_TYPE_ALIEN_000,	// 敵000
+		MODEL_TYPE_ENEMY_BOSS,	// 敵ボス
 		MODEL_TYPE_MAX
 	}MODEL_TYPE;
 

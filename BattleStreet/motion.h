@@ -44,6 +44,7 @@ public:
 	{
 		MOTION_TYPE_PLAYER = 0,		// プレイヤー
 		MOTION_TYPE_ALIEN_000,		// 敵000
+		MOTION_TYPE_ENEMY_BOSS,		// 敵ボス
 		MOTION_TYPE_MAX
 	}MOTION_TYPE;
 

@@ -336,6 +336,7 @@ void CSpwanWall::SpwanEnemyPhaseOne(void)
 	pEnemy->SetIsPhaseTarget(true);
 
 	m_info.nNumTarget++;
+
 }
 
 //-------------------------------------
@@ -367,8 +368,8 @@ void CSpwanWall::SpwanEnemyPhaseTwo(void)
 void CSpwanWall::SpwanEnemyPhaseThree(void)
 {
 	CEnemyBoss* pEnemyBoss = CEnemyBoss::Create(
-		CModel::MODEL_TYPE_ALIEN_000,
-		CMotion::MOTION_TYPE_ALIEN_000);
+		CModel::MODEL_TYPE_ENEMY_BOSS,
+		CMotion::MOTION_TYPE_ENEMY_BOSS);
 
 	pEnemyBoss->SetInit(
 		D3DXVECTOR3(m_info.pos.x, 0.0f, m_info.pos.z) + D3DXVECTOR3(0.0f, 0.0f, 500.0f),

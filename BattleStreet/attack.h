@@ -46,6 +46,8 @@ public:
 		D3DXVECTOR3 pos;		// 位置
 		D3DXVECTOR3 size;		// 大きさ
 
+		D3DXVECTOR3 posPlus;	// 追加位置
+
 		int nDamage;			// ダメージ
 
 		CMgrColl::TAG tagTgt;	// ターゲットのタグ
@@ -73,6 +75,9 @@ public:
 
 	D3DXVECTOR3 GetPos(void) { return m_info.pos; }
 	D3DXVECTOR3 GetSize(void) { return m_info.size; }
+
+	void SetPosPlus(D3DXVECTOR3 posPlus) { m_info.posPlus = posPlus; }
+	D3DXVECTOR3 GetPosPlus(void) { return m_info.posPlus; }
 
 	void SetDamage(int nDamage) { m_info.nDamage = nDamage; }
 	int GetDamage(void) { return m_info.nDamage; }

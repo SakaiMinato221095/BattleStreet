@@ -119,6 +119,9 @@ HRESULT CEnemyBoss::Init(CModel::MODEL_TYPE modelType, CMotion::MOTION_TYPE moti
 		{
 			// ‰Šúó‘Ô‚ÌÝ’è
 			SetState(CEnemyBoss::MOTION_STATE_NEUTRAL);
+			
+			// ‘Ò‹@ƒ‚[ƒVƒ‡ƒ“‚ðÝ’è
+			m_infoVisual.pCharacter->GetMotion()->Set(0);
 		}
 		else if (m_infoVisual.pCharacter == nullptr)
 		{

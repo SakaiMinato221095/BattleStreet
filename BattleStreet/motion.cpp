@@ -28,6 +28,7 @@ const char *pMotionText[] =
 {
 	"data\\TXT\\Motion\\MotionPlayerBattle.txt",	// プレイヤーのモーションファイル
 	"data\\TXT\\Motion\\MotionAlien000.txt",		// 敵000のモーションファイル
+	"data\\TXT\\Motion\\MotionEnemyBoss.txt",				// 敵ボスのモーションファイル
 };
 
 //-======================================
@@ -475,12 +476,12 @@ void CMotion::UpdateNormal(void)
 		else
 		{
 			// 最後のキーのときの次のキーの位置と向き
-			fNextPosX = m_aInfo[m_nType].aKeyInfo[0].aKey[nCutModel].fPosX;
-			fNextPosY = m_aInfo[m_nType].aKeyInfo[0].aKey[nCutModel].fPosY;
-			fNextPosZ = m_aInfo[m_nType].aKeyInfo[0].aKey[nCutModel].fPosZ;
-			fNextRotX = m_aInfo[m_nType].aKeyInfo[0].aKey[nCutModel].fRotX;
-			fNextRotY = m_aInfo[m_nType].aKeyInfo[0].aKey[nCutModel].fRotY;
-			fNextRotZ = m_aInfo[m_nType].aKeyInfo[0].aKey[nCutModel].fRotZ;
+			fNextPosX = m_aInfo[0].aKeyInfo[0].aKey[nCutModel].fPosX;
+			fNextPosY = m_aInfo[0].aKeyInfo[0].aKey[nCutModel].fPosY;
+			fNextPosZ = m_aInfo[0].aKeyInfo[0].aKey[nCutModel].fPosZ;
+			fNextRotX = m_aInfo[0].aKeyInfo[0].aKey[nCutModel].fRotX;
+			fNextRotY = m_aInfo[0].aKeyInfo[0].aKey[nCutModel].fRotY;
+			fNextRotZ = m_aInfo[0].aKeyInfo[0].aKey[nCutModel].fRotZ;
 		}
 
 		// 差分の位置と向き

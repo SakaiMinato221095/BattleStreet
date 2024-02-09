@@ -55,8 +55,10 @@ HRESULT CAttack::Init(void)
 		m_pColl = CColl::Create(
 			CMgrColl::TAG_ATTACK,
 			this,
-			m_info.pos,
+			m_info.pos + m_info.posPlus,
 			m_info.size);
+
+		m_pColl->SetIsVisualDrawStop(false);
 	}
 	else
 	{
@@ -168,7 +170,7 @@ void CAttack::UpdateHit(void)
 	{
 		// 当たり判定の情報更新処理
 		m_pColl->UpdateData(
-			m_info.pos,
+			m_info.pos + m_info.posPlus,
 			m_info.size);
 
 		// ターゲットとの接触判定

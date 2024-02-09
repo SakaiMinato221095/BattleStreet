@@ -71,14 +71,6 @@ public:
 		STATE_MAX
 	}STATE;
 
-	// 当たり判定の種類
-	typedef enum
-	{
-		COLL_TYPE_NEUTRAL = 0,	// 通常
-		COLL_TYPE_SEARCH,		// 索敵
-		COLL_TYPE_MAX
-	}COLL_TYPE;
-
 	// 追加値の情報
 	typedef struct
 	{
@@ -111,6 +103,7 @@ public:
 
 		bool bIsTarget;				// ターゲットの有無
 
+		int nAttackPartsNldx;		// 攻撃の部位
 	}Data;
 
 	CPlayer();
@@ -139,6 +132,14 @@ public:
 
 private:
 
+	// 当たり判定の種類
+	typedef enum
+	{
+		COLL_TYPE_NEUTRAL = 0,	// 通常
+		COLL_TYPE_SEARCH,		// 索敵
+		COLL_TYPE_MAX
+	}COLL_TYPE;
+
 	void InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 rot);
 
 	void UpdatePos(void);
@@ -153,13 +154,9 @@ private:
 	void InputMove(void);
 	void InputCombo(void);
 
-	void SetInput(CCommand::INPUT_TYPE inputType);
+	void SetAttack(CCommand::INPUT_TYPE inputType);
 
-	void SetAttackPunch(void);
-	void SetAttackKick(void);
 	void SetAttackFinish(void);
-
-	void SetAttackFinishPunch(void);
 	void SetAttackFinishKick(void);
 
 	void DebugPlayer(void);
