@@ -32,7 +32,6 @@
 #include "attack.h"
 #include "charge.h"
 
-
 //-======================================
 //-	マクロ定義
 //-======================================
@@ -54,6 +53,7 @@ const int AI_COUNT_CHANGE[CEnemyBoss::MOTION_STATE_MAX]
 	0,
 	0,
 	30,
+	0,
 	0,
 	0,
 };
@@ -165,6 +165,10 @@ void CEnemyBoss::Update(void)
 	{
 		// ダメージの吹き飛ばしダメージ
 		UpdateBigDamage();
+	}
+	else if (m_info.state == STATE_STAND_UP)
+	{
+
 	}
 	else
 	{
@@ -367,6 +371,11 @@ void CEnemyBoss::UpdateMotion(void)
 				// 通常状態に変更
 				SetState(MOTION_STATE_NEUTRAL);
 			}
+		}
+		else if (m_info.state == STATE_BIG_DAMAGE)
+		{
+			// 起き上がり状態に変更
+			SetState(MOTION_STATE_STAND_UP);
 		}
 		else
 		{
@@ -769,6 +778,17 @@ void CEnemyBoss::SetState(MOTION_STATE motionState)
 		if (m_infoVisual.pCharacter != nullptr)
 		{
 			m_infoVisual.pCharacter->SetColorAll(D3DXCOLOR(1.0f, 0.0f, 0.0, 1.0f));
+		}
+
+		break;
+
+	case CEnemyBoss::MOTION_STATE_STAND_UP:
+
+		m_info.state = STATE_STAND_UP;
+
+		if (m_infoVisual.pCharacter != nullptr)
+		{
+			m_infoVisual.pCharacter->SetColorAll(D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
 		}
 
 		break;

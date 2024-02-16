@@ -432,7 +432,7 @@ void CPlayer::HitDamage(int nDamage)
 		D3DXCOLOR(1.0f, 0.0, 0.0f, 1.0f),
 		30);
 
-	if (m_data.nLife < 0)
+	if (m_data.nLife <= 0)
 	{
 		if (CManager::GetInstance() != nullptr)
 		{
