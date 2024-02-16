@@ -661,8 +661,21 @@ void CEnemyBoss::SetAttack(int nPartsNum)
 				m_infoAttach.pAttack->InitSet(
 					posBody,
 					PARTS_SIZE,
-					10,
+					0,
 					CMgrColl::TAG_PLAYER);
+
+				switch (m_infoVisual.motionState)
+				{
+				case MOTION_STATE_KICK_3:
+
+					m_infoAttach.pAttack->SetDamage(10);
+				default:
+
+					m_infoAttach.pAttack->SetDamage(5);
+
+					break;
+				}
+				
 			}
 
 		}

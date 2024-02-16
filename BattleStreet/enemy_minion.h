@@ -64,6 +64,7 @@ public:
 		MOTION_STATE_CHARGE_ATTACK,	// 突進攻撃
 		MOTION_STATE_DAMAGE,		// ダメージ
 		MOTION_STATE_BIG_DAMAGE,	// 吹き飛び
+		MOTION_STATE_STAND_UP,		// 起き上がり
 		MOTION_STATE_MAX
 	};
 
@@ -98,9 +99,10 @@ private:
 	enum STATE
 	{
 		STATE_NORMAL = 0,	// 通常状態
-		STATE_DAMAGE,		// ダメージ状態
 		STATE_ATTACK,		// 攻撃状態
+		STATE_DAMAGE,		// ダメージ状態
 		STATE_BIG_DAMAGE,	// 吹き飛び状態
+		STATE_STAND_UP,		// 起き上がり状態
 		STATE_MAX
 	};
 

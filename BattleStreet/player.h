@@ -59,6 +59,9 @@ public:
 		MOTION_STATE_KICK,			// キック
 		MOTION_STATE_PUNCH_FINISH,	// パンチ基本フィニッシュ
 		MOTION_STATE_KICK_FINISH,	// キック基本フィニッシュ
+		MOTION_STATE_DAMAGE,		// ダメージ
+		MOTION_STATE_DAMAGE_BIG,	// 吹き飛び
+		MOTION_STATE_STAND_UP,		// 起き上がり
 		MOTION_STATE_MAX
 	}MOTION_STATE;
 
@@ -68,8 +71,11 @@ public:
 		STATE_NEUTRAL = 0,	// 待機
 		STATE_BATTLE,		// 戦闘中
 		STATE_FINISH,		// フィニッシュ
+		STATE_DAMAGE,		// ダメージ状態
+		STATE_DAMAGE_BIG,	// 吹き飛び状態
 		STATE_MAX
 	}STATE;
+
 
 	// 追加値の情報
 	typedef struct
@@ -115,9 +121,9 @@ public:
 	void Update(void);
 	void Draw(void);
 
-	virtual void HitDamage(int nDamage);
-
 	static CPlayer * Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, CModel::MODEL_TYPE modelType, CMotion::MOTION_TYPE motionType);
+
+	virtual void HitDamage(int nDamage);
 
 	CMotion* GetMotion(void) { return m_pMotion; }
 
@@ -144,6 +150,7 @@ private:
 
 	void UpdatePos(void);
 	void UpdateBattle(void);
+	void UpdateDamage(void);
 	void UpdateRot(void);
 	void UpdatePlusData(void);
 	void UpdateAttack(void);
@@ -154,10 +161,10 @@ private:
 	void InputMove(void);
 	void InputCombo(void);
 
-	void SetAttack(CCommand::INPUT_TYPE inputType);
+	void SetStateDamage(int nDamage);
 
+	void SetAttack(CCommand::INPUT_TYPE inputType);
 	void SetAttackFinish(void);
-	void SetAttackFinishKick(void);
 
 	void DebugPlayer(void);
 

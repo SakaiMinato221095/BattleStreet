@@ -62,6 +62,8 @@ const int STATE_TIME[CPlayer::STATE_MAX]
 	0,
 	180,
 	0,
+	0,
+	0,
 };
 
 const int PARTS_NUM_PUNCH = 4;
@@ -275,6 +277,12 @@ void CPlayer::Update(void)
 		// 攻撃処理
 		UpdateBattle();
 	}
+	else if (m_data.state == STATE_DAMAGE ||
+			 m_data.state == STATE_DAMAGE_BIG)
+	{
+		// ダメージ処理
+		UpdateDamage();
+	}
 
 	// コンボ入力処理
 	InputCombo();
@@ -367,35 +375,6 @@ void CPlayer::Draw(void)
 		m_pCommand->Draw();
 	}
 }
-//-------------------------------------
-//- プレイヤーのキック攻撃設定処理
-//-------------------------------------
-void CPlayer::HitDamage(int nDamage)
-{
-	m_data.nLife -= nDamage;
-
-	// パーティクルの設定
-	SetParticle(
-		8,
-		m_data.pos,
-		D3DXVECTOR3(10.0f, 10.0f, 0.0f),
-		D3DXVECTOR3(10.0f, 10.0f, 0.0f),
-		D3DXCOLOR(1.0f, 0.0, 0.0f, 1.0f),
-		30);
-
-	if (m_data.nLife < 0)
-	{
-		if (CManager::GetInstance() != nullptr)
-		{
-			if (CManager::GetInstance()->GetFade() != nullptr)
-			{
-				// ゲームモード
-				CManager::GetInstance()->GetFade()->SetFade(CScene::MODE_RESULT);
-			}
-		}
-
-	}
-}
 
 //-------------------------------------
 //- プレイヤーの生成処理
@@ -425,6 +404,46 @@ CPlayer *CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, CModel::MODEL_TYPE mo
 
 	// プレイヤーのポインタを返す
 	return pPlayer;
+}
+
+//-------------------------------------
+//- プレイヤーのキック攻撃設定処理
+//-------------------------------------
+void CPlayer::HitDamage(int nDamage)
+{
+	if (m_data.state == STATE_DAMAGE ||
+		m_data.state == STATE_DAMAGE_BIG)
+	{
+		return;
+	}
+
+	// ダメージ設定
+	m_data.nLife -= nDamage;
+	
+	// 状態を設定
+	SetStateDamage(nDamage);
+
+	// パーティクルの設定
+	SetParticle(
+		8,
+		m_data.pos,
+		D3DXVECTOR3(10.0f, 10.0f, 0.0f),
+		D3DXVECTOR3(10.0f, 10.0f, 0.0f),
+		D3DXCOLOR(1.0f, 0.0, 0.0f, 1.0f),
+		30);
+
+	if (m_data.nLife < 0)
+	{
+		if (CManager::GetInstance() != nullptr)
+		{
+			if (CManager::GetInstance()->GetFade() != nullptr)
+			{
+				// ゲームモード
+				CManager::GetInstance()->GetFade()->SetFade(CScene::MODE_RESULT);
+			}
+		}
+
+	}
 }
 
 //-------------------------------------
@@ -520,12 +539,7 @@ void CPlayer::UpdateBattle(void)
 		m_data.rotDest.y = rotTgt;
 	}
 
-	m_data.pos += D3DXVECTOR3(-sinf(m_data.rot.y) * 3.0f, 0.0f, -cosf(m_data.rot.y) * 3.0f);
-
-	// 移動量を減衰
-	m_data.move.x += (0.0f - m_data.move.x) * 0.3f;
-	m_data.move.z += (0.0f - m_data.move.z) * 0.3f;
-
+	m_data.move += D3DXVECTOR3(-sinf(m_data.rot.y) * 1.0f, 0.0f, -cosf(m_data.rot.y) * 1.0f);
 }
 
 //-------------------------------------
@@ -544,6 +558,13 @@ void CPlayer::UpdateRot(void)
 	m_data.rotDest = rotDest;	// 目的の向き
 }
 
+//-------------------------------------
+//- プレイヤーのダメージ更新処理
+//-------------------------------------
+void CPlayer::UpdateDamage(void)
+{
+
+}
 //-------------------------------------
 //- プレイヤーの追加データの更新処理
 //-------------------------------------
@@ -784,6 +805,12 @@ void CPlayer::UpdateMotionNone(void)
 		m_data.state = STATE_NEUTRAL;
 	}
 
+	if (pMotion->GetType() == MOTION_STATE_DAMAGE && m_data.motionState != MOTION_STATE_DAMAGE ||
+		pMotion->GetType() == MOTION_STATE_DAMAGE_BIG && m_data.motionState != MOTION_STATE_DAMAGE_BIG)
+	{
+		m_data.state = STATE_NEUTRAL;
+	}
+
 	if (m_data.motionState != pMotion->GetType())
 	{
 		pMotion->Set(m_data.motionState);
@@ -1007,6 +1034,37 @@ void CPlayer::InputCombo(void)
 			SetAttack(inputType);
 		}
 	}
+}
+
+//-------------------------------------
+//- プレイヤーのダメージ状態設定処理
+//-------------------------------------
+void CPlayer::SetStateDamage(int nDamage)
+{
+	if (nDamage >= 5)
+	{// 大きいダメージ
+
+		// 状態設定
+		m_data.motionState = MOTION_STATE_DAMAGE_BIG;
+		m_data.state = STATE_DAMAGE_BIG;
+
+		if (m_data.bIsTarget)
+		{
+			// 位置情報に移動量を加算
+			float rotTgt = atan2f(m_data.pos.x - m_data.posTgt.x, m_data.pos.z - m_data.posTgt.z);
+
+			m_data.rotDest.y = rotTgt;
+
+			m_data.move -= D3DXVECTOR3(-sinf(m_data.rot.y) * 10.0f, 0.0f, -cosf(m_data.rot.y) * 10.0f);
+		}
+	}
+	else
+	{
+		// 状態設定
+		m_data.motionState = MOTION_STATE_DAMAGE;
+		m_data.state = STATE_DAMAGE;
+	}
+
 }
 
 //-------------------------------------

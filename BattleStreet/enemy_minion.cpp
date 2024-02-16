@@ -77,6 +77,7 @@ const int AI_COUNT_CHANGE[CEnemyMinion::MOTION_STATE_MAX]
 	30,
 	0,
 	0,
+	0,
 };
 
 const char* pTexture[CEnemyMinion::TEX_MAX]
@@ -248,6 +249,10 @@ void CEnemyMinion::Update(void)
 	{
 		// ダメージの吹き飛ばしダメージ
 		UpdateBigDamage();
+	}
+	else if (m_info.state == STATE_STAND_UP)
+	{
+
 	}
 	else
 	{
@@ -435,10 +440,10 @@ void CEnemyMinion::UpdateMotion(void)
 			// 行動設定
 			SetAiActiv();
 		}
-		else if (m_info.state == STATE_ATTACK)
+		else if (m_info.state == STATE_BIG_DAMAGE)
 		{
-			// 通常状態に変更
-			SetState(MOTION_STATE_NEUTRAL);
+			// 起き上がり状態に変更
+			SetState(MOTION_STATE_STAND_UP);
 		}
 		else
 		{
@@ -736,6 +741,18 @@ void CEnemyMinion::SetState(MOTION_STATE motionState)
 		if (m_infoVisual.pCharacter != nullptr)
 		{
 			m_infoVisual.pCharacter->SetColorAll(D3DXCOLOR(1.0f, 0.0f, 0.0, 1.0f));
+		}
+
+		break;
+
+
+	case CEnemyMinion::MOTION_STATE_STAND_UP:
+
+		m_info.state = STATE_STAND_UP;
+
+		if (m_infoVisual.pCharacter != nullptr)
+		{
+			m_infoVisual.pCharacter->SetColorAll(D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
 		}
 
 		break;
