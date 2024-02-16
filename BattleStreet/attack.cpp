@@ -57,8 +57,6 @@ HRESULT CAttack::Init(void)
 			this,
 			m_info.pos + m_info.posPlus,
 			m_info.size);
-
-		m_pColl->SetIsVisualDrawStop(false);
 	}
 	else
 	{
@@ -153,11 +151,15 @@ CAttack* CAttack::Create(void)
 void CAttack::UpdateHit(void)
 {
 	CManager* pManager = CManager::GetInstance();
+	CSound* pSound = CManager::GetInstance()->GetSound();
 
-	if (pManager == nullptr)
+	// Žæ“¾‚Ì—L–³”»’è
+	if (pManager == NULL ||
+		pSound == NULL)
 	{
 		return;
 	}
+
 
 	CMgrColl* pMgrColl = pManager->GetMgrColl();
 
@@ -192,6 +194,11 @@ void CAttack::UpdateHit(void)
 					if (pObj != nullptr)
 					{
 						pObj->HitDamage(m_info.nDamage);
+					}
+
+					if (m_info.bIsSoundUse)
+					{
+						pSound->Play(m_info.soundLabel);
 					}
 				}
 			}

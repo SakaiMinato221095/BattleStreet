@@ -43,27 +43,27 @@ public:
 		LABEL_BGM_GAME,			// ゲームBGM
 		LABEL_BGM_RESULT,		// リザルトBGM
 		
-		LABEL_SE_JUMP,			// ジャンプSE
-		LABEL_SE_DOUBLE_JUMP,	// 二段ジャンプSE
-		LABEL_SE_KAZEDAMA,		// 風だまSE
-		LABEL_SE_GET,			// 取得SE
-		LABEL_SE_SHOT,			// 発射SE
-		LABEL_SE_JEWEL,			// 宝石SE
+		LABEL_SE_PUNCH,			// パンチ
+		LABEL_SE_KICK,			// キック
+		LABEL_SE_PUNCH_FINISH,	// パンチフィニッシュ
+		LABEL_SE_KICK_FINISH,	// キックフィニッシュ
+		LABEL_SE_KNIFE_1,		// ナイフ攻撃1
+		LABEL_SE_KNIFE_2,		// ナイフ攻撃2
 		LABEL_MAX,
 	}LABEL;
 
 	// サウンドの情報
 	SOUNDINFO g_aSoundInfo[LABEL_MAX] =
 	{
-		{ "Data/BGM/Brave.wav",-1 },			// タイトル
-		{ "Data/BGM/LIAR_PARADOX_2.wav",-1 },	// ゲーム
-		{ "Data/BGM/MusMus-BGM-116.wav",-1 },	// リザルト
-		{ "data/SE/jump.wav", 0 },				// ジャンプ
-		{ "data/SE/double_jump.wav", 0 },		// ダブルジャンプ
-		{ "data/SE/kazedama.wav", 0 },			// 風だま
-		{ "data/SE/get.wav", 0 },				// 取得
-		{ "data/SE/shot.wav", 0 },				// 発射
-		{ "data/SE/jewel.wav", 0 },				// 宝石
+		{ "Data/BGM/title.wav",-1 },			// タイトル
+		{ "Data/BGM/game.wav",-1 },				// ゲーム
+		{ "Data/BGM/result.wav",-1 },			// リザルト
+		{ "data/SE/punch.wav", 0 },				// パンチ
+		{ "data/SE/kick.wav", 0 },				// キック
+		{ "data/SE/punchFinish.wav", 0 },		// パンチフィニッシュ
+		{ "data/SE/kickFinish.wav", 0 },		// キックフィニッシュ
+		{ "data/SE/knife1.wav", 0 },			// ナイフ攻撃1
+		{ "data/SE/knife2.wav", 0 },			// ナイフ攻撃2
 	};
 
 	CSound();

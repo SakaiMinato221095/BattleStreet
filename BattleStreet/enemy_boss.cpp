@@ -47,7 +47,7 @@ const D3DXVECTOR3 PARTS_SIZE = D3DXVECTOR3(10.0f, 10.0f, 10.0f);
 
 const int AI_COUNT_CHANGE[CEnemyBoss::MOTION_STATE_MAX]
 {
-	120,
+	90,
 	0,
 	0,
 	0,
@@ -666,9 +666,23 @@ void CEnemyBoss::SetAttack(int nPartsNum)
 
 				switch (m_infoVisual.motionState)
 				{
+				case MOTION_STATE_KICK_1:
+
+					m_infoAttach.pAttack->SetDamage(5);
+
+					m_infoAttach.pAttack->SetSoundLabel(CSound::LABEL_SE_KNIFE_1);
+
+				case MOTION_STATE_KICK_2:
+
+					m_infoAttach.pAttack->SetDamage(7);
+
+					m_infoAttach.pAttack->SetSoundLabel(CSound::LABEL_SE_KNIFE_1);
+
 				case MOTION_STATE_KICK_3:
 
 					m_infoAttach.pAttack->SetDamage(10);
+
+					m_infoAttach.pAttack->SetSoundLabel(CSound::LABEL_SE_KNIFE_2);
 				default:
 
 					m_infoAttach.pAttack->SetDamage(5);

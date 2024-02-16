@@ -527,7 +527,6 @@ void CEnemyMinion::UpdateAttack(void)
 		{
 			if (m_infoVisual.pCharacter->GetModel(m_infoAttach.nPartsIdx) != nullptr)
 			{
-				// Žè‚ÌˆÊ’u
 				posParts = D3DXVECTOR3(
 					m_infoVisual.pCharacter->GetModel(m_infoAttach.nPartsIdx)->GetMtxWorld()._41,
 					m_infoVisual.pCharacter->GetModel(m_infoAttach.nPartsIdx)->GetMtxWorld()._42,
@@ -538,6 +537,9 @@ void CEnemyMinion::UpdateAttack(void)
 		m_infoAttach.pAttack->UpdateData(
 			posParts + PARTS_POS[m_infoAttach.nPartsIdx],
 			m_infoAttach.pAttack->GetSize());
+
+		m_infoAttach.pAttack->SetSoundLabel(CSound::LABEL_SE_KICK);
+
 	}
 }
 

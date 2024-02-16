@@ -21,6 +21,8 @@
 
 #include "mgr_coll.h"
 
+#include "sound.h"
+
 //=======================================
 //=	マクロ定義
 //=======================================
@@ -43,14 +45,17 @@ public:
 	// 情報値
 	typedef struct
 	{
-		D3DXVECTOR3 pos;		// 位置
-		D3DXVECTOR3 size;		// 大きさ
+		D3DXVECTOR3 pos;			// 位置
+		D3DXVECTOR3 size;			// 大きさ
 
-		D3DXVECTOR3 posPlus;	// 追加位置
+		D3DXVECTOR3 posPlus;		// 追加位置
 
-		int nDamage;			// ダメージ
+		int nDamage;				// ダメージ
 
-		CMgrColl::TAG tagTgt;	// ターゲットのタグ
+		CMgrColl::TAG tagTgt;		// ターゲットのタグ
+
+		bool bIsSoundUse;			// サウンドの使用の有無
+		CSound::LABEL soundLabel;	// サウンドの種類
 	}Info;
 
 	CAttack();
@@ -84,6 +89,12 @@ public:
 
 	void SetTagTgt(CMgrColl::TAG tagTgt) { m_info.tagTgt = tagTgt; }
 	CMgrColl::TAG GetTagTgt(void) { return m_info.tagTgt; }
+
+	void SetSoundLabel(CSound::LABEL soundLabel) 
+	{ 
+		m_info.bIsSoundUse = true; 
+		m_info.soundLabel = soundLabel;
+	}
 
 private:
 

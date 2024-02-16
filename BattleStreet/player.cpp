@@ -1072,24 +1072,6 @@ void CPlayer::SetStateDamage(int nDamage)
 //-------------------------------------
 void CPlayer::SetAttack(CCommand::INPUT_TYPE inputType)
 {
-	switch (inputType)
-	{
-	case CCommand::INPUT_TYPE_PUNCH:
-
-		// モーションの設定（パンチ）
-		m_data.motionState = MOTION_STATE_PUNCH;
-		m_data.nAttackPartsNldx = PARTS_NUM_PUNCH;
-
-		break;
-	case CCommand::INPUT_TYPE_KICK:
-
-		// モーションの設定（パンチ）
-		m_data.motionState = MOTION_STATE_KICK;
-		m_data.nAttackPartsNldx = PARTS_NUM_KICK;
-
-		break;
-	}
-
 	if (m_pAttack == nullptr)
 	{
 		m_pAttack = CAttack::Create();
@@ -1109,6 +1091,26 @@ void CPlayer::SetAttack(CCommand::INPUT_TYPE inputType)
 				3,
 				CMgrColl::TAG_ENEMY);
 		}
+	}
+
+	switch (inputType)
+	{
+	case CCommand::INPUT_TYPE_PUNCH:
+
+		// モーションの設定（パンチ）
+		m_data.motionState = MOTION_STATE_PUNCH;
+		m_data.nAttackPartsNldx = PARTS_NUM_PUNCH;
+		m_pAttack->SetSoundLabel(CSound::LABEL_SE_PUNCH);
+
+		break;
+	case CCommand::INPUT_TYPE_KICK:
+
+		// モーションの設定（キック）
+		m_data.motionState = MOTION_STATE_KICK;
+		m_data.nAttackPartsNldx = PARTS_NUM_KICK;
+		m_pAttack->SetSoundLabel(CSound::LABEL_SE_KICK);
+
+		break;
 	}
 }
 
@@ -1132,6 +1134,9 @@ void CPlayer::SetAttackFinish(void)
 
 			// パーツ位置
 			m_data.nAttackPartsNldx = PARTS_NUM_PUNCH_FINISH;
+
+			m_pAttack->SetSoundLabel(CSound::LABEL_SE_PUNCH_FINISH);
+
 		}
 
 		break;
@@ -1147,6 +1152,9 @@ void CPlayer::SetAttackFinish(void)
 
 			// パーツ位置
 			m_data.nAttackPartsNldx = PARTS_NUM_KICK_FINISH;
+
+			m_pAttack->SetSoundLabel(CSound::LABEL_SE_KICK_FINISH);
+
 		}
 
 		break;

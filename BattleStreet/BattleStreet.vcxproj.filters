@@ -102,9 +102,6 @@
     <ClCompile Include="skybox.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="sound.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="timer.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -240,6 +237,9 @@
     <ClCompile Include="billboard_gage.cpp">
       <Filter>ObjBillboard</Filter>
     </ClCompile>
+    <ClCompile Include="sound.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="debugproc.h">
@@ -264,9 +264,6 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="skybox.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="sound.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="timer.h">
@@ -403,6 +400,9 @@
     </ClInclude>
     <ClInclude Include="billboard_gage.h">
       <Filter>ObjBillboard</Filter>
+    </ClInclude>
+    <ClInclude Include="sound.h">
+      <Filter>System</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
