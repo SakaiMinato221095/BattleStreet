@@ -423,14 +423,39 @@ void CPlayer::HitDamage(int nDamage)
 	// 状態を設定
 	SetStateDamage(nDamage);
 
-	// パーティクルの設定
-	SetParticle(
-		8,
-		m_data.pos,
-		D3DXVECTOR3(10.0f, 10.0f, 0.0f),
-		D3DXVECTOR3(10.0f, 10.0f, 0.0f),
-		D3DXCOLOR(1.0f, 0.0, 0.0f, 1.0f),
-		30);
+	if (nDamage >= 10)
+	{
+		// パーティクルの設定
+		SetParticle(
+			24,
+			m_data.pos + D3DXVECTOR3(0.0f, m_data.size.y * 0.25f, 0.0f),
+			D3DXVECTOR3(30.0f, 30.0f, 0.0f),
+			D3DXVECTOR3(50.0f, 50.0f, 0.0f),
+			D3DXCOLOR(1.0f, 0.1f, 0.1f, 1.0f),
+			45);
+	}
+	else if (nDamage >= 7)
+	{
+		// パーティクルの設定
+		SetParticle(
+			16,
+			m_data.pos + D3DXVECTOR3(0.0f, m_data.size.y * 0.25f, 0.0f),
+			D3DXVECTOR3(30.0f, 30.0f, 0.0f),
+			D3DXVECTOR3(30.0f, 30.0f, 0.0f),
+			D3DXCOLOR(1.0f, 0.1f, 0.1f, 1.0f),
+			45);
+	}
+	else
+	{
+		// パーティクルの設定
+		SetParticle(
+			8,
+			m_data.pos,
+			D3DXVECTOR3(10.0f, 10.0f, 0.0f),
+			D3DXVECTOR3(10.0f, 10.0f, 0.0f),
+			D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f),
+			30);
+	}
 
 	if (m_data.nLife <= 0)
 	{
@@ -1041,30 +1066,9 @@ void CPlayer::InputCombo(void)
 //-------------------------------------
 void CPlayer::SetStateDamage(int nDamage)
 {
-	if (nDamage >= 5)
-	{// 大きいダメージ
-
-		// 状態設定
-		m_data.motionState = MOTION_STATE_DAMAGE_BIG;
-		m_data.state = STATE_DAMAGE_BIG;
-
-		if (m_data.bIsTarget)
-		{
-			// 位置情報に移動量を加算
-			float rotTgt = atan2f(m_data.pos.x - m_data.posTgt.x, m_data.pos.z - m_data.posTgt.z);
-
-			m_data.rotDest.y = rotTgt;
-
-			m_data.move -= D3DXVECTOR3(-sinf(m_data.rot.y) * 10.0f, 0.0f, -cosf(m_data.rot.y) * 10.0f);
-		}
-	}
-	else
-	{
-		// 状態設定
-		m_data.motionState = MOTION_STATE_DAMAGE;
-		m_data.state = STATE_DAMAGE;
-	}
-
+	// 状態設定
+	m_data.motionState = MOTION_STATE_DAMAGE;
+	m_data.state = STATE_DAMAGE;
 }
 
 //-------------------------------------

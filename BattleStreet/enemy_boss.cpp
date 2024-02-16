@@ -259,14 +259,46 @@ void CEnemyBoss::HitDamage(int nDamage)
 	{
 
 	}
+	else if (nDamage >= 7)
+	{
+		// パーティクルの設定
+		SetParticle(
+			24,
+			GetPos() + D3DXVECTOR3(0.0f, GetSize().y * 0.25f, 0.0f),
+			D3DXVECTOR3(30.0f, 30.0f, 0.0f),
+			D3DXVECTOR3(30.0f, 30.0f, 0.0f),
+			D3DXCOLOR(0.3f, 0.1f, 0.1f, 1.0f),
+			60);
+
+		// 状態設定
+		SetState(MOTION_STATE_BIG_DAMAGE);
+	}
 	else if (nDamage >= 5)
 	{// 大きいダメージ
+
+		// パーティクルの設定
+		SetParticle(
+			16,
+			GetPos() + D3DXVECTOR3(0.0f, GetSize().y * 0.25f, 0.0f),
+			D3DXVECTOR3(30.0f, 30.0f, 0.0f),
+			D3DXVECTOR3(15.0f, 15.0f, 0.0f),
+			D3DXCOLOR(0.3f, 0.1f, 0.1f, 1.0f),
+			45);
 
 		// 状態設定
 		SetState(MOTION_STATE_BIG_DAMAGE);
 	}
 	else
 	{
+		// パーティクルの設定
+		SetParticle(
+			8,
+			GetPos() + D3DXVECTOR3(0.0f, GetSize().y * 0.25f, 0.0f),
+			D3DXVECTOR3(15.0f, 15.0f, 0.0f),
+			D3DXVECTOR3(7.5f, 7.5f, 0.0f),
+			D3DXCOLOR(0.3f, 0.1f, 0.1f, 1.0f),
+			45);
+
 		// 状態設定
 		SetState(MOTION_STATE_DAMAGE);
 	}
@@ -274,6 +306,15 @@ void CEnemyBoss::HitDamage(int nDamage)
 	// 死亡判定処理
 	if (Dead())
 	{
+		// パーティクルの設定
+		SetParticle(
+			24,
+			GetPos() + D3DXVECTOR3(0.0f, GetSize().y * 0.25f, 0.0f),
+			D3DXVECTOR3(30.0f, 30.0f, 0.0f),
+			D3DXVECTOR3(45.0f, 45.0f, 0.0f),
+			D3DXCOLOR(0.1f, 0.0f, 0.0f, 1.0f),
+			90);
+
 		// 敵の終了処理
 		Uninit();
 	}
@@ -683,7 +724,7 @@ void CEnemyBoss::SetAttack(int nPartsNum)
 
 				case MOTION_STATE_KICK_2:
 
-					m_infoAttach.pAttack->SetDamage(7);
+					m_infoAttach.pAttack->SetDamage(5);
 
 					m_infoAttach.pAttack->SetSoundLabel(CSound::LABEL_SE_KNIFE_1);
 
@@ -694,7 +735,7 @@ void CEnemyBoss::SetAttack(int nPartsNum)
 					m_infoAttach.pAttack->SetSoundLabel(CSound::LABEL_SE_KNIFE_2);
 				default:
 
-					m_infoAttach.pAttack->SetDamage(5);
+					m_infoAttach.pAttack->SetDamage(3);
 
 					break;
 				}

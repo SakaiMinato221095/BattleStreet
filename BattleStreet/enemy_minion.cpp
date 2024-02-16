@@ -338,16 +338,48 @@ void CEnemyMinion::HitDamage(int nDamage)
 	// 状態を設定
 	if (m_info.state == STATE_ATTACK)
 	{
-		
+
+	}
+	else if (nDamage >= 7)
+	{
+		// パーティクルの設定
+		SetParticle(
+			24,
+			GetPos() + D3DXVECTOR3(0.0f, GetSize().y * 0.25f, 0.0f),
+			D3DXVECTOR3(30.0f, 30.0f, 0.0f),
+			D3DXVECTOR3(30.0f, 30.0f, 0.0f),
+			D3DXCOLOR(1.0f, 0.4f, 0.4f, 1.0f),
+			60);
+
+		// 状態設定
+		SetState(MOTION_STATE_BIG_DAMAGE);
 	}
 	else if (nDamage >= 5)
 	{// 大きいダメージ
+
+		// パーティクルの設定
+		SetParticle(
+			16,
+			GetPos() + D3DXVECTOR3(0.0f, GetSize().y * 0.25f, 0.0f),
+			D3DXVECTOR3(30.0f, 30.0f, 0.0f),
+			D3DXVECTOR3(15.0f, 15.0f, 0.0f),
+			D3DXCOLOR(1.0f, 0.4f, 0.4f, 1.0f),
+			45);
 
 		// 状態設定
 		SetState(MOTION_STATE_BIG_DAMAGE);
 	}
 	else
 	{
+		// パーティクルの設定
+		SetParticle(
+			8,
+			GetPos() + D3DXVECTOR3(0.0f,GetSize().y * 0.25f,0.0f),
+			D3DXVECTOR3(15.0f, 15.0f, 0.0f),
+			D3DXVECTOR3(7.5f, 7.5f, 0.0f),
+			D3DXCOLOR(1.0f, 0.4f, 0.4f, 1.0f),
+			45);
+
 		// 状態設定
 		SetState(MOTION_STATE_DAMAGE);
 	}
@@ -355,6 +387,15 @@ void CEnemyMinion::HitDamage(int nDamage)
 	// 死亡判定処理
 	if (Dead())
 	{
+		// パーティクルの設定
+		SetParticle(
+			24,
+			GetPos() + D3DXVECTOR3(0.0f, GetSize().y * 0.25f, 0.0f),
+			D3DXVECTOR3(30.0f, 30.0f, 0.0f),
+			D3DXVECTOR3(45.0f, 45.0f, 0.0f),
+			D3DXCOLOR(1.0f, 0.1f, 0.1f, 1.0f),
+			90);
+
 		// 敵の終了処理
 		Uninit();
 	}
@@ -681,7 +722,7 @@ void CEnemyMinion::SetAttack(int nPartsNum)
 				m_infoAttach.pAttack->InitSet(
 					posBody + PARTS_POS[nPartsNum],
 					PARTS_SIZE[nPartsNum],
-					10,
+					7,
 					CMgrColl::TAG_PLAYER);
 			}
 

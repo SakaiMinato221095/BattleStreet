@@ -515,7 +515,7 @@ void CMotion::UpdateNormal(void)
 	m_nCounter++;
 
 	// キーを進める判定
-	if (m_nCounter % m_aInfo[m_nType].aKeyInfo[m_nKey].nFrame == 0)
+	if (m_nCounter % m_aInfo[m_nType].aKeyInfo[m_nKey].nFrame <= 0)
 	{// カウンターと再生フレームが同じ
 
 		// カウンターを初期化

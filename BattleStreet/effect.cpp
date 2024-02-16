@@ -200,6 +200,9 @@ void CEffect::Set(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 move, D3DXCOLOR
 	SetSize(size);
 	SetColor(color);
 	
+	m_data.sizeHold = size;
+	m_data.colorHold = color;
+
 	m_data.move = move;
 	m_data.nLife = nLife;
 	m_data.bIsZTestStop = bZTest;
@@ -211,7 +214,7 @@ void CEffect::Set(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 move, D3DXCOLOR
 CEffect *CEffect::Create(TEX tex)
 {
 	// エフェクトのポインタを宣言
-	CEffect *pCEffect = DBG_NEW CEffect(3);
+	CEffect *pCEffect = DBG_NEW CEffect(6);
 
 	// 生成の成功の有無を判定
 	if (pCEffect != NULL)
@@ -251,15 +254,18 @@ bool CEffect::Sub(void)
 {	
 	D3DXVECTOR3 size = GetSize();
 	D3DXCOLOR color = GetColor();
-
+	
 	// 大きさを減らす
 	size.x -= (m_data.sizeHold.x / m_data.nLife);
-	size.z -= (m_data.sizeHold.z / m_data.nLife);
+	size.y -= (m_data.sizeHold.y / m_data.nLife);
 	SetSize(size);
 
 	// α値を減らす
 	color.a -= (m_data.colorHold.a / m_data.nLife);
 	SetColor(color);
+
+	// 頂点情報更新処理
+	SetVtx();
 
 	// 体力を減らす
 	m_data.nLife--;
