@@ -161,6 +161,7 @@ private:
 	void InputMove(void);
 	void InputCombo(void);
 
+	void SetTarget(void);
 	void SetStateDamage(int nDamage);
 
 	void SetAttack(CCommand::INPUT_TYPE inputType);

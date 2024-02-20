@@ -564,7 +564,14 @@ void CPlayer::UpdateBattle(void)
 		m_data.rotDest.y = rotTgt;
 	}
 
-	m_data.move += D3DXVECTOR3(-sinf(m_data.rot.y) * 1.0f, 0.0f, -cosf(m_data.rot.y) * 1.0f);
+
+	if (m_pMotion->GetKey() >= 2 && m_data.state == STATE_FINISH)
+	{
+	}
+	else
+	{
+		m_data.move += D3DXVECTOR3(-sinf(m_data.rot.y) * 1.0f, 0.0f, -cosf(m_data.rot.y) * 1.0f);
+	}
 }
 
 //-------------------------------------
@@ -746,37 +753,11 @@ void CPlayer::UpdateCollision(void)
 						D3DXVECTOR3(100.0f, 50.0f, 200.0f));
 				}
 
-				// プレイヤーの当たり判定
-				if (m_apColl[nCntColl]->Hit(CMgrColl::TAG_ENEMY, CMgrColl::EVENT_TYPE_PRESS))
-				{
-					float fLengthNear = 100000.0f;
-					int nHitNldxMaxTemp = m_apColl[nCntColl]->GetData().nHitNldxMaxTemp;
+				// 変数宣言（情報取得）
+				CMotion* pMotion = GetMotion();		// モーション
 
-					for (int nCntLength = 0; nCntLength < nHitNldxMaxTemp; nCntLength++)
-					{
-						float fLength = m_apColl[nCntColl]->GetData().hitDataTemp[nCntLength].fLength;
-
-						if (fLength < fLengthNear)
-						{
-							fLengthNear = fLength;
-
-							int hitNldx = m_apColl[nCntColl]->GetData().hitDataTemp[nCntLength].nNldx;
-
-							CColl* pCollPair = pMgrColl->GetColl(hitNldx);
-
-							if (pCollPair != nullptr)
-							{
-								m_data.posTgt = pCollPair->GetData().pos;
-
-								m_data.bIsTarget = true;
-							}
-						}
-					}
-				}
-				else
-				{
-					m_data.bIsTarget = false;
-				}
+				// ターゲット設定処理
+				SetTarget();
 
 				break;
 			}
@@ -1058,6 +1039,58 @@ void CPlayer::InputCombo(void)
 			// 入力の設定処理
 			SetAttack(inputType);
 		}
+	}
+}
+
+//-------------------------------------
+//- プレイヤーのターゲット設定処理
+//-------------------------------------
+void CPlayer::SetTarget(void)
+{
+	CManager* pManager = CManager::GetInstance();
+
+	if (pManager == nullptr)
+	{
+		return;
+	}
+
+	CMgrColl* pMgrColl = pManager->GetMgrColl();
+
+	if (pMgrColl == nullptr)
+	{
+		return;
+	}
+
+	// プレイヤーの当たり判定
+	if (m_apColl[COLL_TYPE_SEARCH]->Hit(CMgrColl::TAG_ENEMY, CMgrColl::EVENT_TYPE_PRESS))
+	{
+		float fLengthNear = 100000.0f;
+		int nHitNldxMaxTemp = m_apColl[COLL_TYPE_SEARCH]->GetData().nHitNldxMaxTemp;
+
+		for (int nCntLength = 0; nCntLength < nHitNldxMaxTemp; nCntLength++)
+		{
+			float fLength = m_apColl[COLL_TYPE_SEARCH]->GetData().hitDataTemp[nCntLength].fLength;
+
+			if (fLength < fLengthNear)
+			{
+				fLengthNear = fLength;
+
+				int hitNldx = m_apColl[COLL_TYPE_SEARCH]->GetData().hitDataTemp[nCntLength].nNldx;
+
+				CColl* pCollPair = pMgrColl->GetColl(hitNldx);
+
+				if (pCollPair != nullptr)
+				{
+					m_data.posTgt = pCollPair->GetData().pos;
+
+					m_data.bIsTarget = true;
+				}
+			}
+		}
+	}
+	else
+	{
+		m_data.bIsTarget = false;
 	}
 }
 
