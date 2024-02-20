@@ -43,13 +43,6 @@
 //=	マクロ定義
 //=======================================
 
-const D3DXVECTOR3 SPWAN_WALL_POS[CPhaseManager::TYPE_PHASE_COMP] =
-{
-	D3DXVECTOR3(0.0f, 100.0f, 500.0f),
-	D3DXVECTOR3(0.0f, 100.0f, 3000.0f),
-	D3DXVECTOR3(0.0f, 100.0f, 5500.0f),
-};
-
 //=======================================
 //=	静的変数宣言
 //=======================================
@@ -100,6 +93,11 @@ HRESULT CGame::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		{// 失敗時
 
 			return E_FAIL;
+		}
+		else
+		{
+			// 出現壁の生成
+			m_infoPoint.pPhaseManager->SetSpwanWall();
 		}
 	}
 
@@ -208,25 +206,7 @@ HRESULT CGame::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 	CMapManager::GameLoad();
 
-	for (int nCntSpnWall = 0; nCntSpnWall < CPhaseManager::TYPE_PHASE_COMP; nCntSpnWall++)
-	{
-		// 出現壁の生成
-		CSpwanWall* pSpwanWall = CSpwanWall::Create();
 
-		if (pSpwanWall != nullptr)
-		{
-			// フェーズ設定処理
-			pSpwanWall->SetTypePhase((CPhaseManager::TYPE_PHASE)nCntSpnWall);
-
-			// 設定処理
-			pSpwanWall->InitSet(
-				SPWAN_WALL_POS[nCntSpnWall],
-				D3DXVECTOR3(1300.0f, 25.0f, 0.0f),
-				D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-				D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f),
-				D3DXVECTOR2(5.0f, 1.0f));
-		}
-	}
 
 	if (m_infoPoint.pPlayer == NULL)
 	{

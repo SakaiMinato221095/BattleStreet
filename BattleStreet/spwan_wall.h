@@ -71,6 +71,8 @@ public:
 
 	static CSpwanWall* Create(void);
 
+	void SetWallType(void);
+
 	void SetPos(D3DXVECTOR3 pos) { m_info.pos = pos; }
 	D3DXVECTOR3 GetPos(void) { return m_info.pos; }
 
@@ -91,7 +93,6 @@ public:
 
 private:
 
-	void UpdateType(void);
 	void SetPhase(void);
 	void SpwanEnemyPhaseOne(void);
 	void SpwanEnemyPhaseTwo(void);

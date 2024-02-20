@@ -165,9 +165,6 @@ void CSpwanWall::Update(void)
 			GetPos(),
 			GetSize());
 	}
-
-	// 種類の更新処理
-	UpdateType();
 }
 
 //-------------------------------------
@@ -186,12 +183,16 @@ void CSpwanWall::Hit(void)
 	// 敵の生成処理
 	SetPhase();
 
-	// ターゲット数の設定処理
+	// フェーズ管理の取得
 	CPhaseManager* pPhaseManager = CGame::GetPhaseManager();
 
 	if (pPhaseManager != nullptr)
 	{
+		// ターゲット数を設定
 		pPhaseManager->SetTargetCompNum(m_info.nNumTarget);
+
+		// フェーズ管理の自身のポインタ開放処理
+		pPhaseManager->ReleaseSpwanWall(this);
 	}
 	
 	// 終了処理
@@ -214,20 +215,22 @@ void CSpwanWall::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 rot, D3D
 		// 壁の生成・設定処理
 		m_infoVisual.pObj3dWall = CObj3dWall::Create(CObj3dWall::TEX_NULL);
 		m_infoVisual.pObj3dWall->InitSet(m_info.pos, m_info.size, m_info.rot, m_info.color, m_info.texPos);
+
+		// 壁の種類設定処理
+		SetWallType();
 	}
 
 	if (m_infoAttach.pColl == nullptr)
 	{
 		// 当たり判定設定
 		m_infoAttach.pColl = CColl::Create(
-			CMgrColl::TAG_SPAWN_ENEMY_WALL,
+			CMgrColl::TAG_WALL_Z,
 			this,
 			m_info.pos,
 			m_info.size);
 	}
 
-	// 種類の更新
-	UpdateType();
+
 }
 
 //-------------------------------------
@@ -263,7 +266,7 @@ CSpwanWall* CSpwanWall::Create(void)
 //-------------------------------------
 //- 種類設定処理
 //-------------------------------------
-void CSpwanWall::UpdateType(void)
+void CSpwanWall::SetWallType(void)
 {
 	// フェーズ管理を取得
 	CPhaseManager* pPhaseManager = CGame::GetPhaseManager();
@@ -277,7 +280,7 @@ void CSpwanWall::UpdateType(void)
 				m_infoVisual.pObj3dWall->BindTexture(m_nTextureNldx[TEX_SPWAN_000]);
 
 				CColl::Data data = m_infoVisual.pObj3dWall->GetColl()->GetData();
-				data.tag = CMgrColl::TAG_NONE;
+				data.tag = CMgrColl::TAG_SPAWN_ENEMY_WALL;
 				m_infoVisual.pObj3dWall->GetColl()->SetData(data);
 			}
 		}

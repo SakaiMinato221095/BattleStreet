@@ -19,6 +19,8 @@
 
 #include "helper_sakai.h"
 
+#include "spwan_wall.h"
+
 //-======================================
 //-	マクロ定義
 //-======================================
@@ -26,6 +28,13 @@
 //=======================================
 //=	コンスト定義
 //=======================================
+
+const D3DXVECTOR3 SPWAN_WALL_POS[CPhaseManager::TYPE_PHASE_MAX] =
+{
+	D3DXVECTOR3(0.0f, 100.0f, 500.0f),
+	D3DXVECTOR3(0.0f, 100.0f, 3000.0f),
+	D3DXVECTOR3(0.0f, 100.0f, 5500.0f),
+};
 
 //-======================================
 //-	静的変数宣言
@@ -96,31 +105,6 @@ void CPhaseManager::Draw(void)
 }
 
 //-------------------------------------
-//- 敵死亡数加算の設定
-//-------------------------------------
-void CPhaseManager::AddDeadEnemy(void)
-{
-	// ターゲット数を加算
-	m_info.nTargetCompCnt++;
-
-	if (m_info.nTargetCompCnt >= m_info.nTargetCompNum)
-	{
-		// ターゲットカウントを初期化
-		m_info.nTargetCompCnt = 0;
-
-		// 加算処理
-		m_info.typePhaseNew = (TYPE_PHASE)HelperSakai::AddLimitStop(m_info.typePhaseNew, 1, TYPE_PHASE_ONE, TYPE_PHASE_COMP);
-
-		// コンプリート状況を確認
-		if (m_info.typePhaseNew >= TYPE_PHASE_COMP)
-		{
-			// コンプリートを設定
-			SetComp();
-		}
-	}
-}
-
-//-------------------------------------
 //- 生成処理
 //-------------------------------------
 CPhaseManager* CPhaseManager::Create(void)
@@ -148,6 +132,95 @@ CPhaseManager* CPhaseManager::Create(void)
 
 	// ポインタを返す
 	return pCPhaseManager;
+}
+
+//-------------------------------------
+//- 敵死亡数加算の設定
+//-------------------------------------
+void CPhaseManager::AddDeadEnemy(void)
+{
+	// ターゲット数を加算
+	m_info.nTargetCompCnt++;
+
+	if (m_info.nTargetCompCnt >= m_info.nTargetCompNum)
+	{
+		// ターゲットカウントを初期化
+		m_info.nTargetCompCnt = 0;
+
+		// 加算処理
+		m_info.typePhaseNew = (TYPE_PHASE)HelperSakai::AddLimitStop(m_info.typePhaseNew, 1, TYPE_PHASE_ONE, TYPE_PHASE_MAX);
+
+		// 出現壁の設定処理
+		ChangeSpwanWall();
+
+		// コンプリート状況を確認
+		if (m_info.typePhaseNew >= TYPE_PHASE_MAX)
+		{
+			// コンプリートを設定
+			SetComp();
+		}
+	}
+}
+
+//-------------------------------------
+//- 出現壁の生成処理
+//-------------------------------------
+void CPhaseManager::SetSpwanWall(void)
+{
+	for (int nCntSpnWall = 0; nCntSpnWall < TYPE_PHASE_MAX; nCntSpnWall++)
+	{
+		if (m_info.apSpwanWall[nCntSpnWall] == nullptr)
+		{
+			// 出現壁の生成
+			m_info.apSpwanWall[nCntSpnWall] = CSpwanWall::Create();
+
+			if (m_info.apSpwanWall[nCntSpnWall] != nullptr)
+			{
+				// フェーズ設定処理
+				m_info.apSpwanWall[nCntSpnWall]->SetTypePhase((CPhaseManager::TYPE_PHASE)nCntSpnWall);
+
+				// 設定処理
+				m_info.apSpwanWall[nCntSpnWall]->InitSet(
+					SPWAN_WALL_POS[nCntSpnWall],
+					D3DXVECTOR3(1300.0f, 25.0f, 0.0f),
+					D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+					D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f),
+					D3DXVECTOR2(5.0f, 1.0f));
+			}
+		}
+	}
+}
+
+//-------------------------------------
+//- 出現壁の開放処理
+//-------------------------------------
+void CPhaseManager::ReleaseSpwanWall(CSpwanWall* spwanWall)
+{
+	for (int nCntSpnWall = 0; nCntSpnWall < TYPE_PHASE_MAX; nCntSpnWall++)
+	{
+		if (m_info.apSpwanWall[nCntSpnWall] != nullptr)
+		{
+			if (m_info.apSpwanWall[nCntSpnWall] == spwanWall)
+			{
+				m_info.apSpwanWall[nCntSpnWall] = nullptr;
+			}
+		}
+	}
+}
+
+//-------------------------------------
+//- 出現壁の壁設定処理
+//-------------------------------------
+void CPhaseManager::ChangeSpwanWall(void)
+{
+	for (int nCntSpnWall = 0; nCntSpnWall < TYPE_PHASE_MAX; nCntSpnWall++)
+	{
+		if (m_info.apSpwanWall[nCntSpnWall] != nullptr)
+		{
+			// 出現壁の種類設定処理
+			m_info.apSpwanWall[nCntSpnWall]->SetWallType();
+		}
+	}
 }
 
 //-------------------------------------

@@ -101,6 +101,8 @@ public:
 	void UpdateData(D3DXVECTOR3 pos, D3DXVECTOR3 size) { m_data.pos = pos, m_data.size = size, SetDataVisual(pos, size); }
 	void UpdateData(D3DXVECTOR3 pos, D3DXVECTOR3 posOld, D3DXVECTOR3 size) { m_data.pos = pos, m_data.posOld = posOld, m_data.size = size, SetDataVisual(pos, size); }
 
+	void SetTag(CMgrColl::TAG tag) { m_data.tag = tag; }
+
 	void SetData(Data data) { m_data = data; }
 	Data GetData(void) { return m_data; }
 
