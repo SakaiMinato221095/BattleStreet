@@ -38,6 +38,8 @@ public:
 	void Update(void);
 	void Draw(void);
 
+	static CRenderer* Create(HWND hWnd, BOOL bWindow);
+
 	void SetAlphaBlend(bool bUse);
 	void SetZTest(bool bUse);
 	void SetAlphaTest(bool bUse);

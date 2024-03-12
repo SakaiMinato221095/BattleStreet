@@ -24,10 +24,13 @@ public:	// 誰でもアクセス可能
 	CDebugProc();	// コンストラクタ
 	~CDebugProc();	// デストラクタ
 
-	void Init(void);
+	HRESULT Init(void);
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
+
+	static CDebugProc* Create(void);
+
 	void Print(const char *fmt, ...);
 
 private:	// 自分だけがアクセス可能

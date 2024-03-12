@@ -44,6 +44,11 @@ public:
 	CManagerModel();
 	~CManagerModel();
 
+	HRESULT Init(void);
+	void Uninit(void);
+
+	static CManagerModel* Create(void);
+
 	HRESULT Load(HWND hWnd);
 	void Unload(void);
 

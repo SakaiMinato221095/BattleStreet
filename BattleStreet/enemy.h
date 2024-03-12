@@ -81,6 +81,7 @@ public:
 	void SetHit(bool bHit) { m_data.bHit = bHit; }
 	bool GetHit(void) { return m_data.bHit; }
 
+	D3DXVECTOR3 GetTargetPos(void) { return m_infoTarger.pos; }
 	D3DXVECTOR3 GetTargetRot(void) { return m_infoTarger.rot; }
 	float GetTargetLength(void) { return m_infoTarger.fLength; }
 
@@ -118,6 +119,7 @@ private:
 	// ターゲットとの情報
 	struct InfoTarget
 	{
+		D3DXVECTOR3 pos;	// ターゲットの位置
 		D3DXVECTOR3 rot;	// ターゲットへの向き
 		float fLength;		// 距離
 	};

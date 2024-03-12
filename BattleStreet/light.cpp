@@ -114,3 +114,30 @@ void CLight::Update(void)
 
 }
 
+//-------------------------------------
+//-	ライトの生成処理
+//-------------------------------------
+CLight* CLight::Create(void)
+{
+	// 生成処理
+	CLight* pInstance = DBG_NEW CLight;
+
+	if (pInstance != nullptr)
+	{
+		// 初期化処理
+		if (FAILED(pInstance->Init()))
+		{// 失敗時
+
+			return nullptr;
+		}
+	}
+	else if (pInstance == nullptr)
+	{// 失敗時
+
+		return nullptr;
+	}
+
+	// ポインタを返す
+	return pInstance;
+}
+

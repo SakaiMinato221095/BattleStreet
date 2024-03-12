@@ -61,6 +61,8 @@ public:
 	void Uninit(void);
 	void Update(void);
 
+	static CCamera* Create(void);
+	
 	void SetCamera(void);
 
 	void SetMode(CCamera::MODE mode);

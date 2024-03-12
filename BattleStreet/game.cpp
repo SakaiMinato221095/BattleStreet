@@ -39,6 +39,10 @@
 
 #include "map_manager.h"
 
+#include "test.h"
+
+#include "record.h"
+
 //=======================================
 //=	マクロ定義
 //=======================================
@@ -204,9 +208,12 @@ HRESULT CGame::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		}
 	}
 
-	CMapManager::GameLoad();
-
-
+	CMapManager* pMapManager = CMapManager::GetInstance();
+	
+	if (pMapManager != nullptr)
+	{
+		pMapManager->Load(CMapObjectX::TXT_GAME_000);
+	}
 
 	if (m_infoPoint.pPlayer == NULL)
 	{
@@ -218,6 +225,22 @@ HRESULT CGame::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 			CMotion::MOTION_TYPE_PLAYER);		// モーション
 	}
 
+	CRecord* pRecord = CRecord::GetInstance();
+
+	if (pRecord == nullptr)
+	{
+		pRecord = CRecord::Create();
+
+		if (pRecord == nullptr)
+		{
+			return E_FAIL;
+		}
+	}
+	else
+	{
+		return E_FAIL;
+	}
+	
 	// ゲームの再生
 	pSound->Play(CSound::LABEL_BGM_GAME);
 

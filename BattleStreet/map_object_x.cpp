@@ -22,15 +22,17 @@
 //= コンスト定義
 //=======================================
 
-// 通常敵のテキストのコンスト定義
+// テキストのコンスト定義
 const char* pTxtObjectX[] =
 {
-	"data\\TXT\\Object\\ObjectNone_000.txt"		// オブジェクト_000のテキスト
+	"data\\TXT\\Object\\ObjectX_Game000.txt"		// ゲーム000のテキスト
 };
 
 //-======================================
 //-	静的変数宣言
 //-======================================
+
+CMapObjectX* CMapObjectX::m_pInstance = nullptr;	// 自身のポインタ
 
 //-------------------------------------
 //-	コンストラクタ
@@ -48,7 +50,53 @@ CMapObjectX::~CMapObjectX()
 }
 
 //-------------------------------------
-//- オブジェクトファイルの書き出し処理
+//-	初期化処理
+//-------------------------------------
+HRESULT CMapObjectX::Init(void)
+{
+	return S_OK;
+}
+
+//-------------------------------------
+//-	終了処理
+//-------------------------------------
+void CMapObjectX::Uninit(void)
+{
+	m_pInstance = nullptr;
+}
+
+//-------------------------------------
+//- 生成処理
+//-------------------------------------
+CMapObjectX* CMapObjectX::Create(void)
+{
+	// 生成処理
+	CMapObjectX* pInstance = DBG_NEW CMapObjectX;
+
+	if (pInstance != nullptr)
+	{
+		// 初期化処理
+		if (FAILED(pInstance->Init()))
+		{// 失敗時
+
+			return nullptr;
+		}
+
+		// 自身のポインタを設定
+		m_pInstance = pInstance;
+	}
+	else if (pInstance == nullptr)
+	{// 失敗時
+
+		return nullptr;
+	}
+
+	// ポインタを返す
+	return pInstance;
+}
+
+//-------------------------------------
+//- 書き出し処理
 //-------------------------------------
 void CMapObjectX::Save(CMapObjectX::TXT txtType)
 {
@@ -56,15 +104,12 @@ void CMapObjectX::Save(CMapObjectX::TXT txtType)
 }
 
 //-------------------------------------
-//- オブジェクトファイルの読み込み処理
+//- 読み込み生成処理
 //-------------------------------------
 void CMapObjectX::Load(CMapObjectX::TXT txtType)
 {
-	//変数宣言
-	FILE* pFile;	// ファイルのポインタ
-
 	// ファイルの情報を代入
-	pFile = fopen(pTxtObjectX[txtType], "r");
+	FILE* pFile = fopen(pTxtObjectX[txtType], "r");
 
 	// ファイルの有無を判定
 	if (pFile != NULL)
@@ -173,3 +218,4 @@ void CMapObjectX::Load(CMapObjectX::TXT txtType)
 		fclose(pFile);
 	}
 }
+

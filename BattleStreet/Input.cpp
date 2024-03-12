@@ -177,6 +177,33 @@ void CInputKeyboard::Update(void)
 }
 
 //=====================================
+//= キーボードの生成処理
+//=====================================
+CInputKeyboard* CInputKeyboard::Create(HINSTANCE hInstance, HWND hWnd)
+{
+	// 生成処理
+	CInputKeyboard* pInstance = DBG_NEW CInputKeyboard;
+
+	if (pInstance != nullptr)
+	{
+		// 初期化処理
+		if (FAILED(pInstance->Init(hInstance, hWnd)))
+		{// 失敗時
+
+			return nullptr;
+		}
+	}
+	else if (pInstance == nullptr)
+	{// 失敗時
+
+		return nullptr;
+	}
+
+	// ポインタを返す
+	return pInstance;
+}
+
+//=====================================
 //= キーボードのブレスの情報を取得
 //=====================================
 bool CInputKeyboard::GetPress(int nKey)

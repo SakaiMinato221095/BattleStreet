@@ -17,6 +17,8 @@
 //-	インクルード
 //-======================================
 
+#include "map_object_x.h"
+
 //-======================================
 //-	マクロ定義
 //-======================================
@@ -37,10 +39,19 @@ public:
 	CMapManager();
 	~CMapManager();
 
-	static void GameSave(void);
-	static void GameLoad(void);
+	HRESULT Init(void);
+	void Uninit(void);
+
+	static CMapManager* Create(void);
+
+	void Save(void);
+	void Load(CMapObjectX::TXT objectXTxt);
+
+	static CMapManager* GetInstance(void) { return m_pInstance; }
 
 private:
+
+	static CMapManager* m_pInstance;
 
 };
 

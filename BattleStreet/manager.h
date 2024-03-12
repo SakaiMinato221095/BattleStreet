@@ -50,7 +50,7 @@ public:
 	{
 		MODE_TITEL = 0,	// タイトル
 		MODE_GAME,		// ゲーム
-		MODE_RESULT,	// リザルト
+		MODE_RANKING,	// リザルト
 		MODE_MAX
 	}MODE;
 
@@ -89,6 +89,8 @@ public:
 	
 	void SetMode(CScene::MODE mode);
 	CScene::MODE GetMode(void);
+
+	HRESULT FileMessage(HWND hWnd, std::string textMessage, std::string textWindow );
 
 	CFade* GetFade(void) { return m_pFade; }
 

@@ -34,19 +34,27 @@ class CMapObjectX
 
 public:
 
-	typedef enum
+	enum TXT
 	{
-		TXT_NORMAL_000 = 0,	// 通常敵_000のテキスト
-	}TXT;
+		TXT_GAME_000 = 0,	// ゲーム000のテキスト
+	};
 
 	CMapObjectX();
 	~CMapObjectX();
 
-	static void Save(CMapObjectX::TXT txtType);
-	static void Load(CMapObjectX::TXT txtType);
+	HRESULT Init(void);
+	void Uninit(void);
+
+	static CMapObjectX* Create(void);
+
+	void Save(CMapObjectX::TXT txtType);
+	void Load(CMapObjectX::TXT txtType);
+
+	static CMapObjectX* GetInstance(void) { return m_pInstance; }
 
 private:
 
+	static CMapObjectX* m_pInstance;
 };
 
 #endif	// 二重インクルード防止の終了

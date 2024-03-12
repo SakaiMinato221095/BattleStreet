@@ -72,9 +72,12 @@ public:
 	HRESULT Init(HWND hWnd);
 	void Uninit(void);
 
+	static CSound* Create(HWND hWnd);
+
 	HRESULT Play(LABEL label);
 	void Stop(LABEL label);
 	void Stop(void);
+
 
 private:
 

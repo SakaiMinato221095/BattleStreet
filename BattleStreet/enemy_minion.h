@@ -71,7 +71,8 @@ public:
 	// AI‚Ìó‘Ô
 	enum AI_STATE
 	{
-		AI_STATE_WAIT = 0,		// ‘Ò‹@ó‘Ô
+		AI_STATE_WAIT = 0,		// ‘Ò‹@
+		AI_STATE_MOVE,			// ˆÚ“®
 		AI_STATE_KICK_1,		// R‚è1
 		AI_STATE_CHARGE,		// “Ëi
 		AI_STATE_MAX

@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ai.cpp" />
+    <ClCompile Include="ai_enemy.cpp" />
     <ClCompile Include="attack.cpp" />
     <ClCompile Include="bg.cpp" />
     <ClCompile Include="billboard_gage.cpp" />
@@ -34,8 +36,7 @@
     <ClCompile Include="enemy_boss.cpp" />
     <ClCompile Include="enemy_minion.cpp" />
     <ClCompile Include="fade.cpp" />
-    <ClCompile Include="finish_kick.cpp" />
-    <ClCompile Include="finish_punch.cpp" />
+    <ClCompile Include="finish.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="light.cpp" />
@@ -66,18 +67,22 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="record.cpp" />
     <ClCompile Include="renderer.cpp" />
-    <ClCompile Include="result.cpp" />
+    <ClCompile Include="ranking.cpp" />
     <ClCompile Include="helper_sakai.cpp" />
     <ClCompile Include="skybox.cpp" />
     <ClCompile Include="sound.cpp" />
     <ClCompile Include="spwan_wall.cpp" />
     <ClCompile Include="template.cpp" />
+    <ClCompile Include="test.cpp" />
     <ClCompile Include="timer.cpp" />
     <ClCompile Include="title.cpp" />
     <ClCompile Include="xinput.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ai.h" />
+    <ClInclude Include="ai_enemy.h" />
     <ClInclude Include="attack.h" />
     <ClInclude Include="bg.h" />
     <ClInclude Include="billboard_gage.h" />
@@ -93,8 +98,7 @@
     <ClInclude Include="enemy_boss.h" />
     <ClInclude Include="enemy_minion.h" />
     <ClInclude Include="fade.h" />
-    <ClInclude Include="finish_kick.h" />
-    <ClInclude Include="finish_punch.h" />
+    <ClInclude Include="finish.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="light.h" />
@@ -122,13 +126,15 @@
     <ClInclude Include="phase_manager.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="precompile.h" />
+    <ClInclude Include="record.h" />
     <ClInclude Include="renderer.h" />
-    <ClInclude Include="result.h" />
+    <ClInclude Include="ranking.h" />
     <ClInclude Include="helper_sakai.h" />
     <ClInclude Include="skybox.h" />
     <ClInclude Include="sound.h" />
     <ClInclude Include="spwan_wall.h" />
     <ClInclude Include="template.h" />
+    <ClInclude Include="test.h" />
     <ClInclude Include="timer.h" />
     <ClInclude Include="title.h" />
     <ClInclude Include="xinput.h" />

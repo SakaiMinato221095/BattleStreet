@@ -22,6 +22,12 @@
 #include "objectx_none.h"
 #include "skybox.h"
 
+//=======================================
+//=	コンスト定義
+//=======================================
+
+const std::string FAIL_TEXT_WINDOW = "モデルの読み込み失敗";
+
 //-------------------------------------
 //-	モデル管理のコンストラクタ
 //-------------------------------------
@@ -39,19 +45,60 @@ CManagerModel::~CManagerModel()
 }
 
 //-------------------------------------
+//-	初期化処理
+//-------------------------------------
+HRESULT CManagerModel::Init(void)
+{
+	return S_OK;
+}
+
+//-------------------------------------
+//-	終了処理
+//-------------------------------------
+void CManagerModel::Uninit(void)
+{
+}
+
+//-------------------------------------
+//-	生成処理
+//-------------------------------------
+CManagerModel* CManagerModel::Create(void)
+{
+	// 生成処理
+	CManagerModel* pInstance = DBG_NEW CManagerModel;
+
+	if (pInstance != nullptr)
+	{
+		// 初期化処理
+		if (FAILED(pInstance->Init()))
+		{// 失敗時
+
+			return nullptr;
+		}
+	}
+	else if (pInstance == nullptr)
+	{// 失敗時
+
+		return nullptr;
+	}
+
+	// ポインタを返す
+	return pInstance;
+}
+
+//-------------------------------------
 //-	モデル管理の読み込み処理
 //-------------------------------------
 HRESULT CManagerModel::Load(HWND hWnd)
 {
+	CManager* pManager = CManager::GetInstance();
+
 	// 階層構造モデル
 	if (FAILED(CModel::Load()))
 	{// 失敗時
 
 		// 失敗メッセージ
-		MessageBox(hWnd, "階層構造モデルのデータ", "データ読み込み処理失敗！", MB_ICONWARNING);
-
-		// データ読み込みを抜ける
-		return E_FAIL;
+		return pManager->FileMessage(hWnd, "階層構造モデル", FAIL_TEXT_WINDOW);
 	}
 
 	// 効果なしオブジェクト
@@ -59,10 +106,7 @@ HRESULT CManagerModel::Load(HWND hWnd)
 	{// 失敗時
 
 		// 失敗メッセージ
-		MessageBox(hWnd, "効果なしオブジェクトのデータ", "データ読み込み処理失敗！", MB_ICONWARNING);
-
-		// データ読み込みを抜ける
-		return E_FAIL;
+		return pManager->FileMessage(hWnd, "効果なしモデル", FAIL_TEXT_WINDOW);
 	}
 
 	// スカイボックス
@@ -70,10 +114,7 @@ HRESULT CManagerModel::Load(HWND hWnd)
 	{// 失敗時
 
 		// 失敗メッセージ
-		MessageBox(hWnd, "スカイボックスのデータ", "データ読み込み処理失敗！", MB_ICONWARNING);
-
-		// データ読み込みを抜ける
-		return E_FAIL;
+		return pManager->FileMessage(hWnd, "スカイボックス", FAIL_TEXT_WINDOW);
 	}
 
 	// 成功を返す

@@ -35,6 +35,11 @@ public:
 	CManagerTexture();
 	~CManagerTexture();
 
+	HRESULT Init(void);
+	void Uninit(void);
+
+	static CManagerTexture* Create(void);
+
 	HRESULT Load(HWND hWnd);
 	void Unload(void);
 

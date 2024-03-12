@@ -35,8 +35,7 @@
 #include "attack.h"
 #include "punch.h"
 
-#include "finish_punch.h"
-#include "finish_kick.h"
+#include "finish.h"
 
 #include "particle.h"
 
@@ -71,11 +70,14 @@ const int PARTS_NUM_PUNCH_FINISH = 7;
 const int PARTS_NUM_KICK = 11;
 const int PARTS_NUM_KICK_FINISH = 0;
 
+const int PARTS_NUM_DROPKICK_FINISH = 11;
+
 // フィニッシュ時の位置の追加量
 const D3DXVECTOR3 FINISH_POS_PLUS[CCommand::COMMAND_TYPE_MAX]
 {
 	D3DXVECTOR3(0.0f,0.0f,0.0f),
 	D3DXVECTOR3(0.0f,50.0f,0.0f),
+	D3DXVECTOR3(0.0f,0.0f,0.0f),
 };
 
 // フィニッシュ時の大きさ
@@ -83,6 +85,7 @@ const D3DXVECTOR3 FINISH_SIZE[CCommand::COMMAND_TYPE_MAX]
 {
 	D3DXVECTOR3(20.0f, 20.0f, 20.0f),
 	D3DXVECTOR3(100.0f, 40.0f, 100.0f),
+	D3DXVECTOR3(50.0f, 50.0f, 50.0f),
 };
 
 //-------------------------------------
@@ -464,7 +467,7 @@ void CPlayer::HitDamage(int nDamage)
 			if (CManager::GetInstance()->GetFade() != nullptr)
 			{
 				// ゲームモード
-				CManager::GetInstance()->GetFade()->SetFade(CScene::MODE_RESULT);
+				CManager::GetInstance()->GetFade()->SetFade(CScene::MODE_RANKING);
 			}
 		}
 
@@ -799,7 +802,8 @@ void CPlayer::UpdateMotionNone(void)
 	if (pMotion->GetType() == MOTION_STATE_PUNCH && m_data.motionState != MOTION_STATE_PUNCH ||
 		pMotion->GetType() == MOTION_STATE_KICK && m_data.motionState != MOTION_STATE_KICK ||
 		pMotion->GetType() == MOTION_STATE_PUNCH_FINISH && m_data.motionState != MOTION_STATE_PUNCH_FINISH ||
-		pMotion->GetType() == MOTION_STATE_KICK_FINISH && m_data.motionState != MOTION_STATE_KICK_FINISH)
+		pMotion->GetType() == MOTION_STATE_KICK_FINISH && m_data.motionState != MOTION_STATE_KICK_FINISH ||
+		pMotion->GetType() == MOTION_STATE_DROPKICK_FINISH && m_data.motionState != MOTION_STATE_DROPKICK_FINISH)
 	{
 		if (m_pAttack != nullptr)
 		{
@@ -1149,6 +1153,7 @@ void CPlayer::SetAttack(CCommand::INPUT_TYPE inputType)
 
 		break;
 	}
+
 }
 
 //-------------------------------------
@@ -1195,6 +1200,24 @@ void CPlayer::SetAttackFinish(void)
 		}
 
 		break;
+
+	case CCommand::COMMAND_TYPE_DROPKICK:
+
+		m_pAttack = CFinishKick::Create();
+
+		if (m_pAttack != nullptr)
+		{
+			// モーションの設定（パンチフィニッシュ）
+			m_data.motionState = MOTION_STATE_DROPKICK_FINISH;
+
+			// パーツ位置
+			m_data.nAttackPartsNldx = PARTS_NUM_DROPKICK_FINISH;
+
+			m_pAttack->SetSoundLabel(CSound::LABEL_SE_KICK_FINISH);
+
+		}
+
+		break;
 	}
 
 	if (m_pAttack != nullptr)
@@ -1214,6 +1237,11 @@ void CPlayer::SetAttackFinish(void)
 
 		// 追加の位置設定
 		m_pAttack->SetPosPlus(FINISH_POS_PLUS[infoFinish.type]);
+
+		if (infoFinish.type == CCommand::COMMAND_TYPE_DROPKICK)
+		{
+			m_pAttack->SetDamage(15);
+		}
 	}
 }
 
@@ -1233,6 +1261,8 @@ void CPlayer::DebugPlayer(void)
 
 	pDebugProc->Print("\n");
 	pDebugProc->Print("プレイヤーの状態");
+	pDebugProc->Print("\n");
+	pDebugProc->Print("%f,%f", m_data.pos.x, m_data.pos.z);
 	pDebugProc->Print("\n");
 	pDebugProc->Print("%d", m_data.state);
 	pDebugProc->Print("\n");

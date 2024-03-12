@@ -139,6 +139,33 @@ void CCamera::Update(void)
 }
 
 //-------------------------------------
+//-	カメラの生成処理
+//-------------------------------------
+CCamera* CCamera::Create(void)
+{
+	// 生成処理
+	CCamera* pInstance = DBG_NEW CCamera;
+
+	if (pInstance != nullptr)
+	{
+		// 初期化処理
+		if (FAILED(pInstance->Init()))
+		{// 失敗時
+
+			return nullptr;
+		}
+	}
+	else if (pInstance == nullptr)
+	{// 失敗時
+
+		return nullptr;
+	}
+
+	// ポインタを返す
+	return pInstance;
+}
+
+//-------------------------------------
 //-	カメラの設定処理
 //-------------------------------------
 void CCamera::SetCamera(void)

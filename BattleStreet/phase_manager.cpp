@@ -233,7 +233,7 @@ void CPhaseManager::SetComp(void)
 		if (CManager::GetInstance()->GetFade() != nullptr)
 		{
 			// ƒQ[ƒ€ƒ‚[ƒh
-			CManager::GetInstance()->GetFade()->SetFade(CScene::MODE_RESULT);
+			CManager::GetInstance()->GetFade()->SetFade(CScene::MODE_RANKING);
 		}
 	}
 }

@@ -49,6 +49,7 @@ public:
 	{
 		COMMAND_TYPE_PUNCH_NOR = 0,	// パンチ基本コマンド
 		COMMAND_TYPE_KICK_NOR,		// キック基本コマンド
+		COMMAND_TYPE_DROPKICK,		// ドロップキックコマンド
 		COMMAND_TYPE_MAX
 	};
 
@@ -105,7 +106,7 @@ private:
 
 	void SetInitData(void);
 
-	void ReSetCombo(void);
+	void ReSetCombo(void) { ZeroMemory(&m_InfoCombo, sizeof(m_InfoCombo)); }
 
 	void Debug(void);
 

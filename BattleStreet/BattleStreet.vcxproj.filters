@@ -46,9 +46,6 @@
     <Filter Include="ObjX">
       <UniqueIdentifier>{5b479fc8-dbdb-4fcf-88cd-59af181536db}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Attack\Finish">
-      <UniqueIdentifier>{2a901ad8-2c02-4283-b710-f179a932ee78}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Ui">
       <UniqueIdentifier>{8dc67e90-3159-42d0-b1be-6f76320e7229}</UniqueIdentifier>
     </Filter>
@@ -75,6 +72,9 @@
     </Filter>
     <Filter Include="ObjBillboard">
       <UniqueIdentifier>{3dc29f29-59c1-45dd-92f7-f106a30aa68e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rank">
+      <UniqueIdentifier>{65fcb468-dd6f-4a56-9378-0f4c06165384}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -117,7 +117,7 @@
     <ClCompile Include="game.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
-    <ClCompile Include="result.cpp">
+    <ClCompile Include="ranking.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
     <ClCompile Include="title.cpp">
@@ -192,12 +192,6 @@
     <ClCompile Include="character.cpp">
       <Filter>ObjX</Filter>
     </ClCompile>
-    <ClCompile Include="finish_punch.cpp">
-      <Filter>Attack\Finish</Filter>
-    </ClCompile>
-    <ClCompile Include="finish_kick.cpp">
-      <Filter>Attack\Finish</Filter>
-    </ClCompile>
     <ClCompile Include="object2d.cpp">
       <Filter>Obj2d</Filter>
     </ClCompile>
@@ -240,6 +234,21 @@
     <ClCompile Include="sound.cpp">
       <Filter>System</Filter>
     </ClCompile>
+    <ClCompile Include="finish.cpp">
+      <Filter>Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="ai.cpp">
+      <Filter>Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="test.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ai_enemy.cpp">
+      <Filter>Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="record.cpp">
+      <Filter>Rank</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="debugproc.h">
@@ -281,7 +290,7 @@
     <ClInclude Include="game.h">
       <Filter>Scene</Filter>
     </ClInclude>
-    <ClInclude Include="result.h">
+    <ClInclude Include="ranking.h">
       <Filter>Scene</Filter>
     </ClInclude>
     <ClInclude Include="title.h">
@@ -353,12 +362,6 @@
     <ClInclude Include="character.h">
       <Filter>ObjX</Filter>
     </ClInclude>
-    <ClInclude Include="finish_punch.h">
-      <Filter>Attack\Finish</Filter>
-    </ClInclude>
-    <ClInclude Include="finish_kick.h">
-      <Filter>Attack\Finish</Filter>
-    </ClInclude>
     <ClInclude Include="object2d.h">
       <Filter>Obj2d</Filter>
     </ClInclude>
@@ -403,6 +406,21 @@
     </ClInclude>
     <ClInclude Include="sound.h">
       <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="finish.h">
+      <Filter>Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="ai.h">
+      <Filter>Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="test.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ai_enemy.h">
+      <Filter>Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="record.h">
+      <Filter>Rank</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

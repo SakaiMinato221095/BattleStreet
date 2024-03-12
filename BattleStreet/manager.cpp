@@ -17,7 +17,7 @@
 
 #include "title.h"
 #include "game.h"
-#include "result.h"
+#include "ranking.h"
 
 #include "Input.h"
 #include "xinput.h"
@@ -32,9 +32,13 @@
 
 #include "mgr_coll.h"
 
+#include "map_manager.h"
+
 //=======================================
-//=	マクロ定義
+//=	コンスト定義
 //=======================================
+
+const std::string FAIL_TEXT_WINDOW = "初期化の失敗";
 
 //=======================================
 //=	静的変数宣言
@@ -118,9 +122,9 @@ CScene *CScene::Create(MODE mode, HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 		break;
 
-	case MODE::MODE_RESULT:
+	case MODE::MODE_RANKING:
 
-		pScene = DBG_NEW CResult;
+		pScene = DBG_NEW CRanking;
 
 		break;
 	}
@@ -193,332 +197,247 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 {
 	// キーボード
 	{
-		// キーボードの有無を判定
-		if (m_pInputKeyboard == NULL)
+		// 生成処理
+		CInputKeyboard* pInputKeyboard = CInputKeyboard::Create(hInstance, hWnd);
+
+		// 生成成功の有無を判定
+		if (pInputKeyboard != nullptr)
 		{
-			// キーボードの生成
-			m_pInputKeyboard = DBG_NEW CInputKeyboard;
-
-			// キーボードの初期化処理
-			if (FAILED(m_pInputKeyboard->Init(hInstance, hWnd)))
-			{// 失敗時
-
-				// 失敗メッセージ
-				MessageBox(hWnd, "キーボードの生成", "初期処理失敗！", MB_ICONWARNING);
-
-				// 初期化を抜ける
-				return E_FAIL;
-			}
+			// ポインタを代入
+			m_pInputKeyboard = pInputKeyboard;
 		}
 		else
-		{// ゴミが入っているとき
-
+		{
 			// 失敗メッセージ
-			MessageBox(hWnd, "キーボードの初期化", "初期処理失敗！", MB_ICONWARNING);
-
-			// 初期化を抜ける
-			return E_FAIL;
+			return FileMessage(hWnd, "キーボードの生成", FAIL_TEXT_WINDOW);
 		}
 	}
 
-	// X入力
+	// XInput
 	{
-		// X入力の有無を判定
-		if (m_pXInput == NULL)
+		// 生成処理
+		CXInput* pXInput = CXInput::Create(hInstance, hWnd);
+
+		// 生成成功の有無を判定
+		if (pXInput != nullptr)
 		{
-			// X入力の生成
-			m_pXInput = CXInput::Create(hInstance, hWnd);
-
-			// X入力の初期化処理
-			if (m_pXInput == NULL)
-			{// 失敗時
-
-				// 失敗メッセージ
-				MessageBox(hWnd, "X入力の生成", "初期処理失敗！", MB_ICONWARNING);
-
-				// 初期化を抜ける
-				return E_FAIL;
-			}
+			// ポインタを代入
+			m_pXInput = pXInput;
 		}
 		else
-		{// ゴミが入っているとき
-
+		{
 			// 失敗メッセージ
-			MessageBox(hWnd, "X入力の初期化", "初期処理失敗！", MB_ICONWARNING);
-
-			// 初期化を抜ける
-			return E_FAIL;
+			return FileMessage(hWnd, "XINPUTの生成", FAIL_TEXT_WINDOW);
 		}
 	}
 
 	// サウンド
 	{
-		// サウンド有無を判定
-		if (m_pSound == NULL)
+		// 生成処理
+		CSound* pSound = CSound::Create(hWnd);
+
+		// 生成成功の有無を判定
+		if (pSound != nullptr)
 		{
-			// サウンド生成
-			m_pSound = DBG_NEW CSound;
-
-			// サウンド初期化処理
-			if (FAILED(m_pSound->Init(hWnd)))
-			{// 失敗時
-
-				// 失敗メッセージ
-				MessageBox(hWnd, "サウンドの生成", "初期処理失敗！", MB_ICONWARNING);
-
-				// 初期化を抜ける
-				return E_FAIL;
-			}
+			// ポインタを代入
+			m_pSound = pSound;
 		}
 		else
-		{// ゴミが入っているとき
-
+		{
 			// 失敗メッセージ
-			MessageBox(hWnd, "サウンドの初期化", "初期処理失敗！", MB_ICONWARNING);
-
-			// 初期化を抜ける
-			return E_FAIL;
+			return FileMessage(hWnd, "サウンドの生成", FAIL_TEXT_WINDOW);
 		}
 	}
 
 	// レンダラー
 	{
-		// レンダラーの有無を判定
-		if (m_pRenderer == NULL)
+		// 生成処理
+		CRenderer* pRenderer = CRenderer::Create(hWnd,TRUE);
+
+		// 生成成功の有無を判定
+		if (pRenderer != nullptr)
 		{
-			// レンダラーの生成
-			m_pRenderer = DBG_NEW CRenderer;
-
-			// レンダラーの初期化処理
-			if (FAILED(m_pRenderer->Init(hWnd, TRUE)))
-			{// 失敗時
-
-				// 失敗メッセージ
-				MessageBox(hWnd, "レンダラーの生成", "初期処理失敗！", MB_ICONWARNING);
-
-				// 初期化を抜ける
-				return E_FAIL;
-			}
+			// ポインタを代入
+			m_pRenderer = pRenderer;
 		}
 		else
-		{// ゴミが入っているとき
-
-			// 失敗メッセージ
-			MessageBox(hWnd, "レンダラーの初期化", "初期処理失敗！", MB_ICONWARNING);
-
-			// 初期化を抜ける
-			return E_FAIL;
-		}
-	}
-
-	// フェード
-	{
-		// フェードの有無を判定
-		if (m_pFade == NULL)
 		{
-			// フェードの生成
-			m_pFade = CFade::Create();
-
-			// フェードの生成成功の有無を判定
-			if (m_pFade == NULL)
-			{
-				// 失敗メッセージ
-				MessageBox(hWnd, "フェードの生成", "初期処理失敗！", MB_ICONWARNING);
-
-				// 生成処理を抜ける
-				return E_FAIL;
-			}
+			// 失敗メッセージ
+			return FileMessage(hWnd, "レンダラーの生成", FAIL_TEXT_WINDOW);
 		}
 	}
 
 	// デバックプロック
 	{
-		// デバックプロック有無を判定
-		if (m_pDbugProc == NULL)
-		{
-			// デバックプロック生成
-			m_pDbugProc = DBG_NEW CDebugProc;
+		// 生成処理
+		CDebugProc* pDebugProc = CDebugProc::Create();
 
-			// デバックプロック初期化処理
-			m_pDbugProc->Init();
+		// 生成成功の有無を判定
+		if (pDebugProc != nullptr)
+		{
+			// ポインタを代入
+			m_pDbugProc = pDebugProc;
+
+		}
+		else
+		{
+			// 失敗メッセージ
+			return FileMessage(hWnd, "デバックプロックの生成", FAIL_TEXT_WINDOW);
+		}
+	}
+
+	// フェード
+	{
+		// 生成
+		CFade* pFade = CFade::Create();
+
+		// 生成成功の有無を判定
+		if (pFade != nullptr)
+		{
+			// ポインタを代入
+			m_pFade = pFade;
+		}
+		else
+		{
+			// 失敗メッセージ
+			return FileMessage(hWnd, "フェードの生成", FAIL_TEXT_WINDOW);
 		}
 	}
 
 	// テクスチャ管理
 	{
-		// テクスチャ管理の有無を判定
-		if (m_pManagerTexture == NULL)
+		// 生成
+		CManagerTexture* pManagerTexture = CManagerTexture::Create();
+
+		// 生成成功の有無を判定
+		if (pManagerTexture != nullptr)
 		{
-			// テクスチャ管理の生成
-			m_pManagerTexture = DBG_NEW CManagerTexture;
+			// ポインタを代入
+			m_pManagerTexture = pManagerTexture;
 
-			// テクスチャ管理の初期化処理
+			// ロード処理
 			if (FAILED(m_pManagerTexture->Load(hWnd)))
-			{// 失敗時
-
-				// 失敗メッセージ
-				MessageBox(hWnd, "テクスチャ管理の読み込み", "初期処理失敗！", MB_ICONWARNING);
-
-				// 初期化を抜ける
+			{
 				return E_FAIL;
 			}
 		}
 		else
-		{// ゴミが入っているとき
-
+		{
 			// 失敗メッセージ
-			MessageBox(hWnd, "テクスチャ管理の読み込み", "初期処理失敗！", MB_ICONWARNING);
-
-			// 初期化を抜ける
-			return E_FAIL;
+			return FileMessage(hWnd, "テクスチャ管理の生成", FAIL_TEXT_WINDOW);
 		}
 	}
 
 	// モデル管理
 	{
-		// モデル管理の有無を判定
-		if (m_pManagerModel == NULL)
+		// 生成
+		CManagerModel* pManagerModel = CManagerModel::Create();
+
+		// 生成成功の有無を判定
+		if (pManagerModel != nullptr)
 		{
-			// モデル管理の生成
-			m_pManagerModel = DBG_NEW CManagerModel;
+			// ポインタを代入
+			m_pManagerModel = pManagerModel;
 
-			// モデル管理の初期化処理
+			// ロード処理
 			if (FAILED(m_pManagerModel->Load(hWnd)))
-			{// 失敗時
-
-				// 失敗メッセージ
-				MessageBox(hWnd, "モデル管理の読み込み", "初期処理失敗！", MB_ICONWARNING);
-
-				// 初期化を抜ける
+			{
 				return E_FAIL;
 			}
 		}
 		else
-		{// ゴミが入っているとき
-
+		{
 			// 失敗メッセージ
-			MessageBox(hWnd, "モデル管理の読み込み", "初期処理失敗！", MB_ICONWARNING);
-
-			// 初期化を抜ける
-			return E_FAIL;
+			return FileMessage(hWnd, "モデル管理の生成", FAIL_TEXT_WINDOW);
 		}
 	}
 
 	// カメラ
 	{
-		// カメラの有無を判定
-		if (m_pCamera == NULL)
+		// 生成
+		CCamera* pCamera = CCamera::Create();
+
+		// 生成成功の有無を判定
+		if (pCamera != nullptr)
 		{
-			// カメラの生成
-			m_pCamera = DBG_NEW CCamera;
-
-			// カメラの初期化処理
-			if (FAILED(m_pCamera->Init()))
-			{// 失敗時
-
-				// 失敗メッセージ
-				MessageBox(hWnd, "カメラの生成", "初期処理失敗！", MB_ICONWARNING);
-
-				// 初期化を抜ける
-				return E_FAIL;
-			}
+			// ポインタを代入
+			m_pCamera = pCamera;
 		}
 		else
-		{// ゴミが入っているとき
-
+		{
 			// 失敗メッセージ
-			MessageBox(hWnd, "カメラの初期化", "初期処理失敗！", MB_ICONWARNING);
-
-			// 初期化を抜ける
-			return E_FAIL;
+			return FileMessage(hWnd, "カメラの生成", FAIL_TEXT_WINDOW);
 		}
 	}
 
 	// ライト
 	{
-		// ライトの有無を判定
-		if (m_pLight == NULL)
+		// 生成
+		CLight* pLight = CLight::Create();
+
+		// 生成成功の有無を判定
+		if (pLight != nullptr)
 		{
-			// ライトの生成
-			m_pLight = DBG_NEW CLight;
-
-			// ライトの初期化処理
-			if (FAILED(m_pLight->Init()))
-			{// 失敗時
-
-				// 失敗メッセージ
-				MessageBox(hWnd, "ライトの生成", "初期処理失敗！", MB_ICONWARNING);
-
-				// 初期化を抜ける
-				return E_FAIL;
-			}
+			// ポインタを代入
+			m_pLight = pLight;
 		}
 		else
-		{// ゴミが入っているとき
-
-		 // 失敗メッセージ
-			MessageBox(hWnd, "ライトの初期化", "初期処理失敗！", MB_ICONWARNING);
-
-			// 初期化を抜ける
-			return E_FAIL;
+		{
+			// 失敗メッセージ
+			return FileMessage(hWnd, "ライトの生成", FAIL_TEXT_WINDOW);
 		}
 	}
 
 	// 当たり判定管理
 	{
-		// 当たり判定管理の有無を判定
-		if (m_pMgrColl == NULL)
+		// 生成
+		CMgrColl* pMgrColl = CMgrColl::Create();
+
+		// 生成成功の有無を判定
+		if (pMgrColl != nullptr)
 		{
-			// 当たり判定管理の生成
-			m_pMgrColl = CMgrColl::Create();
-
-			// 当たり判定管理の有無を判定
-			if (m_pMgrColl == NULL)
-			{
-				// 失敗メッセージ
-				MessageBox(hWnd, "当たり判定管理の初期化", "初期処理失敗！", MB_ICONWARNING);
-
-				// 初期化を抜ける
-				return E_FAIL;
-			}
+			// ポインタを代入
+			m_pMgrColl = pMgrColl;
 		}
 		else
-		{// ゴミが入っているとき
-
+		{
 			// 失敗メッセージ
-			MessageBox(hWnd, "当たり判定管理の初期化", "初期処理失敗！", MB_ICONWARNING);
-
-			// 初期化を抜ける
-			return E_FAIL;
+			return FileMessage(hWnd, "当たり判定管理の生成", FAIL_TEXT_WINDOW);
 		}
 	}
 
-	// シーン
+	// 当たり判定管理
 	{
-		// シーンの有無を判定
-		if (m_pScene == NULL)
+		// 生成
+		CMapManager* pMapManager = CMapManager::Create();
+
+		// 生成成功の有無を判定
+		if (pMapManager != nullptr)
 		{
-			// シーンの生成
-			m_pScene = CScene::Create(CScene::MODE_TITEL, hInstance,hWnd,bWindow);
 
-			// シーンの有無を判定
-			if (m_pScene == NULL)
-			{
-				// 失敗メッセージ
-				MessageBox(hWnd, "シーンの初期化", "初期処理失敗！", MB_ICONWARNING);
-
-				// 初期化を抜ける
-				return E_FAIL;
-			}
 		}
 		else
-		{// ゴミが入っているとき
-
+		{
 			// 失敗メッセージ
-			MessageBox(hWnd, "シーンの初期化", "初期処理失敗！", MB_ICONWARNING);
+			return FileMessage(hWnd, "マップ管理の生成", FAIL_TEXT_WINDOW);
+		}
+	}
 
-			// 初期化を抜ける
-			return E_FAIL;
+	// 当たり判定管理
+	{
+		// 生成
+		CScene* pScene = CScene::Create(CScene::MODE_TITEL, hInstance, hWnd, bWindow);
+
+		// 生成成功の有無を判定
+		if (pScene != nullptr)
+		{
+			// ポインタを代入
+			m_pScene = pScene;
+		}
+		else
+		{
+			// 失敗メッセージ
+			return FileMessage(hWnd, "シーンの生成", FAIL_TEXT_WINDOW);
 		}
 	}
 
@@ -837,6 +756,16 @@ CManager * CManager::GetInstance()
 }
 
 //-------------------------------------
+//- 失敗メッセージ
+//-------------------------------------
+HRESULT CManager::FileMessage(HWND hWnd, std::string textMessage, std::string textWindow)
+{
+	MessageBox(hWnd, textMessage.c_str(), textWindow.c_str(), MB_ICONWARNING);
+
+	return E_FAIL;
+}
+
+//-------------------------------------
 //- マネージャーのデバック表示
 //-------------------------------------
 void CManager::Debug(void)
@@ -860,9 +789,9 @@ void CManager::Debug(void)
 	{
 		pDebugProc->Print("ゲーム状態 : ゲーム");
 	}
-	else if (GetMode() == CScene::MODE_RESULT)
+	else if (GetMode() == CScene::MODE_RANKING)
 	{
-		pDebugProc->Print("ゲーム状態 : リザルト");
+		pDebugProc->Print("ゲーム状態 : ランキング");
 	}
 
 	pDebugProc->Print("\n");

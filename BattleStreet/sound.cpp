@@ -298,6 +298,33 @@ void CSound::Uninit(void)
 }
 
 //-------------------------------------
+//- サウンドの生成処理
+//-------------------------------------
+CSound* CSound::Create(HWND hWnd)
+{
+	// 生成処理
+	CSound* pInstance = DBG_NEW CSound;
+
+	if (pInstance != nullptr)
+	{
+		// 初期化処理
+		if (FAILED(pInstance->Init(hWnd)))
+		{// 失敗時
+
+			return nullptr;
+		}
+	}
+	else if (pInstance == nullptr)
+	{// 失敗時
+
+		return nullptr;
+	}
+
+	// ポインタを返す
+	return pInstance;
+}
+
+//-------------------------------------
 //- サウンドのセグメント再生(再生中なら停止)
 //-------------------------------------
 HRESULT CSound::Play(LABEL label)

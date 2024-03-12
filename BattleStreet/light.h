@@ -40,6 +40,8 @@ public:
 	void Uninit(void);
 	void Update(void);
 
+	static CLight* Create(void);
+
 private:
 
 	D3DLIGHT9 m_light[LIGHT_MAX];	// ƒ‰ƒCƒg‚Ìî•ñ

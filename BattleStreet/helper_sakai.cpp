@@ -23,6 +23,22 @@
 //-------------------------------------
 //-	角度の正規化
 //-------------------------------------
+void HelperSakai::NormalizeAngle(D3DXVECTOR3* rot)
+{
+	// 目的の向きの補正
+	if (rot->y > D3DX_PI)
+	{
+		rot->y += -D3DX_PI * 2;
+	}
+	else if (rot->y < -D3DX_PI)
+	{
+		rot->y += D3DX_PI * 2;
+	}
+}
+
+//-------------------------------------
+//-	角度の正規化
+//-------------------------------------
 void HelperSakai::NormalizeAngle(D3DXVECTOR3* rot, D3DXVECTOR3* rotDest, float destSpeed)
 {
 	// 目的の向きの補正
@@ -91,6 +107,7 @@ float HelperSakai::CalculateLength(D3DXVECTOR3 pos, D3DXVECTOR3 posTgt)
 	return std::sqrt(fLengthTgtSquared);
 }
 
+
 //-------------------------------------
 //-	最大値指定の加算処理（最大値時に停止）
 //-------------------------------------
@@ -132,4 +149,3 @@ int HelperSakai::AddLimitReturn(int nData, int nAdd, int nMin, int nMax)
 
 	return nDataCal;
 }
-

@@ -24,6 +24,12 @@
 #include "effect.h"
 #include "spwan_wall.h"
 
+//=======================================
+//=	コンスト定義
+//=======================================
+
+const std::string FAIL_TEXT_WINDOW = "テクスチャの読み込み失敗";
+
 //-------------------------------------
 //-	テクスチャのコンストラクタ
 //-------------------------------------
@@ -40,40 +46,75 @@ CManagerTexture::~CManagerTexture()
 {
 }
 
+//-------------------------------------
+//-	初期化処理
+//-------------------------------------
+HRESULT CManagerTexture::Init(void)
+{
+	return S_OK;
+}
+
+//-------------------------------------
+//-	終了処理
+//-------------------------------------
+void CManagerTexture::Uninit(void)
+{
+}
+
+//-------------------------------------
+//-	生成処理
+//-------------------------------------
+CManagerTexture* CManagerTexture::Create(void)
+{
+	// 生成処理
+	CManagerTexture* pInstance = DBG_NEW CManagerTexture;
+
+	if (pInstance != nullptr)
+	{
+		// 初期化処理
+		if (FAILED(pInstance->Init()))
+		{// 失敗時
+
+			return nullptr;
+		}
+	}
+	else if (pInstance == nullptr)
+	{// 失敗時
+
+		return nullptr;
+	}
+
+	// ポインタを返す
+	return pInstance;
+}
 
 //-------------------------------------
 //-	テクスチャの読み込み処理
 //-------------------------------------
 HRESULT CManagerTexture::Load(HWND hWnd)
 {
-	// フィールド
+	CManager* pManager = CManager::GetInstance();
+
+	// タイトル
 	if (FAILED(CTitle::Load()))
 	{
 		// 失敗メッセージ
-		MessageBox(hWnd, "タイトルのデータ", "データ読み込み処理失敗！", MB_ICONWARNING);
+		return pManager->FileMessage(hWnd, "タイトル", FAIL_TEXT_WINDOW);
 
-		// データ読み込みを抜ける
-		return E_FAIL;
 	}
 
 	// ポーズ
 	if (FAILED(CPause::Load()))
 	{
 		// 失敗メッセージ
-		MessageBox(hWnd, "ポーズのデータ", "データ読み込み処理失敗！", MB_ICONWARNING);
-
-		// データ読み込みを抜ける
-		return E_FAIL;
+		return pManager->FileMessage(hWnd, "ポーズ", FAIL_TEXT_WINDOW);
 	}
 
 	// フィールド
 	if (FAILED(CObj3dField::Load()))
 	{
 		// 失敗メッセージ
-		MessageBox(hWnd, "フィールドのデータ", "データ読み込み処理失敗！", MB_ICONWARNING);
-
-		// データ読み込みを抜ける
-		return E_FAIL;
+		return pManager->FileMessage(hWnd, "フィールド", FAIL_TEXT_WINDOW);
 	}
 	
 	// 背景
@@ -81,10 +122,7 @@ HRESULT CManagerTexture::Load(HWND hWnd)
 	{// 失敗時
 
 		// 失敗メッセージ
-		MessageBox(hWnd, "背景のデータ", "データ読み込み処理失敗！", MB_ICONWARNING);
-
-		// データ読み込みを抜ける
-		return E_FAIL;
+		return pManager->FileMessage(hWnd, "背景", FAIL_TEXT_WINDOW);
 	}
 
 	// 数字
@@ -92,10 +130,7 @@ HRESULT CManagerTexture::Load(HWND hWnd)
 	{// 失敗時
 
 		// 失敗メッセージ
-		MessageBox(hWnd, "数字のデータ", "データ読み込み処理失敗！", MB_ICONWARNING);
-
-		// データ読み込みを抜ける
-		return E_FAIL;
+		return pManager->FileMessage(hWnd, "数字", FAIL_TEXT_WINDOW);
 	}
 
 	// エフェクト
@@ -103,10 +138,7 @@ HRESULT CManagerTexture::Load(HWND hWnd)
 	{// 失敗時
 
 		// 失敗メッセージ
-		MessageBox(hWnd, "エフェクトのデータ", "データ読み込み処理失敗！", MB_ICONWARNING);
-
-		// データ読み込みを抜ける
-		return E_FAIL;
+		return pManager->FileMessage(hWnd, "エフェクト", FAIL_TEXT_WINDOW);
 	}
 
 	// 出現壁
@@ -114,10 +146,7 @@ HRESULT CManagerTexture::Load(HWND hWnd)
 	{// 失敗時
 
 		// 失敗メッセージ
-		MessageBox(hWnd, "出現壁のデータ", "データ読み込み処理失敗！", MB_ICONWARNING);
-
-		// データ読み込みを抜ける
-		return E_FAIL;
+		return pManager->FileMessage(hWnd, "出現壁", FAIL_TEXT_WINDOW);
 	}
 
 	// 成功を返す

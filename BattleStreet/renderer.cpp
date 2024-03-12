@@ -242,6 +242,33 @@ void CRenderer::Draw(void)
 }
 
 //-------------------------------------
+//- 生成処理
+//-------------------------------------
+CRenderer* CRenderer::Create(HWND hWnd, BOOL bWindow)
+{
+	// 生成処理
+	CRenderer* pInstance = DBG_NEW CRenderer;
+
+	if (pInstance != nullptr)
+	{
+		// 初期化処理
+		if (FAILED(pInstance->Init(hWnd, bWindow)))
+		{// 失敗時
+
+			return nullptr;
+		}
+	}
+	else if (pInstance == nullptr)
+	{// 失敗時
+
+		return nullptr;
+	}
+
+	// ポインタを返す
+	return pInstance;
+}
+
+//-------------------------------------
 //- レンダラーのアルファブレディング設定
 //-------------------------------------
 void CRenderer::SetAlphaBlend(bool bUse)

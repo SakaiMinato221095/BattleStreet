@@ -24,6 +24,7 @@
 
 #include <stdio.h>
 #include <cmath>
+#include <random>
 
 #include <d3dx9.h>						// •`‰æˆ—‚É•K—v
 

@@ -53,15 +53,16 @@ public:
 	// モーション状態
 	typedef enum
 	{
-		MOTION_STATE_NEUTRAL = 0,	// 待機
-		MOTION_STATE_MOVE,			// 移動
-		MOTION_STATE_PUNCH,			// パンチ
-		MOTION_STATE_KICK,			// キック
-		MOTION_STATE_PUNCH_FINISH,	// パンチ基本フィニッシュ
-		MOTION_STATE_KICK_FINISH,	// キック基本フィニッシュ
-		MOTION_STATE_DAMAGE,		// ダメージ
-		MOTION_STATE_DAMAGE_BIG,	// 吹き飛び
-		MOTION_STATE_STAND_UP,		// 起き上がり
+		MOTION_STATE_NEUTRAL = 0,		// 待機
+		MOTION_STATE_MOVE,				// 移動
+		MOTION_STATE_PUNCH,				// パンチ
+		MOTION_STATE_KICK,				// キック
+		MOTION_STATE_PUNCH_FINISH,		// パンチ基本フィニッシュ
+		MOTION_STATE_KICK_FINISH,		// キック基本フィニッシュ
+		MOTION_STATE_DROPKICK_FINISH,	// ドロップキックフィニッシュ
+		MOTION_STATE_DAMAGE,			// ダメージ
+		MOTION_STATE_DAMAGE_BIG,		// 吹き飛び
+		MOTION_STATE_STAND_UP,			// 起き上がり
 		MOTION_STATE_MAX
 	}MOTION_STATE;
 

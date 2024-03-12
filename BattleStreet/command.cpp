@@ -30,7 +30,7 @@
 //-======================================
 
 // 入力受付時間
-const int WINDOW_TIME = 180;
+const int WINDOW_TIME = 60;
 
 const CCommand::DataCommand DATA_COMMAND[CCommand::COMMAND_TYPE_MAX] =
 {
@@ -48,6 +48,14 @@ const CCommand::DataCommand DATA_COMMAND[CCommand::COMMAND_TYPE_MAX] =
 	CCommand::INPUT_TYPE_KICK,
 	CCommand::INPUT_TYPE_KICK,
 	CCommand::INPUT_TYPE_NONE,
+	CCommand::INPUT_TYPE_NONE,
+
+	4,	// フィニッシュまでの回数
+
+	CCommand::INPUT_TYPE_PUNCH,
+	CCommand::INPUT_TYPE_KICK,
+	CCommand::INPUT_TYPE_PUNCH,
+	CCommand::INPUT_TYPE_KICK,
 	CCommand::INPUT_TYPE_NONE,
 };
 
@@ -240,14 +248,6 @@ void CCommand::SetInitData(void)
 		// 情報を代入
 		m_dataCommand[nCntCommand] = DATA_COMMAND[nCntCommand];
 	}
-}
-
-//-------------------------------------
-//- 戦闘プレイヤーのコンボリセット処理
-//-------------------------------------
-void CCommand::ReSetCombo(void)
-{
-	ZeroMemory(&m_InfoCombo, sizeof(m_InfoCombo));
 }
 
 //-------------------------------------

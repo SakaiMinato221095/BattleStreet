@@ -58,6 +58,8 @@ public:
 	void Uninit(void);
 	void Update(void);
 
+	static CInputKeyboard* Create(HINSTANCE hInstance, HWND hWnd);
+
 	bool GetPress(int nKey);
 	bool GetTrigger(int nKey);
 	bool GetRelease(int nKey);

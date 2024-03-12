@@ -92,7 +92,7 @@ const char* pTexture[CEnemyMinion::TEX_MAX]
 int CEnemyMinion::m_nTextureNldx[CEnemyMinion::TEX_MAX] = {};
 
 //-------------------------------------
-//- エフェクトのテクスチャの読み込み
+//- データの読み込み
 //-------------------------------------
 HRESULT CEnemyMinion::Load(void)
 {
@@ -136,7 +136,7 @@ HRESULT CEnemyMinion::Load(void)
 }
 
 //-------------------------------------
-//- エフェクトの読み込んだテクスチャの破棄
+//- 読み込んだデータの破棄
 //-------------------------------------
 void CEnemyMinion::Unload(void)
 {
@@ -144,7 +144,7 @@ void CEnemyMinion::Unload(void)
 }
 
 //-------------------------------------
-//-	敵のコンストラクタ
+//-	コンストラクタ
 //-------------------------------------
 CEnemyMinion::CEnemyMinion()
 {
@@ -155,7 +155,7 @@ CEnemyMinion::CEnemyMinion()
 }
 
 //-------------------------------------
-//-	敵のデストラクタ
+//-	デストラクタ
 //-------------------------------------
 CEnemyMinion::~CEnemyMinion()
 {
@@ -163,7 +163,7 @@ CEnemyMinion::~CEnemyMinion()
 }
 
 //-------------------------------------
-//- 敵の初期化処理
+//- 初期化処理
 //-------------------------------------
 HRESULT CEnemyMinion::Init(CModel::MODEL_TYPE modelType, CMotion::MOTION_TYPE motionType)
 {
@@ -205,7 +205,7 @@ HRESULT CEnemyMinion::Init(CModel::MODEL_TYPE modelType, CMotion::MOTION_TYPE mo
 }
 
 //-------------------------------------
-//- 敵の終了処理
+//- 終了処理
 //-------------------------------------
 void CEnemyMinion::Uninit(void)
 {
@@ -233,7 +233,7 @@ void CEnemyMinion::Uninit(void)
 }
 
 //-------------------------------------
-//- 敵の更新処理
+//- 更新処理
 //-------------------------------------
 void CEnemyMinion::Update(void)
 {
@@ -289,7 +289,7 @@ void CEnemyMinion::Update(void)
 }
 
 //-------------------------------------
-//- 敵の描画処理
+//- 描画処理
 //-------------------------------------
 void CEnemyMinion::Draw(void)
 {
@@ -298,11 +298,11 @@ void CEnemyMinion::Draw(void)
 }
 
 //-------------------------------------
-//- 通常敵の生成処理
+//- 生成処理
 //-------------------------------------
 CEnemyMinion* CEnemyMinion::Create(CModel::MODEL_TYPE modelType, CMotion::MOTION_TYPE motionType)
 {
-	// 通常敵の生成
+	// 生成
 	CEnemyMinion* pEnemyWeak = DBG_NEW CEnemyMinion;
 
 	// 生成の成功の有無を判定
@@ -323,12 +323,12 @@ CEnemyMinion* CEnemyMinion::Create(CModel::MODEL_TYPE modelType, CMotion::MOTION
 		return NULL;
 	}
 
-	// 通常敵のポインタを返す
+	// ポインタを返す
 	return pEnemyWeak;
 }
 
 //-------------------------------------
-//-	敵のダメージ処理
+//-	ダメージ処理
 //-------------------------------------
 void CEnemyMinion::HitDamage(int nDamage)
 {
@@ -396,13 +396,13 @@ void CEnemyMinion::HitDamage(int nDamage)
 			D3DXCOLOR(1.0f, 0.1f, 0.1f, 1.0f),
 			90);
 
-		// 敵の終了処理
+		// 終了処理
 		Uninit();
 	}
 }
 
 //-------------------------------------
-//-	敵のモデルの初期設定
+//-	モデルの初期設定
 //-------------------------------------
 void CEnemyMinion::SetInit(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nLife, int nMaxLife)
 {
@@ -617,7 +617,7 @@ void CEnemyMinion::AiWait(void)
 //-------------------------------------
 void CEnemyMinion::AiKickCombo(void)
 {
-	float fLength = GetTargetLength() * 0.03f;
+	float fLength = GetTargetLength() * 0.01f;
 
 	// ターゲットを向く・近づく
 	SetRot(GetTargetRot());

@@ -44,7 +44,7 @@ CDebugProc::~CDebugProc()
 //==========================================================
 //デバッグ表示の初期化処理
 //==========================================================
-void CDebugProc::Init(void)
+HRESULT CDebugProc::Init(void)
 {
 	LPDIRECT3DDEVICE9 pDevice;		//デバイスへのポインタ
 
@@ -60,6 +60,8 @@ void CDebugProc::Init(void)
 #else NDEBUG
 	m_bDisp = false;
 #endif
+
+	return S_OK;
 }
 
 //==========================================================
@@ -107,6 +109,33 @@ void CDebugProc::Draw(void)
 
 	//デバッグ表示情報のクリア
 	memset(&m_aStr[0], NULL, sizeof(m_aStr));
+}
+
+//==========================================================
+// 生成処理
+//==========================================================
+CDebugProc* CDebugProc::Create(void)
+{
+	// 生成処理
+	CDebugProc* pInstance = DBG_NEW CDebugProc;
+
+	if (pInstance != nullptr)
+	{
+		// 初期化処理
+		if (FAILED(pInstance->Init()))
+		{// 失敗時
+
+			return nullptr;
+		}
+	}
+	else if (pInstance == nullptr)
+	{// 失敗時
+
+		return nullptr;
+	}
+
+	// ポインタを返す
+	return pInstance;
 }
 
 //==========================================================
