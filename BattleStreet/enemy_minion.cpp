@@ -100,7 +100,7 @@ HRESULT CEnemyMinion::Load(void)
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// デバイスの情報取得の成功を判定
-	if (pDevice == NULL)
+	if (pDevice == nullptr)
 	{// 失敗時
 
 	 // 初期化処理を抜ける
@@ -111,7 +111,7 @@ HRESULT CEnemyMinion::Load(void)
 	CManagerTexture* pManagerTexture = CManager::GetInstance()->GetManagerTexture();
 
 	// テクスチャ管理の有無を判定
-	if (pManagerTexture == NULL)
+	if (pManagerTexture == nullptr)
 	{
 		// 初期化処理を抜ける
 		return E_FAIL;

@@ -30,7 +30,7 @@
 // 3D壁のテクスチャのコンスト定義
 const char *pTextureWall[] =
 {
-	NULL,										// テクスチャなし
+	nullptr,										// テクスチャなし
 	"data\\TEXTURE\\blockade_wall000.jpg",		// 封鎖壁のテクスチャ
 	"data\\TEXTURE\\dark_wall000.png",			// 闇壁のテクスチャ
 };
@@ -66,7 +66,7 @@ HRESULT CObj3dWall::Load(void)
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// デバイスの情報取得の成功を判定
-	if (pDevice == NULL)
+	if (pDevice == nullptr)
 	{// 失敗時
 
 		// 初期化処理を抜ける
@@ -77,7 +77,7 @@ HRESULT CObj3dWall::Load(void)
 	CManagerTexture *pManagerTexture = CManager::GetInstance()->GetManagerTexture();
 
 	// テクスチャ管理の有無を判定
-	if (pManagerTexture == NULL)
+	if (pManagerTexture == nullptr)
 	{
 		// 初期化処理を抜ける
 		return E_FAIL;
@@ -119,7 +119,7 @@ HRESULT CObj3dWall::Init(TEX tex)
 	// 3Dオブジェクトの初期化
 	CObject3d::Init();
 
-	if (m_pColl == NULL)
+	if (m_pColl == nullptr)
 	{
 		// 当たり判定設定
 		m_pColl = CColl::Create(
@@ -142,12 +142,12 @@ HRESULT CObj3dWall::Init(TEX tex)
 //-------------------------------------
 void CObj3dWall::Uninit(void)
 {
-	if (m_pColl != NULL)
+	if (m_pColl != nullptr)
 	{
 		// 当たり判定の終了処理
 		m_pColl->Uninit();
 		delete m_pColl;
-		m_pColl = NULL;
+		m_pColl = nullptr;
 	}
 
 	// 3Dオブジェクトの終了
@@ -213,21 +213,21 @@ CObj3dWall * CObj3dWall::Create(TEX tex)
 	CObj3dWall *pCObj3dWall = DBG_NEW CObj3dWall(1);
 
 	// 生成の成功の有無を判定
-	if (pCObj3dWall != NULL)
+	if (pCObj3dWall != nullptr)
 	{
 		// 初期化処理
 		if (FAILED(pCObj3dWall->Init(tex)))
 		{// 失敗時
 
 			// 「なし」を返す
-			return NULL;
+			return nullptr;
 		}
 	}
-	else if (pCObj3dWall == NULL)
+	else if (pCObj3dWall == nullptr)
 	{// 失敗時
 
 		// 「なし」を返す
-		return NULL;
+		return nullptr;
 	}
 
 	// フィールドのポインタを返す
@@ -250,7 +250,7 @@ void CObj3dWall::SetVtx(void)
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// デバイスの情報取得の成功を判定
-	if (pDevice == NULL)
+	if (pDevice == nullptr)
 	{// 失敗時
 
 	 // 初期化処理を抜ける

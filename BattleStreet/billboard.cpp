@@ -30,7 +30,7 @@ CBillboard::CBillboard(int nPriority) : CObject(nPriority)
 	ZeroMemory(&m_info, sizeof(m_info));
 	m_nTextureNldxUse = 0;
 
-	m_pVtxBuff = NULL;
+	m_pVtxBuff = nullptr;
 	ZeroMemory(&m_mtxWorld, sizeof(m_mtxWorld));
 }
 
@@ -50,7 +50,7 @@ HRESULT CBillboard::Init(void)
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// デバイスの情報取得の成功を判定
-	if (pDevice == NULL)
+	if (pDevice == nullptr)
 	{// 失敗時
 
 		// 初期化処理を抜ける
@@ -64,10 +64,10 @@ HRESULT CBillboard::Init(void)
 		FVF_VERTEX_3D,
 		D3DPOOL_MANAGED,
 		&m_pVtxBuff,
-		NULL);
+		nullptr);
 
 	// 頂点バッファの生成成功の有無を確認
-	if (m_pVtxBuff == NULL)
+	if (m_pVtxBuff == nullptr)
 	{
 		// 失敗時に初期化処理を抜ける
 		return E_FAIL;
@@ -86,11 +86,11 @@ HRESULT CBillboard::Init(void)
 void CBillboard::Uninit(void)
 {
 	// 頂点バッファの有無を判定
-	if (m_pVtxBuff != NULL)
+	if (m_pVtxBuff != nullptr)
 	{
 		// 頂点バッファの開放処理
 		m_pVtxBuff->Release();
-		m_pVtxBuff = NULL;
+		m_pVtxBuff = nullptr;
 	}
 
 	// 自分自身のポインタの開放
@@ -116,8 +116,8 @@ void CBillboard::Draw(void)
 	CManagerTexture* pManagerTexture = CManager::GetInstance()->GetManagerTexture();
 
 	// 情報の情報取得の成功を判定
-	if (pDevice == NULL ||
-		pManagerTexture == NULL)
+	if (pDevice == nullptr ||
+		pManagerTexture == nullptr)
 	{// 失敗時
 
 		// 初期化処理を抜ける
@@ -142,7 +142,7 @@ void CBillboard::Draw(void)
 	// ポリゴンをカメラの位置に向きを変更
 	D3DXMatrixInverse(
 		&m_mtxWorld,
-		NULL,
+		nullptr,
 		&mtxView);
 
 	m_mtxWorld._41 = 0.0f;
@@ -189,27 +189,27 @@ void CBillboard::Draw(void)
 CBillboard * CBillboard::Create(void)
 {
 	// 3Dオブジェクトのポインタを宣言
-	CBillboard *pObjectBillboard = NULL;
+	CBillboard *pObjectBillboard = nullptr;
 
 	// 生成
 	pObjectBillboard = DBG_NEW CBillboard;
 
 	// 生成の成功の有無を判定
-	if (pObjectBillboard != NULL)
+	if (pObjectBillboard != nullptr)
 	{
 		// 初期化処理
 		if (FAILED(pObjectBillboard->Init()))
 		{// 失敗時
 
 			// 「なし」を返す
-			return NULL;
+			return nullptr;
 		}
 	}
-	else if (pObjectBillboard == NULL)
+	else if (pObjectBillboard == nullptr)
 	{// 失敗時
 
 		// 「なし」を返す
-		return NULL;
+		return nullptr;
 	}
 
 	// 3Dオブジェクトのポインタを返す

@@ -169,21 +169,21 @@ CFinishPunch* CFinishPunch::Create(void)
 	CFinishPunch* pInstance = DBG_NEW CFinishPunch;
 
 	// 生成の成功の有無を判定
-	if (pInstance != NULL)
+	if (pInstance != nullptr)
 	{
 		// 初期化処理
 		if (FAILED(pInstance->Init()))
 		{// 失敗時
 
 			// 「なし」を返す
-			return NULL;
+			return nullptr;
 		}
 	}
-	else if (pInstance == NULL)
+	else if (pInstance == nullptr)
 	{// 失敗時
 
 		// 「なし」を返す
-		return NULL;
+		return nullptr;
 	}
 
 	// ポインタを返す
@@ -260,21 +260,21 @@ CFinishKick* CFinishKick::Create(void)
 	CFinishKick* pInstance = DBG_NEW CFinishKick;
 
 	// 生成の成功の有無を判定
-	if (pInstance != NULL)
+	if (pInstance != nullptr)
 	{
 		// 初期化処理
 		if (FAILED(pInstance->Init()))
 		{// 失敗時
 
 			// 「なし」を返す
-			return NULL;
+			return nullptr;
 		}
 	}
-	else if (pInstance == NULL)
+	else if (pInstance == nullptr)
 	{// 失敗時
 
 		// 「なし」を返す
-		return NULL;
+		return nullptr;
 	}
 
 	// ポインタを返す
@@ -351,21 +351,21 @@ CFinishDropKick* CFinishDropKick::Create(void)
 	CFinishDropKick* pInstance = DBG_NEW CFinishDropKick;
 
 	// 生成の成功の有無を判定
-	if (pInstance != NULL)
+	if (pInstance != nullptr)
 	{
 		// 初期化処理
 		if (FAILED(pInstance->Init()))
 		{// 失敗時
 
 			// 「なし」を返す
-			return NULL;
+			return nullptr;
 		}
 	}
-	else if (pInstance == NULL)
+	else if (pInstance == nullptr)
 	{// 失敗時
 
 		// 「なし」を返す
-		return NULL;
+		return nullptr;
 	}
 
 	// ポインタを返す

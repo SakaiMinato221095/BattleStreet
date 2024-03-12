@@ -130,13 +130,13 @@ HRESULT CPause::Init(void)
 {
 	for (int nCnt = 0; nCnt < TYPE_MAX; nCnt++)
 	{
-		if (m_infoVisual.apObj2d[nCnt] == NULL)
+		if (m_infoVisual.apObj2d[nCnt] == nullptr)
 		{
 			// オブジェクト管理の生成
 			m_infoVisual.apObj2d[nCnt] = CObject2d::Create();
 
 			// オブジェクト管理の初期化処理
-			if (m_infoVisual.apObj2d[nCnt] == NULL)
+			if (m_infoVisual.apObj2d[nCnt] == nullptr)
 			{// 失敗時
 
 				// 初期化を抜ける
@@ -211,11 +211,11 @@ void CPause::Uninit(void)
 {
 	for (int nCutPause = 0; nCutPause < TYPE_MAX; nCutPause++)
 	{
-		if (m_infoVisual.apObj2d[nCutPause] != NULL)
+		if (m_infoVisual.apObj2d[nCutPause] != nullptr)
 		{
 			// 効果なし2Dオブジェクトの開放処理
 			m_infoVisual.apObj2d[nCutPause]->Uninit();
-			m_infoVisual.apObj2d[nCutPause] = NULL;
+			m_infoVisual.apObj2d[nCutPause] = nullptr;
 		}
 	}
 
@@ -241,15 +241,15 @@ void CPause::Update(void)
 	CXInput* pXInput = CManager::GetInstance()->GetXInput();
 
 	// 情報取得の成功を判定
-	if (pInputKeyboard == NULL ||
-		pXInput == NULL)
+	if (pInputKeyboard == nullptr ||
+		pXInput == nullptr)
 	{// 失敗時
 
 		// 更新処理を抜ける
 		return;
 	}
 
-	if (pInputKeyboard->GetTrigger(DIK_W) != NULL)
+	if (pInputKeyboard->GetTrigger(DIK_W))
 	{
 		// 種類を加算
 		m_typeSelect = (TYPE_SELECT)(m_typeSelect - 1);
@@ -266,7 +266,7 @@ void CPause::Update(void)
 				0.0f));
 
 	}
-	else if (pInputKeyboard->GetTrigger(DIK_S) != NULL)
+	else if (pInputKeyboard->GetTrigger(DIK_S))
 	{
 		// 種類を加算
 		m_typeSelect = (TYPE_SELECT)(m_typeSelect + 1);
@@ -283,7 +283,7 @@ void CPause::Update(void)
 				0.0f));
 	}
 	
-	if (pInputKeyboard->GetTrigger(DIK_RETURN) != NULL)
+	if (pInputKeyboard->GetTrigger(DIK_RETURN))
 	{
 		m_bOk = true;
 	}
@@ -306,21 +306,21 @@ CPause *CPause::Create(void)
 	CPause *pCPause = DBG_NEW CPause;
 
 	// 生成の成功の有無を判定
-	if (pCPause != NULL)
+	if (pCPause != nullptr)
 	{
 		// 初期化処理
 		if (FAILED(pCPause->Init()))
 		{// 失敗時
 
 			// 「なし」を返す
-			return NULL;
+			return nullptr;
 		}
 	}
-	else if (pCPause == NULL)
+	else if (pCPause == nullptr)
 	{// 失敗時
 
 		// 「なし」を返す
-		return NULL;
+		return nullptr;
 	}
 
 	// ポーズのポインタを返す

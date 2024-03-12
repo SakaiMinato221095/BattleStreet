@@ -47,7 +47,7 @@
 //-------------------------------------
 CEnemy::CEnemy()
 {
-	m_pColl = NULL;
+	m_pColl = nullptr;
 
 	ZeroMemory(&m_data, sizeof(m_data));
 	ZeroMemory(&m_infoTarger, sizeof(m_infoTarger));
@@ -66,7 +66,7 @@ CEnemy::~CEnemy()
 //-------------------------------------
 HRESULT CEnemy::Init(void)
 {
-	if (m_pColl == NULL)
+	if (m_pColl == nullptr)
 	{
 		// 当たり判定設定
 		m_pColl = CColl::Create(
@@ -89,12 +89,12 @@ HRESULT CEnemy::Init(void)
 //-------------------------------------
 void CEnemy::Uninit(void)
 {
-	if (m_pColl != NULL)
+	if (m_pColl != nullptr)
 	{
 		// 当たり判定の終了処理
 		m_pColl->Uninit();
 		delete m_pColl;
-		m_pColl = NULL;
+		m_pColl = nullptr;
 	}
 
 	// 自分自身のポインタの開放
@@ -133,21 +133,21 @@ CEnemy * CEnemy::Create(void)
 	CEnemy *pEnemy = DBG_NEW CEnemy;
 
 	// 生成の成功の有無を判定
-	if (pEnemy != NULL)
+	if (pEnemy != nullptr)
 	{
 		// 初期化処理
 		if (FAILED(pEnemy->Init()))
 		{// 失敗時
 
 			// 「なし」を返す
-			return NULL;
+			return nullptr;
 		}
 	}
-	else if (pEnemy == NULL)
+	else if (pEnemy == nullptr)
 	{// 失敗時
 
 		// 「なし」を返す
-		return NULL;
+		return nullptr;
 	}
 
 	// 通常敵のポインタを返す
@@ -239,7 +239,7 @@ void CEnemy::UpdateTargetPlayer(void)
 	CPlayer* pPlayer = CGame::GetPlayer();
 
 	// プレイヤーの情報取得の成功を判定
-	if (pPlayer == NULL)
+	if (pPlayer == nullptr)
 	{// 失敗時
 
 		// 追尾処理を抜ける

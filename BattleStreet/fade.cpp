@@ -27,7 +27,7 @@ CFade::CFade()
 	// 値をクリア
 	ZeroMemory(&m_vtxData, sizeof(m_vtxData));
 
-	m_pVtxBuff = NULL;
+	m_pVtxBuff = nullptr;
 	m_state = STATE_NONE;
 	m_mode = CScene::MODE(0);
 }
@@ -49,7 +49,7 @@ HRESULT CFade::Init(void)
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// デバイスの情報取得の成功を判定
-	if (pDevice == NULL)
+	if (pDevice == nullptr)
 	{// 失敗時
 
 	 // 初期化処理を抜ける
@@ -63,10 +63,10 @@ HRESULT CFade::Init(void)
 		FVF_VERTEX_2D,
 		D3DPOOL_MANAGED,
 		&m_pVtxBuff,
-		NULL);
+		nullptr);
 
 	// 頂点バッファ生成成功の有無を判定
-	if (m_pVtxBuff == NULL)
+	if (m_pVtxBuff == nullptr)
 	{// 失敗時
 
 	 // 初期化処理を抜ける
@@ -87,11 +87,11 @@ HRESULT CFade::Init(void)
 void CFade::Uninit(void)
 {
 	// 頂点バッファの有無を判定
-	if (m_pVtxBuff != NULL)
+	if (m_pVtxBuff != nullptr)
 	{
 		// 頂点バッファの破棄
 		m_pVtxBuff->Release();
-		m_pVtxBuff = NULL;
+		m_pVtxBuff = nullptr;
 	}
 }
 
@@ -155,7 +155,7 @@ void CFade::Draw(void)
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// デバイスの情報取得の成功を判定
-	if (pDevice == NULL)
+	if (pDevice == nullptr)
 	{// 失敗時
 
 		// 描画処理を抜ける
@@ -177,7 +177,7 @@ void CFade::Draw(void)
 		// テクスチャの設定
 		pDevice->SetTexture(
 			0,
-			NULL);
+			nullptr);
 
 		// フェードの描画
 		pDevice->DrawPrimitive(
@@ -196,21 +196,21 @@ CFade *CFade::Create(void)
 	CFade *pFade = DBG_NEW CFade;
 
 	// 生成の成功の有無を判定
-	if (pFade != NULL)
+	if (pFade != nullptr)
 	{
 		// 初期化処理
 		if (FAILED(pFade->Init()))
 		{// 失敗時
 
 			// 「なし」を返す
-			return NULL;
+			return nullptr;
 		}
 	}
-	else if (pFade == NULL)
+	else if (pFade == nullptr)
 	{// 失敗時
 
 		// 「なし」を返す
-		return NULL;
+		return nullptr;
 	}
 
 	// 頂点情報設定
@@ -231,7 +231,7 @@ void CFade::SetVtx(void)
 	D3DXCOLOR color = m_vtxData.color;	// 色
 
 	// 2D頂点情報のポインタを宣言
-	VERTEX_2D *pVtx = NULL;
+	VERTEX_2D *pVtx = nullptr;
 
 	// 頂点バッファをロックし、頂点情報のポインタを取得
 	m_pVtxBuff->Lock(

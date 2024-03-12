@@ -12,7 +12,7 @@
 //-	静的変数宣言
 //-======================================
 
-LPDIRECTINPUT8 CInput::m_pInput = NULL;		// 入力処理のオブジェクトをクリア
+LPDIRECTINPUT8 CInput::m_pInput = nullptr;		// 入力処理のオブジェクトをクリア
 
 //=====================================
 //= 入力のコンストラクタ
@@ -20,7 +20,7 @@ LPDIRECTINPUT8 CInput::m_pInput = NULL;		// 入力処理のオブジェクトをクリア
 CInput::CInput()
 {
 	// 値をクリア
-	m_pDevice = NULL;
+	m_pDevice = nullptr;
 }
 
 //=====================================
@@ -36,10 +36,10 @@ CInput::~CInput()
 HRESULT CInput::Init(HINSTANCE hInstanse, HWND hWnd)
 {
 	// 入力オブジェクトの有無を判定
-	if (m_pInput == NULL)
+	if (m_pInput == nullptr)
 	{
 		// 入力オブジェクトの生成
-		if (FAILED(DirectInput8Create(hInstanse, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&m_pInput, NULL)))
+		if (FAILED(DirectInput8Create(hInstanse, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&m_pInput, nullptr)))
 		{// 失敗時
 
 			// 初期化処理を抜ける
@@ -57,22 +57,22 @@ HRESULT CInput::Init(HINSTANCE hInstanse, HWND hWnd)
 void CInput::Uninit(void)
 {
 	// 入力デバイスの破棄
-	if (m_pDevice != NULL)
+	if (m_pDevice != nullptr)
 	{
 		// アクセス権を破棄
 		m_pDevice->Unacquire();	
 
 		// 入力デバイスの開放処理
 		m_pDevice->Release();
-		m_pDevice = NULL;
+		m_pDevice = nullptr;
 	}
 
 	// 入力オブジェクトの破棄
-	if (m_pInput != NULL)
+	if (m_pInput != nullptr)
 	{
 		// 入力オブジェクトの開放処理
 		m_pInput->Release();
-		m_pInput = NULL;
+		m_pInput = nullptr;
 	}
 }
 
@@ -111,7 +111,7 @@ HRESULT CInputKeyboard::Init(HINSTANCE hInstanse, HWND hWnd)
 	}
 
 	// キーボードの入力デバイスを生成
-	if (FAILED(m_pInput->CreateDevice(GUID_SysKeyboard, &m_pDevice, NULL)))
+	if (FAILED(m_pInput->CreateDevice(GUID_SysKeyboard, &m_pDevice, nullptr)))
 	{// 失敗時
 
 		// 初期化処理を抜ける

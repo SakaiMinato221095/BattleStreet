@@ -129,13 +129,13 @@ void CManagerModel::Unload(void)
 	for (int nCount = 0; nCount < MANAGER_MODEL_MAX; nCount++)
 	{
 		// テクスチャの破棄
-		if (m_model[nCount].m_pTexture != NULL)
+		if (m_model[nCount].m_pTexture != nullptr)
 		{
 			// 動的確保分
 			for (int nCutMat = 0; nCutMat < (int)m_model[nCount].m_dwNumMat; nCutMat++)
 			{
 				// テクスチャの有無を判定
-				if (m_model[nCount].m_pTexture[nCutMat] != NULL)
+				if (m_model[nCount].m_pTexture[nCutMat] != nullptr)
 				{
 					// テクスチャの開放処理
 					m_model[nCount].m_pTexture[nCutMat]->Release();
@@ -144,25 +144,25 @@ void CManagerModel::Unload(void)
 
 			// テクスチャの開放
 			delete[] m_model[nCount].m_pTexture;
-			m_model[nCount].m_pTexture = NULL;
+			m_model[nCount].m_pTexture = nullptr;
 
 			// テクスチャ番号の開放
 			delete[] m_model[nCount].m_nldxTexture;
-			m_model[nCount].m_nldxTexture = NULL;
+			m_model[nCount].m_nldxTexture = nullptr;
 		}
 
 		// メッシュの破棄
-		if (m_model[nCount].m_pMesh != NULL)
+		if (m_model[nCount].m_pMesh != nullptr)
 		{
 			m_model[nCount].m_pMesh->Release();
-			m_model[nCount].m_pMesh = NULL;
+			m_model[nCount].m_pMesh = nullptr;
 		}
 
 		// マテリアルの破棄
-		if (m_model[nCount].m_pBuffMat != NULL)
+		if (m_model[nCount].m_pBuffMat != nullptr)
 		{
 			m_model[nCount].m_pBuffMat->Release();
-			m_model[nCount].m_pBuffMat = NULL;
+			m_model[nCount].m_pBuffMat = nullptr;
 		}
 	}
 }
@@ -176,7 +176,7 @@ int CManagerModel::Regist(const char *pFilename)
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// デバイスの情報取得の成功を判定
-	if (pDevice == NULL)
+	if (pDevice == nullptr)
 	{// 失敗時
 
 		// 処理を抜ける
@@ -187,7 +187,7 @@ int CManagerModel::Regist(const char *pFilename)
 	CManagerTexture *pManagerTexture = CManager::GetInstance()->GetManagerTexture();
 
 	// テクスチャ管理の有無を判定
-	if (pManagerTexture == NULL)
+	if (pManagerTexture == nullptr)
 	{
 		// 初期化処理を抜ける
 		return -1;
@@ -196,16 +196,16 @@ int CManagerModel::Regist(const char *pFilename)
 	for (int nCount = 0; nCount < MANAGER_MODEL_MAX; nCount++)
 	{
 		// モデルの有無を判定
-		if (m_model[nCount].m_pMesh == NULL)
+		if (m_model[nCount].m_pMesh == nullptr)
 		{
 			// Xファイルの読み込み
 			if (FAILED(D3DXLoadMeshFromX(
 				pFilename,						// Xファイルオブジェクト名
 				D3DXMESH_SYSTEMMEM,
 				pDevice,
-				NULL,
+				nullptr,
 				&m_model[nCount].m_pBuffMat,	// マテリアルの情報
-				NULL,
+				nullptr,
 				&m_model[nCount].m_dwNumMat,	// マテリアルの数
 				&m_model[nCount].m_pMesh)))		// メッシュの情報
 			{
@@ -214,7 +214,7 @@ int CManagerModel::Regist(const char *pFilename)
 			}
 
 			// テクスチャの使用の有無を確認
-			if (m_model[nCount].m_pTexture == NULL)
+			if (m_model[nCount].m_pTexture == nullptr)
 			{
 				// マテリアル数分動的確保
 				m_model[nCount].m_pTexture = DBG_NEW LPDIRECT3DTEXTURE9[m_model[nCount].m_dwNumMat];
@@ -234,7 +234,7 @@ int CManagerModel::Regist(const char *pFilename)
 			D3DXMATERIAL *pMat = (D3DXMATERIAL*)m_model[nCount].m_pBuffMat->GetBufferPointer();
 
 			// マテリアルの情報取得の成功を判定
-			if (pDevice == NULL)
+			if (pDevice == nullptr)
 			{// 失敗
 
 				// 初期化を抜ける
@@ -246,7 +246,7 @@ int CManagerModel::Regist(const char *pFilename)
 			for (int nCutMat = 0; nCutMat < (int)m_model[nCount].m_dwNumMat; nCutMat++)
 			{
 				// テクスチャ設定の有無を判定
-				if (pMat[nCutMat].pTextureFilename != NULL)
+				if (pMat[nCutMat].pTextureFilename != nullptr)
 				{// テクスチャ設定が存在する
 
 				 // テクスチャの読み込み if(テクスチャ読み込み成功の有無を判定)
@@ -266,7 +266,7 @@ int CManagerModel::Regist(const char *pFilename)
 				else
 				{
 					// 「なし」を代入
-					m_model[nCount].m_pTexture[nCutMat] = NULL;
+					m_model[nCount].m_pTexture[nCutMat] = nullptr;
 				}
 			}
 

@@ -86,21 +86,21 @@ CMgrColl * CMgrColl::Create(void)
 	CMgrColl *pCollision = DBG_NEW CMgrColl;
 
 	// 生成の成功の有無を判定
-	if (pCollision != NULL)
+	if (pCollision != nullptr)
 	{
 		// 初期化処理
 		if (FAILED(pCollision->Init()))
 		{// 失敗時
 
 			// 「なし」を返す
-			return NULL;
+			return nullptr;
 		}
 	}
-	else if (pCollision == NULL)
+	else if (pCollision == nullptr)
 	{// 失敗時
 
 		// 「なし」を返す
-		return NULL;
+		return nullptr;
 	}
 
 	// 当たり判定管理のポインタを返す
@@ -276,7 +276,7 @@ int CMgrColl::Set(CColl *pColl)
 {
 	for (int nCount = 0; nCount < COLLSION_NUM_MAX; nCount++)
 	{
-		if (m_apColl[nCount] == NULL)
+		if (m_apColl[nCount] == nullptr)
 		{
 			m_apColl[nCount] = pColl;
 

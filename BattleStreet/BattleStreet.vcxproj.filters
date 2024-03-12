@@ -16,9 +16,6 @@
     <Filter Include="Collision">
       <UniqueIdentifier>{e74660d2-64d8-4c72-9411-0e11368ec05e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Scene">
-      <UniqueIdentifier>{c7db45fd-0944-47e1-b4a0-0e0918205861}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Input">
       <UniqueIdentifier>{93cf51ad-cbe2-4184-bced-64c8eeb70ffa}</UniqueIdentifier>
     </Filter>
@@ -75,6 +72,9 @@
     </Filter>
     <Filter Include="Rank">
       <UniqueIdentifier>{65fcb468-dd6f-4a56-9378-0f4c06165384}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene">
+      <UniqueIdentifier>{c7db45fd-0944-47e1-b4a0-0e0918205861}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

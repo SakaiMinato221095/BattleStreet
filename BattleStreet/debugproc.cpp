@@ -15,7 +15,7 @@
 #include "game.h"
 
 // 静的メンバ変数宣言
-LPD3DXFONT CDebugProc::m_pFont = NULL;	// デバッグフォントへのポインタ
+LPD3DXFONT CDebugProc::m_pFont = nullptr;	// デバッグフォントへのポインタ
 
 //**********************************************************
 //マクロ定義
@@ -29,7 +29,7 @@ CDebugProc::CDebugProc()
 {
 	//デバッグ表示情報のクリア
 	m_bDisp = false;
-	m_pFont = NULL;
+	m_pFont = nullptr;
 	memset(&m_aStr[0], NULL, sizeof(m_aStr));
 }
 
@@ -70,10 +70,10 @@ HRESULT CDebugProc::Init(void)
 void CDebugProc::Uninit(void)
 {
 	//デバッグ表示用フォントの廃棄
-	if (m_pFont != NULL)
+	if (m_pFont != nullptr)
 	{
 		m_pFont->Release();
-		m_pFont = NULL;
+		m_pFont = nullptr;
 	}
 }
 
@@ -104,7 +104,7 @@ void CDebugProc::Draw(void)
 	{//デバックモードがオンの時
 	 
 		//テキストの描画
-		m_pFont->DrawText(NULL, &m_aStr[0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
+		m_pFont->DrawText(nullptr, &m_aStr[0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
 	}
 
 	//デバッグ表示情報のクリア

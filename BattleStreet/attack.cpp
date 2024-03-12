@@ -49,7 +49,7 @@ CAttack::~CAttack()
 //-------------------------------------
 HRESULT CAttack::Init(void)
 {
-	if (m_pColl == NULL)
+	if (m_pColl == nullptr)
 	{
 		// 当たり判定設定
 		m_pColl = CColl::Create(
@@ -126,21 +126,21 @@ CAttack* CAttack::Create(void)
 	CAttack* pAttack = DBG_NEW CAttack;
 
 	// 生成の成功の有無を判定
-	if (pAttack != NULL)
+	if (pAttack != nullptr)
 	{
 		// 初期化処理
 		if (FAILED(pAttack->Init()))
 		{// 失敗時
 
 			// 「なし」を返す
-			return NULL;
+			return nullptr;
 		}
 	}
-	else if (pAttack == NULL)
+	else if (pAttack == nullptr)
 	{// 失敗時
 
 		// 「なし」を返す
-		return NULL;
+		return nullptr;
 	}
 
 	// ポインタを返す
@@ -156,8 +156,8 @@ void CAttack::UpdateHit(void)
 	CSound* pSound = CManager::GetInstance()->GetSound();
 
 	// 取得の有無判定
-	if (pManager == NULL ||
-		pSound == NULL)
+	if (pManager == nullptr ||
+		pSound == nullptr)
 	{
 		return;
 	}
@@ -218,7 +218,7 @@ void CAttack::Debug(void)
 	CDebugProc* pDebugProc = CManager::GetInstance()->GetDbugProc();
 
 	// デバックプロック取得の有無を判定
-	if (pDebugProc == NULL)
+	if (pDebugProc == nullptr)
 	{
 		return;
 	}

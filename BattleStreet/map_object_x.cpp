@@ -112,7 +112,7 @@ void CMapObjectX::Load(CMapObjectX::TXT txtType)
 	FILE* pFile = fopen(pTxtObjectX[txtType], "r");
 
 	// ファイルの有無を判定
-	if (pFile != NULL)
+	if (pFile != nullptr)
 	{
 		// 変数宣言
 		char aFileData[256] = { 0 };				// ファイルの文章を格納
@@ -135,9 +135,9 @@ void CMapObjectX::Load(CMapObjectX::TXT txtType)
 				}
 			}
 
-			if (strstr(aFileData, "MODEL") != NULL)
+			if (strstr(aFileData, "MODEL") != nullptr)
 			{
-				if (strstr(aFileData, "=") != NULL)
+				if (strstr(aFileData, "=") != nullptr)
 				{
 					// 敵の生成処理
 					pObjectNone = CObjectXNone::Create((CObjectXNone::MODEL)0, D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
@@ -157,10 +157,10 @@ void CMapObjectX::Load(CMapObjectX::TXT txtType)
 				}
 			}
 
-			if (strstr(aFileData, "POS") != NULL)
+			if (strstr(aFileData, "POS") != nullptr)
 			{
 				// 特定の文字を判定
-				if (strstr(aFileData, "=") != NULL)
+				if (strstr(aFileData, "=") != nullptr)
 				{
 					// 変数宣言
 					char aTenp[3][256] = {};	// ゴミ入れ	
@@ -179,10 +179,10 @@ void CMapObjectX::Load(CMapObjectX::TXT txtType)
 			}
 
 			// 向き情報の判定
-			if (strstr(aFileData, "ROT") != NULL)
+			if (strstr(aFileData, "ROT") != nullptr)
 			{
 				// 特定の文字を判定
-				if (strstr(aFileData, "=") != NULL)
+				if (strstr(aFileData, "=") != nullptr)
 				{
 					// 変数宣言
 					char aTenp[3][256] = {};	// ゴミ入れ	
@@ -201,14 +201,14 @@ void CMapObjectX::Load(CMapObjectX::TXT txtType)
 			}
 
 			// モデル設定の終了
-			if (strstr(aFileData, "END_MODEL_SET") != NULL)
+			if (strstr(aFileData, "END_MODEL_SET") != nullptr)
 			{
 				// オブジェクトのポインタをなくす
-				pObjectNone = NULL;
+				pObjectNone = nullptr;
 			}
 
 			// 読み込み終了
-			if (strstr(aFileData, "SET_END") != NULL)
+			if (strstr(aFileData, "SET_END") != nullptr)
 			{
 				break;
 			}

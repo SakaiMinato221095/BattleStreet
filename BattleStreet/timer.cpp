@@ -33,7 +33,7 @@ CTimer::CTimer()
 	// 値のクリア
 	for (int nCount = 0; nCount < DIG_NUM_MAX; nCount++)
 	{
-		m_apNumber[nCount] = NULL;
+		m_apNumber[nCount] = nullptr;
 	}
 
 	ZeroMemory(&m_data, sizeof(m_data));
@@ -55,13 +55,13 @@ HRESULT CTimer::Init(D3DXVECTOR3 pos, D3DXVECTOR3 interval, D3DXVECTOR3 between,
 	// タイマーの数字設定
 	for (int nCount = 0; nCount < DIG_NUM_MAX; nCount++)
 	{
-		if (m_apNumber[nCount] == NULL)
+		if (m_apNumber[nCount] == nullptr)
 		{
 			// 数字の生成処理
 			m_apNumber[nCount] = CNumber::Create(CNumber::TEX_DARK_GREEN_001);
 
 			// 数字の生成成功の有無を判定
-			if (m_apNumber[nCount] == NULL)
+			if (m_apNumber[nCount] == nullptr)
 			{
 				// 「なし」を返す
 				return E_FAIL;
@@ -83,10 +83,10 @@ void CTimer::Uninit(void)
 {
 	for (int nCount = 0; nCount < DIG_NUM_MAX; nCount++)
 	{
-		if (m_apNumber[nCount] != NULL)
+		if (m_apNumber[nCount] != nullptr)
 		{
 			// 数字の初期化
-			m_apNumber[nCount] = NULL;
+			m_apNumber[nCount] = nullptr;
 		}
 	}
 }
@@ -120,21 +120,21 @@ CTimer * CTimer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 interval, D3DXVECTOR3 betwe
 	CTimer *pTimer = DBG_NEW CTimer;
 
 	// 生成の成功の有無を判定
-	if (pTimer != NULL)
+	if (pTimer != nullptr)
 	{
 		// 初期化処理
 		if (FAILED(pTimer->Init(pos,interval,between,size,color)))
 		{// 失敗時
 
 			// 「なし」を返す
-			return NULL;
+			return nullptr;
 		}
 	}
-	else if (pTimer == NULL)
+	else if (pTimer == nullptr)
 	{// 失敗時
 
 		// 「なし」を返す
-		return NULL;
+		return nullptr;
 	}
 
 	// パーティクルのポインタを返す
@@ -149,10 +149,10 @@ void CTimer::NullAllNumber(void)
 	for (int nCount = 0; nCount < DIG_NUM_MAX; nCount++)
 	{
 		// 数字の有無を判定
-		if (m_apNumber[nCount] != NULL)
+		if (m_apNumber[nCount] != nullptr)
 		{
 			// 数字のポインタ初期化処理
-			m_apNumber[nCount] = NULL;
+			m_apNumber[nCount] = nullptr;
 		}
 	}
 }
@@ -225,7 +225,7 @@ void CTimer::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 interval, D3DXVECTOR3 between,
 	for (int nCount = 0; nCount < DIG_MINU_NUM_MAX; nCount++)
 	{
 		// 数字の有無を判定
-		if (m_apNumber[nDigMax] != NULL)
+		if (m_apNumber[nDigMax] != nullptr)
 		{
 			// 数字の位置を算出
 			D3DXVECTOR3 numPos = D3DXVECTOR3(
@@ -247,7 +247,7 @@ void CTimer::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 interval, D3DXVECTOR3 between,
 	for (int nCount = 0; nCount < DIG_SECO_NUM_MAX; nCount++)
 	{
 		// 数字の有無を判定
-		if (m_apNumber[nDigMax] != NULL)
+		if (m_apNumber[nDigMax] != nullptr)
 		{
 			// 数字の位置を算出
 			D3DXVECTOR3 numPos = D3DXVECTOR3(
@@ -269,7 +269,7 @@ void CTimer::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 interval, D3DXVECTOR3 between,
 	for (int nCount = 0; nCount < DIG_MILL_NUM_MAX; nCount++)
 	{
 		// 数字の有無を判定
-		if (m_apNumber[nDigMax] != NULL)
+		if (m_apNumber[nDigMax] != nullptr)
 		{
 			// 数字の位置を算出
 			D3DXVECTOR3 numPos = D3DXVECTOR3(

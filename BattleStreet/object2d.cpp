@@ -30,7 +30,7 @@ CObject2d::CObject2d(int nPriority) : CObject(nPriority)
 	ZeroMemory(&m_info, sizeof(m_info));
 
 	m_nTextureNldxUse = 0;
-	m_pVtxBuff = NULL;
+	m_pVtxBuff = nullptr;
 }
 
 //-------------------------------------
@@ -50,7 +50,7 @@ HRESULT CObject2d::Init(void)
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// デバイスの情報取得の成功を判定
-	if (pDevice == NULL)
+	if (pDevice == nullptr)
 	{// 失敗時
 
 	 // 初期化処理を抜ける
@@ -64,10 +64,10 @@ HRESULT CObject2d::Init(void)
 		FVF_VERTEX_2D,
 		D3DPOOL_MANAGED,
 		&m_pVtxBuff,
-		NULL);
+		nullptr);
 
 	// 頂点バッファ生成成功の有無を判定
-	if (m_pVtxBuff == NULL)
+	if (m_pVtxBuff == nullptr)
 	{// 失敗時
 
 		// 初期化処理を抜ける
@@ -85,11 +85,11 @@ HRESULT CObject2d::Init(void)
 void CObject2d::Uninit(void)
 {
 	// 頂点バッファの有無を判定
-	if (m_pVtxBuff != NULL)
+	if (m_pVtxBuff != nullptr)
 	{
 		// 頂点バッファの破棄
 		m_pVtxBuff->Release();
-		m_pVtxBuff = NULL;
+		m_pVtxBuff = nullptr;
 	}
 
 	// 自分自身のポインタの開放
@@ -113,7 +113,7 @@ void CObject2d::Draw(void)
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// デバイスの情報取得の成功を判定
-	if (pDevice == NULL)
+	if (pDevice == nullptr)
 	{// 失敗時
 
 		// 描画処理を抜ける
@@ -124,7 +124,7 @@ void CObject2d::Draw(void)
 	CManagerTexture *pManagerTexture = CManager::GetInstance()->GetManagerTexture();
 
 	// テクスチャ管理の情報取得の成功を判定
-	if (pManagerTexture == NULL)
+	if (pManagerTexture == nullptr)
 	{// 失敗時
 
 		// 描画処理を抜ける
@@ -165,21 +165,21 @@ CObject2d * CObject2d::Create(void)
 	CObject2d *pObject2d = DBG_NEW CObject2d(7);
 
 	// 生成の成功の有無を判定
-	if (pObject2d != NULL)
+	if (pObject2d != nullptr)
 	{
 		// 初期化処理
 		if (FAILED(pObject2d->Init()))
 		{// 失敗時
 
 			// 「なし」を返す
-			return NULL;
+			return nullptr;
 		}
 	}
-	else if (pObject2d == NULL)
+	else if (pObject2d == nullptr)
 	{// 失敗時
 
 		// 「なし」を返す
-		return NULL;
+		return nullptr;
 	}
 
 	// オブジェクトの頂点情報設定

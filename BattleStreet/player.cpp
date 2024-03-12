@@ -127,7 +127,7 @@ HRESULT CPlayer::Init(D3DXVECTOR3 pos , D3DXVECTOR3 rot,CModel::MODEL_TYPE model
 	for (int nCount = 0; nCount < m_nNumModel; nCount++)
 	{
 		// 階層構造Xオブジェクトの有無を判定
-		if (m_apModel[nCount] == NULL)
+		if (m_apModel[nCount] == nullptr)
 		{
 			// 階層構造Xオブジェクトの生成
 			m_apModel[nCount] = CModel::Create(modelType, nCount);
@@ -142,7 +142,7 @@ HRESULT CPlayer::Init(D3DXVECTOR3 pos , D3DXVECTOR3 rot,CModel::MODEL_TYPE model
 		}
 	}
 
-	if (m_pMotion == NULL)
+	if (m_pMotion == nullptr)
 	{
 		// モーションの生成
 		m_pMotion = CMotion::Create(m_nNumModel, nStateMax);
@@ -200,47 +200,47 @@ void CPlayer::Uninit(void)
 {
 	for (int nCount = 0; nCount < COLL_TYPE_MAX; nCount++)
 	{
-		if (m_apColl[nCount] != NULL)
+		if (m_apColl[nCount] != nullptr)
 		{
 			// 当たり判定の終了処理
 			m_apColl[nCount]->Uninit();
 
 			delete m_apColl[nCount];
-			m_apColl[nCount] = NULL;
+			m_apColl[nCount] = nullptr;
 		}
 	}
 
 	// モデルの終了処理
 	for (int nCount = 0; nCount < m_nNumModel; nCount++)
 	{
-		if (m_apModel[nCount] != NULL)
+		if (m_apModel[nCount] != nullptr)
 		{
 			// モデルの開放処理
 			m_apModel[nCount]->Uninit();
 
 			delete m_apModel[nCount];
-			m_apModel[nCount] = NULL;
+			m_apModel[nCount] = nullptr;
 		}
 	}
 
 	// モーションの終了処理
-	if (m_pMotion != NULL)
+	if (m_pMotion != nullptr)
 	{
 		// モーションの開放
 		m_pMotion->Uninit();
 
 		delete m_pMotion;
-		m_pMotion = NULL;
+		m_pMotion = nullptr;
 	}
 
 	// コマンドの終了処理
-	if (m_pCommand != NULL)
+	if (m_pCommand != nullptr)
 	{
 		// モーションの開放
 		m_pCommand->Uninit();
 
 		delete m_pCommand;
-		m_pCommand = NULL;
+		m_pCommand = nullptr;
 	}
 
 	// 攻撃の終了処理
@@ -337,7 +337,7 @@ void CPlayer::Draw(void)
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// デバイスの情報取得の成功を判定
-	if (pDevice == NULL)
+	if (pDevice == nullptr)
 	{// 失敗時
 
 	 // 初期化処理を抜ける
@@ -372,7 +372,7 @@ void CPlayer::Draw(void)
 		}
 	}
 
-	if (m_pCommand != NULL)
+	if (m_pCommand != nullptr)
 	{
 		// コマンドの描画処理
 		m_pCommand->Draw();
@@ -388,21 +388,21 @@ CPlayer *CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, CModel::MODEL_TYPE mo
 	CPlayer *pPlayer = DBG_NEW CPlayer;
 
 	// 生成の成功の有無を判定
-	if (pPlayer != NULL)
+	if (pPlayer != nullptr)
 	{
 		// 初期化処理
 		if (FAILED(pPlayer->Init(pos, rot, modelType, motionType, MOTION_STATE_MAX)))
 		{// 失敗時
 
 		 // 「なし」を返す
-			return NULL;
+			return nullptr;
 		}
 	}
-	else if (pPlayer == NULL)
+	else if (pPlayer == nullptr)
 	{// 失敗時
 
 	 // 「なし」を返す
-		return NULL;
+		return nullptr;
 	}
 
 	// プレイヤーのポインタを返す
@@ -490,7 +490,7 @@ void CPlayer::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 
 	for (int nCount = 0; nCount < COLL_TYPE_MAX; nCount++)
 	{
-		if (m_apColl[nCount] == NULL)
+		if (m_apColl[nCount] == nullptr)
 		{
 			switch (nCount)
 			{
@@ -520,7 +520,7 @@ void CPlayer::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 		}
 	}
 
-	if (m_pLife2dGage != NULL)
+	if (m_pLife2dGage != nullptr)
 	{
 		m_pLife2dGage->SetInit(
 			D3DXVECTOR3(SCREEN_WIDTH * 0.2f,SCREEN_HEIGHT * 0.1f,0.0f),
@@ -646,7 +646,7 @@ void CPlayer::UpdateAttack(void)
 //-------------------------------------
 void CPlayer::UpdateCommand(void)
 {
-	if (m_pCommand != NULL)
+	if (m_pCommand != nullptr)
 	{
 		// コマンドの更新処理
 		m_pCommand->Update();
@@ -660,7 +660,7 @@ void CPlayer::UpdateCollision(void)
 {
 	for (int nCntColl = 0; nCntColl < COLL_TYPE_MAX; nCntColl++)
 	{
-		if (m_apColl[nCntColl] != NULL)
+		if (m_apColl[nCntColl] != nullptr)
 		{
 			CManager* pManager = CManager::GetInstance();
 
@@ -848,7 +848,7 @@ void CPlayer::InputMove(void)
 	CInputKeyboard *pInputKeyboard = CManager::GetInstance()->GetInstance()->GetInputKeyboard();
 
 	// キーボードの情報取得の成功を判定
-	if (pInputKeyboard == NULL)
+	if (pInputKeyboard == nullptr)
 	{// 失敗時
 
 	 // 移動処理を抜ける
@@ -859,7 +859,7 @@ void CPlayer::InputMove(void)
 	CXInput *pXInput = CManager::GetInstance()->GetXInput();
 
 	// X入力の情報取得の成功を判定
-	if (pXInput == NULL)
+	if (pXInput == nullptr)
 	{
 		// 処理を抜ける
 		return;
@@ -982,7 +982,7 @@ void CPlayer::InputCombo(void)
 	CInputKeyboard* pInputKeyboard = CManager::GetInstance()->GetInstance()->GetInputKeyboard();
 
 	// キーボードの情報取得の成功を判定
-	if (pInputKeyboard == NULL)
+	if (pInputKeyboard == nullptr)
 	{// 失敗時
 
 	 // 移動処理を抜ける
@@ -993,7 +993,7 @@ void CPlayer::InputCombo(void)
 	CXInput* pXInput = CManager::GetInstance()->GetXInput();
 
 	// X入力の情報取得の成功を判定
-	if (pXInput == NULL)
+	if (pXInput == nullptr)
 	{
 		// 処理を抜ける
 		return;
@@ -1254,7 +1254,7 @@ void CPlayer::DebugPlayer(void)
 	CDebugProc *pDebugProc = CManager::GetInstance()->GetDbugProc();
 
 	// デバックプロック取得の有無を判定
-	if (pDebugProc == NULL)
+	if (pDebugProc == nullptr)
 	{
 		return;
 	}

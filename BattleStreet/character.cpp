@@ -59,11 +59,9 @@ CCharacter::CCharacter()
 
 	m_nNumModel = 0;
 
-	m_pMotion = NULL;
+	m_pMotion = nullptr;
 
 	ZeroMemory(&m_data, sizeof(m_data));
-
-
 }
 
 //-------------------------------------
@@ -85,7 +83,7 @@ HRESULT CCharacter::Init(CModel::MODEL_TYPE modelType, CMotion::MOTION_TYPE moti
 	for (int nCount = 0; nCount < m_nNumModel; nCount++)
 	{
 		// 階層構造Xオブジェクトの有無を判定
-		if (m_apModel[nCount] == NULL)
+		if (m_apModel[nCount] == nullptr)
 		{
 			// 階層構造Xオブジェクトの生成
 			m_apModel[nCount] = CModel::Create(modelType, nCount);
@@ -100,7 +98,7 @@ HRESULT CCharacter::Init(CModel::MODEL_TYPE modelType, CMotion::MOTION_TYPE moti
 		}
 	}
 
-	if (m_pMotion == NULL)
+	if (m_pMotion == nullptr)
 	{
 		// モーションの生成
 		m_pMotion = CMotion::Create(m_nNumModel, nStateMax);
@@ -132,24 +130,24 @@ void CCharacter::Uninit(void)
 	// モデルの終了処理
 	for (int nCount = 0; nCount < m_nNumModel; nCount++)
 	{
-		if (m_apModel[nCount] != NULL)
+		if (m_apModel[nCount] != nullptr)
 		{
 			// モデルの開放処理
 			m_apModel[nCount]->Uninit();
 
 			delete m_apModel[nCount];
-			m_apModel[nCount] = NULL;
+			m_apModel[nCount] = nullptr;
 		}
 	}
 
 	// モーションの終了処理
-	if (m_pMotion != NULL)
+	if (m_pMotion != nullptr)
 	{
 		// モーションの開放
 		m_pMotion->Uninit();
 
 		delete m_pMotion;
-		m_pMotion = NULL;
+		m_pMotion = nullptr;
 	}
 
 	// 自分自身のポインタの開放
@@ -162,7 +160,7 @@ void CCharacter::Uninit(void)
 void CCharacter::Update(void)
 {
 	// モーションの終了処理
-	if (m_pMotion != NULL)
+	if (m_pMotion != nullptr)
 	{
 		if (m_pMotion->IsFinsih())
 		{
@@ -199,21 +197,21 @@ CCharacter* CCharacter::Create(CModel::MODEL_TYPE modelType, CMotion::MOTION_TYP
 	CCharacter* pPlayer = DBG_NEW CCharacter;
 
 	// 生成の成功の有無を判定
-	if (pPlayer != NULL)
+	if (pPlayer != nullptr)
 	{
 		// 初期化処理
 		if (FAILED(pPlayer->Init(modelType, motionType, nMotionStateMax)))
 		{// 失敗時
 
 		 // 「なし」を返す
-			return NULL;
+			return nullptr;
 		}
 	}
-	else if (pPlayer == NULL)
+	else if (pPlayer == nullptr)
 	{// 失敗時
 
 	 // 「なし」を返す
-		return NULL;
+		return nullptr;
 	}
 
 	// プレイヤーのポインタを返す
@@ -229,7 +227,7 @@ void CCharacter::SetMatrix(void)
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// デバイスの情報取得の成功を判定
-	if (pDevice == NULL)
+	if (pDevice == nullptr)
 	{// 失敗時
 
 	 // 初期化処理を抜ける

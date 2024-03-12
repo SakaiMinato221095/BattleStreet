@@ -217,21 +217,21 @@ CCommand* CCommand::Create(void)
 	CCommand* pCCommand = DBG_NEW CCommand;
 
 	// 生成の成功の有無を判定
-	if (pCCommand != NULL)
+	if (pCCommand != nullptr)
 	{
 		// 初期化処理
 		if (FAILED(pCCommand->Init()))
 		{// 失敗時
 
 			// 「なし」を返す
-			return NULL;
+			return nullptr;
 		}
 	}
-	else if (pCCommand == NULL)
+	else if (pCCommand == nullptr)
 	{// 失敗時
 
 		// 「なし」を返す
-		return NULL;
+		return nullptr;
 	}
 
 	// 戦闘プレイヤーのポインタを返す
@@ -259,7 +259,7 @@ void CCommand::Debug(void)
 	CDebugProc* pDebugProc = CManager::GetInstance()->GetDbugProc();
 
 	// デバックプロック取得の有無を判定
-	if (pDebugProc == NULL)
+	if (pDebugProc == nullptr)
 	{
 		return;
 	}

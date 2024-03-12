@@ -53,6 +53,7 @@ HRESULT CRecord::Init(void)
 //-------------------------------------
 void CRecord::Uninit(void)
 {
+	delete m_pRecord;
 	m_pRecord = nullptr;
 }
 
@@ -81,6 +82,8 @@ CRecord* CRecord::Create(void)
 
 			return nullptr;
 		}
+
+		m_pRecord = pInstance;
 	}
 	else if (pInstance == nullptr)
 	{// 失敗時
@@ -101,7 +104,7 @@ void CRecord::Debug(void)
 	CDebugProc* pDebugProc = CManager::GetInstance()->GetDbugProc();
 
 	// デバックプロック取得の有無を判定
-	if (pDebugProc == NULL)
+	if (pDebugProc == nullptr)
 	{
 		return;
 	}

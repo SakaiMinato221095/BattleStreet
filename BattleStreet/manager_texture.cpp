@@ -161,11 +161,11 @@ void CManagerTexture::Unload(void)
 	for (int nCount = 0; nCount < MANAGER_TEXTUTE_MAX; nCount++)
 	{
 		// テクスチャの有無を判定
-		if (m_apTexture[nCount] != NULL)
+		if (m_apTexture[nCount] != nullptr)
 		{
 			// 開放処理
 			m_apTexture[nCount]->Release();
-			m_apTexture[nCount] = NULL;
+			m_apTexture[nCount] = nullptr;
 		}
 	}
 }
@@ -179,7 +179,7 @@ int CManagerTexture::Regist(const char *pFilename)
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// デバイスの情報取得の成功を判定
-	if (pDevice == NULL)
+	if (pDevice == nullptr)
 	{// 失敗時
 
 		// 初期化処理を抜ける
@@ -187,7 +187,7 @@ int CManagerTexture::Regist(const char *pFilename)
 	}
 
 	// ファイル名を判定（テクスチャなし）
-	if (pFilename == NULL)
+	if (pFilename == nullptr)
 	{
 		return 0;
 	}
@@ -195,7 +195,7 @@ int CManagerTexture::Regist(const char *pFilename)
 	for (int nCount = 1; nCount < MANAGER_TEXTUTE_MAX; nCount++)
 	{
 		// テクスチャの有無を判定
-		if (m_apTexture[nCount] == NULL)
+		if (m_apTexture[nCount] == nullptr)
 		{
 			// テクスチャの読み込み if(テクスチャ読み込み成功の有無を判定)
 			if (FAILED(D3DXCreateTextureFromFile(

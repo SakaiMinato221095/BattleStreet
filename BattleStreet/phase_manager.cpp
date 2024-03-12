@@ -113,21 +113,21 @@ CPhaseManager* CPhaseManager::Create(void)
 	CPhaseManager* pCPhaseManager = DBG_NEW CPhaseManager(1);
 
 	// 生成の成功の有無を判定
-	if (pCPhaseManager != NULL)
+	if (pCPhaseManager != nullptr)
 	{
 		// 初期化処理
 		if (FAILED(pCPhaseManager->Init()))
 		{// 失敗時
 
 			// 「なし」を返す
-			return NULL;
+			return nullptr;
 		}
 	}
-	else if (pCPhaseManager == NULL)
+	else if (pCPhaseManager == nullptr)
 	{// 失敗時
 
 		// 「なし」を返す
-		return NULL;
+		return nullptr;
 	}
 
 	// ポインタを返す

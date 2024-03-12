@@ -225,21 +225,21 @@ CEnemyBoss* CEnemyBoss::Create(CModel::MODEL_TYPE modelType, CMotion::MOTION_TYP
 	CEnemyBoss* pEnemyWeak = DBG_NEW CEnemyBoss;
 
 	// 生成の成功の有無を判定
-	if (pEnemyWeak != NULL)
+	if (pEnemyWeak != nullptr)
 	{
 		// 初期化処理
 		if (FAILED(pEnemyWeak->Init(modelType, motionType)))
 		{// 失敗時
 
 			// 「なし」を返す
-			return NULL;
+			return nullptr;
 		}
 	}
-	else if (pEnemyWeak == NULL)
+	else if (pEnemyWeak == nullptr)
 	{// 失敗時
 
 		// 「なし」を返す
-		return NULL;
+		return nullptr;
 	}
 
 	// 通常敵のポインタを返す
@@ -869,7 +869,7 @@ void CEnemyBoss::Debug(void)
 	CDebugProc* pDebugProc = CManager::GetInstance()->GetDbugProc();
 
 	// デバックプロック取得の有無を判定
-	if (pDebugProc == NULL)
+	if (pDebugProc == nullptr)
 	{
 		return;
 	}

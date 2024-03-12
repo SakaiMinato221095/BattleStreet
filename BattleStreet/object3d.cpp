@@ -27,7 +27,7 @@
 CObject3d::CObject3d(int nPriority) : CObject(nPriority)
 {
 	// 値をクリア
-	m_pVtxBuff = NULL;
+	m_pVtxBuff = nullptr;
 	ZeroMemory(m_mtxWorld, sizeof(m_mtxWorld));
 	ZeroMemory(&m_vtxData, sizeof(m_vtxData));
 
@@ -50,7 +50,7 @@ HRESULT CObject3d::Init(void)
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// デバイスの情報取得の成功を判定
-	if (pDevice == NULL)
+	if (pDevice == nullptr)
 	{// 失敗時
 
 		// 初期化処理を抜ける
@@ -64,10 +64,10 @@ HRESULT CObject3d::Init(void)
 		FVF_VERTEX_3D,
 		D3DPOOL_MANAGED,
 		&m_pVtxBuff,
-		NULL);
+		nullptr);
 
 	// 頂点バッファ生成の有無を判定
-	if (m_pVtxBuff == NULL)
+	if (m_pVtxBuff == nullptr)
 	{
 		// 初期化を抜ける
 		return E_FAIL;
@@ -86,10 +86,10 @@ HRESULT CObject3d::Init(void)
 void CObject3d::Uninit(void)
 {
 	//頂点バッファの破棄
-	if (m_pVtxBuff != NULL)
+	if (m_pVtxBuff != nullptr)
 	{
 		m_pVtxBuff->Release();
-		m_pVtxBuff = NULL;
+		m_pVtxBuff = nullptr;
 	}
 
 	// 自分自身のポインタの開放
@@ -114,7 +114,7 @@ void CObject3d::Draw(void)
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// デバイスの情報取得の成功を判定
-	if (pDevice == NULL)
+	if (pDevice == nullptr)
 	{// 失敗時
 
 		// 描画処理を抜ける
@@ -125,7 +125,7 @@ void CObject3d::Draw(void)
 	CManagerTexture *pManagerTexture = CManager::GetInstance()->GetManagerTexture();
 
 	// テクスチャ管理の情報取得の成功を判定
-	if (pManagerTexture == NULL)
+	if (pManagerTexture == nullptr)
 	{// 失敗時
 
 	 // 描画処理を抜ける
@@ -198,21 +198,21 @@ CObject3d * CObject3d::Create(void)
 	CObject3d *pObject3d = DBG_NEW CObject3d;
 
 	// 生成の成功の有無を判定
-	if (pObject3d != NULL)
+	if (pObject3d != nullptr)
 	{
 		// 初期化処理
 		if (FAILED(pObject3d->Init()))
 		{// 失敗時
 
 			// 「なし」を返す
-			return NULL;
+			return nullptr;
 		}
 	}
-	else if (pObject3d == NULL)
+	else if (pObject3d == nullptr)
 	{// 失敗時
 
 	 // 「なし」を返す
-		return NULL;
+		return nullptr;
 	}
 
 	// 3Dオブジェクトのポインタを返す
@@ -232,7 +232,7 @@ void CObject3d::SetVtx(void)
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// デバイスの情報取得の成功を判定
-	if (pDevice == NULL)
+	if (pDevice == nullptr)
 	{// 失敗時
 
 	 // 初期化処理を抜ける
