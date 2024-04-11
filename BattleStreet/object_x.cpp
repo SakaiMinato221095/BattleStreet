@@ -76,7 +76,7 @@ void CObjectX::Draw(void)
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// デバイスの情報取得の成功を判定
-	if (pDevice == NULL)
+	if (pDevice == nullptr)
 	{// 失敗時
 
 		// 初期化処理を抜ける
@@ -87,7 +87,7 @@ void CObjectX::Draw(void)
 	CManagerModel *pManagerModel = CManager::GetInstance()->GetManagerModel();
 
 	// モデル管理の情報取得の成功を判定
-	if (pManagerModel == NULL)
+	if (pManagerModel == nullptr)
 	{// 失敗時
 
 		// 描画処理を抜ける
@@ -98,7 +98,7 @@ void CObjectX::Draw(void)
 	CManagerModel::Model model = pManagerModel->GetAddress(m_nModelNldxUse);
 
 	// モデルの有無を判定
-	if (model.m_pMesh == NULL)
+	if (model.m_pMesh == nullptr)
 	{
 		// 描画処理を抜ける
 		return;
@@ -164,27 +164,27 @@ void CObjectX::Draw(void)
 CObjectX *CObjectX::Create(void)
 {
 	// Xファイルオブジェクトのポインタを宣言
-	CObjectX *pObjectX = NULL;
+	CObjectX *pObjectX = nullptr;
 
 	// 生成
 	pObjectX = DBG_NEW CObjectX;
 
 	// 生成の成功の有無を判定
-	if (pObjectX != NULL)
+	if (pObjectX != nullptr)
 	{
 		// 初期化処理
 		if (FAILED(pObjectX->Init()))
 		{// 失敗時
 
 			// 「なし」を返す
-			return NULL;
+			return nullptr;
 		}
 	}
-	else if (pObjectX == NULL)
+	else if (pObjectX == nullptr)
 	{// 失敗時
 
 		// 「なし」を返す
-		return NULL;
+		return nullptr;
 	}
 
 	// Xファイルオブジェクトのポインタを返す

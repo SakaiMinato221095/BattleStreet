@@ -29,8 +29,8 @@
 CRenderer::CRenderer()
 {
 	// 値をクリア
-	m_pD3D = NULL;
-	m_pD3DDevice = NULL;
+	m_pD3D = nullptr;
+	m_pD3DDevice = nullptr;
 }
 
 //-------------------------------------
@@ -52,7 +52,7 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindow)
 	// Direct3Dオブジェクトの生成
 	m_pD3D = Direct3DCreate9(D3D_SDK_VERSION);
 
-	if (m_pD3D == NULL)
+	if (m_pD3D == nullptr)
 	{
 		return E_FAIL;
 	}
@@ -171,17 +171,17 @@ void CRenderer::Uninit(void)
 {
 	
 	// Direct3Dデバイスの破棄
-	if (m_pD3DDevice != NULL)
+	if (m_pD3DDevice != nullptr)
 	{
 		m_pD3DDevice->Release();
-		m_pD3DDevice = NULL;
+		m_pD3DDevice = nullptr;
 	}
 
 	// Direct3Dオブジェクトの破棄
-	if (m_pD3D != NULL)
+	if (m_pD3D != nullptr)
 	{
 		m_pD3D->Release();
-		m_pD3D = NULL;
+		m_pD3D = nullptr;
 	}
 }
 
@@ -216,7 +216,7 @@ void CRenderer::Draw(void)
 			CFade *pFade = CManager::GetInstance()->GetFade();
 
 			// フェードの有無を判定
-			if (pFade != NULL)
+			if (pFade != nullptr)
 			{
 				// フェードの描画処理
 				pFade->Draw();
@@ -226,7 +226,7 @@ void CRenderer::Draw(void)
 			CDebugProc *pDbugProc = CManager::GetInstance()->GetDbugProc();
 
 			// デバックプロックの有無を判定
-			if (pDbugProc != NULL)
+			if (pDbugProc != nullptr)
 			{
 				// デバックプロックの描画処理
 				pDbugProc->Draw();
@@ -277,7 +277,7 @@ void CRenderer::SetAlphaBlend(bool bUse)
 	if (bUse == true)
 	{
 		// デバイスの有無を確認
-		if (m_pD3DDevice != NULL)
+		if (m_pD3DDevice != nullptr)
 		{
 			// aブレンディングを加算合成に設定
 			m_pD3DDevice->SetRenderState(
@@ -297,7 +297,7 @@ void CRenderer::SetAlphaBlend(bool bUse)
 	else if (bUse == false)
 	{
 		// デバイスの有無を確認
-		if (m_pD3DDevice != NULL)
+		if (m_pD3DDevice != nullptr)
 		{
 			// aブレンディングをもとに戻す
 			m_pD3DDevice->SetRenderState(
@@ -325,7 +325,7 @@ void CRenderer::SetZTest(bool bUse)
 	if (bUse == true)
 	{
 		// デバイスの有無を確認
-		if (m_pD3DDevice != NULL)
+		if (m_pD3DDevice != nullptr)
 		{
 			// Zテストを無効化
 			m_pD3DDevice->SetRenderState(
@@ -341,7 +341,7 @@ void CRenderer::SetZTest(bool bUse)
 	else if (bUse == false)
 	{
 		// デバイスの有無を確認
-		if (m_pD3DDevice != NULL)
+		if (m_pD3DDevice != nullptr)
 		{
 			// Zテストを有効にする
 			m_pD3DDevice->SetRenderState(
@@ -364,7 +364,7 @@ void CRenderer::SetAlphaTest(bool bUse)
 	if (bUse == true)
 	{
 		// デバイスの有無を確認
-		if (m_pD3DDevice != NULL)
+		if (m_pD3DDevice != nullptr)
 		{
 			// アルファテストの有効化
 			m_pD3DDevice->SetRenderState(
@@ -384,7 +384,7 @@ void CRenderer::SetAlphaTest(bool bUse)
 	else if (bUse == false)
 	{
 		// デバイスの有無を確認
-		if (m_pD3DDevice != NULL)
+		if (m_pD3DDevice != nullptr)
 		{
 			// アルファテストの無効化
 			m_pD3DDevice->SetRenderState(

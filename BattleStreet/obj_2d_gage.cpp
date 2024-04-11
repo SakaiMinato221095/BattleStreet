@@ -91,21 +91,21 @@ CObj2dGage* CObj2dGage::Create(void)
 	CObj2dGage *pNumber = DBG_NEW CObj2dGage(7);
 
 	// 生成の成功の有無を判定
-	if (pNumber != NULL)
+	if (pNumber != nullptr)
 	{
 		// 初期化処理
 		if (FAILED(pNumber->Init()))
 		{// 失敗時
 
 			// 「なし」を返す
-			return NULL;
+			return nullptr;
 		}
 	}
-	else if (pNumber == NULL)
+	else if (pNumber == nullptr)
 	{// 失敗時
 
 		// 「なし」を返す
-		return NULL;
+		return nullptr;
 	}
 
 	// ゲージのポインタを返す
@@ -121,7 +121,7 @@ void CObj2dGage::SetVtx(void)
 	LPDIRECT3DVERTEXBUFFER9 vtxBuff = GetVtxBuff();
 
 	// 頂点バッファ取得成功の有無を判定
-	if (vtxBuff == NULL)
+	if (vtxBuff == nullptr)
 	{// 失敗時
 
 	 // 頂点情報設定を抜ける
@@ -134,7 +134,7 @@ void CObj2dGage::SetVtx(void)
 	D3DXCOLOR color = GetColor();
 
 	// 2D頂点情報のポインタを宣言
-	VERTEX_2D* pVtx = NULL;
+	VERTEX_2D* pVtx = nullptr;
 
 	// 頂点バッファをロックし、頂点情報のポインタを取得
 	vtxBuff->Lock(

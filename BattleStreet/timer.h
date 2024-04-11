@@ -38,27 +38,15 @@ class CTimer
 
 public:
 
-	// 情報値
-	typedef struct
-	{
-		D3DXVECTOR3 pos;			// 位置
-		D3DXVECTOR3 size;			// サイズ
-		D3DXVECTOR3 interval;		// 間隔
-		D3DXVECTOR3 between;		// 区切りの間隔
-
-		int nTime;					// タイムの値
-		int nTimerCount;			// タイマーのカウント
-	}Data;
-
 	CTimer();
 	~CTimer();
 
-	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 interval, D3DXVECTOR3 between, D3DXVECTOR3 size, D3DXCOLOR color);
+	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 intvl, D3DXVECTOR3 intvlDec, D3DXVECTOR3 size, D3DXCOLOR color);
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
 
-	static CTimer *Create(D3DXVECTOR3 pos, D3DXVECTOR3 interval, D3DXVECTOR3 between, D3DXVECTOR3 size, D3DXCOLOR color);
+	static CTimer *Create(D3DXVECTOR3 pos, D3DXVECTOR3 intvl, D3DXVECTOR3 intvlDec, D3DXVECTOR3 size, D3DXCOLOR color);
 
 	void NullAllNumber(void);
 
@@ -66,16 +54,24 @@ public:
 
 	void Elapsed(void);
 
-	void InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 interval, D3DXVECTOR3 between, D3DXVECTOR3 size, D3DXCOLOR color);
-
-	void SetData(Data data) { m_data = data; }
-	Data GetData(void) { return m_data; }
-
 private:
 
-	Data m_data;						// 値情報
+	// 情報
+	struct Info
+	{
+		int nTime;					// タイムの値
+		int nTimerCount;			// タイマーのカウント
+	};
 
-	CNumber *m_apNumber[DIG_NUM_MAX];	// タイマー用の数字
+	// 見た目情報
+	struct InfoVisual
+	{
+		CNumberFloat* numTime;	// 時間
+		CNumber* numMill;		// ミリ秒
+	};
+
+	Info m_info;				// 情報
+	InfoVisual m_infoVisual;	// 見た目情報
 
 };
 

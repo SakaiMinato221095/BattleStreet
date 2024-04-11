@@ -92,21 +92,21 @@ CBoxField* CBoxField::Create(void)
 	CBoxField* pCBoxField = DBG_NEW CBoxField(2);
 
 	// 生成の成功の有無を判定
-	if (pCBoxField != NULL)
+	if (pCBoxField != nullptr)
 	{
 		// 初期化処理
 		if (FAILED(pCBoxField->Init()))
 		{// 失敗時
 
 			// 「なし」を返す
-			return NULL;
+			return nullptr;
 		}
 	}
-	else if (pCBoxField == NULL)
+	else if (pCBoxField == nullptr)
 	{// 失敗時
 
 		// 「なし」を返す
-		return NULL;
+		return nullptr;
 	}
 
 	// フィールドのポインタを返す

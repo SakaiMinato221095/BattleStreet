@@ -27,6 +27,7 @@
 //-	クラス定義
 //-======================================
 
+// 2Dのデフォルトクラス
 class CObject2d : public CObject
 {
 
@@ -69,24 +70,66 @@ public:
 	void SetColor(D3DXCOLOR color) { m_info.color = color; }
 	D3DXCOLOR GetColor(void) { return m_info.color; }
 
-	LPDIRECT3DVERTEXBUFFER9 GetVtxBuff(void) { return m_pVtxBuff; }
+	LPDIRECT3DVERTEXBUFFER9 GetVtxBuff(void) { return m_info.pVtxBuff; }
 	void BindTexture(int nTextureNldx) { m_nTextureNldxUse = nTextureNldx; }
 
 private:
 
-	typedef struct
+	struct Info
 	{
 		D3DXVECTOR3 pos;	// 位置
 		D3DXVECTOR3 size;	// 大きさ
 		D3DXCOLOR color;	// 色
-	}Info;
 
-	Info m_info;								// 頂点値情報
+		LPDIRECT3DVERTEXBUFFER9 pVtxBuff;	// 頂点バッファを格納
+	};
 
-	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;			// 頂点バッファを格納
-	int m_nTextureNldxUse;						// テクスチャの番号
+	Info m_info;			// 頂点値情報
 
+	int m_nTextureNldxUse;	// テクスチャの番号
 };
 
+// 2Dアニメーションのクラス
+class C2dAnima : public CObject2d
+{
+public:
+
+	C2dAnima(int nPriority = 3);
+	virtual ~C2dAnima();
+
+	HRESULT Init(void);
+	virtual void Uninit(void);
+	virtual void Update(void);
+	virtual void Draw(void);
+
+	static C2dAnima* Create(void);
+
+	virtual void SetVtx(void);
+
+	void SetInit(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXCOLOR color)
+	{
+		CObject2d::SetInit(pos,size,color);
+		SetVtx();
+	}
+
+	void SetDiv(int nDivMaxWidth, int nDivMaxHeight) { 
+		m_info.nDivMaxWidth = nDivMaxWidth,
+		m_info.nDivMaxWidth = nDivMaxWidth; }
+
+private:
+
+	struct Info
+	{
+		D3DXVECTOR2 fDivRate;	// 分割割合
+
+		int nDivMaxWidth;		// 横の分割数
+		int nDivMaxHeight;		// 縦の分割数
+
+		int nDivNumWidth;		// 横の分割数
+		int nDivNumHeight;		// 縦の分割数
+	};
+
+	Info m_info;				// 情報
+};
 
 #endif	// 二重インクルード防止の終了

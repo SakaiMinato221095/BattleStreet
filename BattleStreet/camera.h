@@ -51,6 +51,7 @@ public:
 		MODE_NORMAL = 0,	// 通常
 		MODE_FOLLOWING,		// 追尾
 		MODE_TITLE,			// タイトル
+		MODE_RESULT,		// リザルト
 		MODE_MAX
 	}MODE;
 

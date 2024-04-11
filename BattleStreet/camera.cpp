@@ -51,7 +51,7 @@ CCamera::CCamera()
 	ZeroMemory(m_mtxProjectien, sizeof(D3DXMATRIX));
 	ZeroMemory(m_mtxView, sizeof(D3DXMATRIX));
 
-	m_mode = MODE(0);
+	m_mode = (MODE)0;
 }
 
 //-------------------------------------
@@ -116,7 +116,7 @@ void CCamera::Update(void)
 	CInputKeyboard *pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
 
 	// キーボードの情報取得の成功を判定
-	if (pInputKeyboard == NULL)
+	if (pInputKeyboard == nullptr)
 	{// 失敗時
 
 		// 更新処理を抜ける
@@ -179,7 +179,7 @@ void CCamera::SetCamera(void)
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// デバイスの情報取得の成功を判定
-	if (pDevice == NULL)
+	if (pDevice == nullptr)
 	{// 失敗時
 
 		// 初期化処理を抜ける
@@ -274,6 +274,16 @@ void CCamera::SetMode(CCamera::MODE mode)
 		rot = D3DXVECTOR3(0.0f, 0.9f, 0.0f);			// 向き
 
 		break;
+
+	case MODE_RESULT:
+
+		// 情報設定
+		posV = D3DXVECTOR3(0.0f, 300.0f, -1000.0f);			// 視点
+		posR = D3DXVECTOR3(0.0f, 300.0f, 0.0f);		// 注視点
+		fLength = 800.0f;								// カメラとの長さ
+		rot = D3DXVECTOR3(0.0f, 0.9f, 0.0f);			// 向き
+
+		break;
 	}
 
 	// 情報更新
@@ -360,7 +370,7 @@ void CCamera::CameraPlayer(void)
 	CInputKeyboard* pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
 
 	// キーボードの情報取得の成功を判定
-	if (pInputKeyboard == NULL)
+	if (pInputKeyboard == nullptr)
 	{// 失敗時
 
 	 // 更新処理を抜ける
@@ -371,7 +381,7 @@ void CCamera::CameraPlayer(void)
 	CXInput* pXInput = CManager::GetInstance()->GetXInput();
 
 	// X入力の情報取得の成功を判定
-	if (pXInput == NULL)
+	if (pXInput == nullptr)
 	{
 		// 処理を抜ける
 		return;
@@ -408,7 +418,7 @@ void CCamera::CameraPlayer(void)
 	CPlayer* pPlayer = CGame::GetPlayer();
 
 	// プレイヤーの情報取得の成功を判定
-	if (pPlayer == NULL)
+	if (pPlayer == nullptr)
 	{// 失敗時
 
 		// 追尾処理を抜ける

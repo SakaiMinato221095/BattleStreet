@@ -133,20 +133,20 @@ HRESULT CSpwanWall::Init(void)
 //-------------------------------------
 void CSpwanWall::Uninit(void)
 {
-	if (m_infoVisual.pObj3dWall != NULL)
+	if (m_infoVisual.pObj3dWall != nullptr)
 	{
 		// 当たり判定の終了処理
 		m_infoVisual.pObj3dWall->Uninit();
-		m_infoVisual.pObj3dWall = NULL;
+		m_infoVisual.pObj3dWall = nullptr;
 	}
 
-	if (m_infoAttach.pColl != NULL)
+	if (m_infoAttach.pColl != nullptr)
 	{
 		// 当たり判定の終了処理
 		m_infoAttach.pColl->Uninit();
 
 		delete m_infoAttach.pColl;
-		m_infoAttach.pColl = NULL;
+		m_infoAttach.pColl = nullptr;
 	}
 
 	// 開放処理
@@ -242,21 +242,21 @@ CSpwanWall* CSpwanWall::Create(void)
 	CSpwanWall* pCSpwanWall = DBG_NEW CSpwanWall(1);
 
 	// 生成の成功の有無を判定
-	if (pCSpwanWall != NULL)
+	if (pCSpwanWall != nullptr)
 	{
 		// 初期化処理
 		if (FAILED(pCSpwanWall->Init()))
 		{// 失敗時
 
 			// 「なし」を返す
-			return NULL;
+			return nullptr;
 		}
 	}
-	else if (pCSpwanWall == NULL)
+	else if (pCSpwanWall == nullptr)
 	{// 失敗時
 
 		// 「なし」を返す
-		return NULL;
+		return nullptr;
 	}
 
 	// ポインタを返す

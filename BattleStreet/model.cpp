@@ -43,7 +43,7 @@ int CModel::m_nModelNldx[MODEL_TYPE_MAX][MODEL_PARTS_MAX] = {};
 CModel::CModel()
 {
 	// 値をクリア
-	m_pParent = NULL;
+	m_pParent = nullptr;
 
 	m_modelType = (MODEL_TYPE)0;
 	m_nPartsNum = -1;
@@ -68,7 +68,7 @@ HRESULT CModel::Load(void)
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// デバイスの情報取得の成功を判定
-	if (pDevice == NULL)
+	if (pDevice == nullptr)
 	{// 失敗時
 
 	 // 初期化処理を抜ける
@@ -79,7 +79,7 @@ HRESULT CModel::Load(void)
 	CManagerModel *pManagerModel = CManager::GetInstance()->GetManagerModel();
 
 	// モデル管理の有無を判定
-	if (pManagerModel == NULL)
+	if (pManagerModel == nullptr)
 	{
 		// 初期化処理を抜ける
 		return E_FAIL;
@@ -120,7 +120,7 @@ HRESULT CModel::Init(MODEL_TYPE modelType , int nCount)
 	CManagerModel *pManagerModel = CManager::GetInstance()->GetManagerModel();
 
 	// モデル管理の有無を判定
-	if (pManagerModel == NULL)
+	if (pManagerModel == nullptr)
 	{
 		// 処理を抜ける
 		return E_FAIL;
@@ -146,9 +146,9 @@ HRESULT CModel::Init(MODEL_TYPE modelType , int nCount)
 void CModel::Uninit(void)
 {
 	// 親のポインタ初期化処理
-	if (m_pParent != NULL)
+	if (m_pParent != nullptr)
 	{
-		m_pParent = NULL;
+		m_pParent = nullptr;
 	}
 }
 
@@ -181,21 +181,21 @@ CModel *CModel::Create(MODEL_TYPE modelType, int nCount)
 	CModel *pModel = DBG_NEW CModel;
 
 	// 生成の成功の有無を判定
-	if (pModel != NULL)
+	if (pModel != nullptr)
 	{
 		// 初期化処理
 		if (FAILED(pModel->Init(modelType,nCount)))
 		{// 失敗時
 
 			// 「なし」を返す
-			return NULL;
+			return nullptr;
 		}
 	}
-	else if (pModel == NULL)
+	else if (pModel == nullptr)
 	{// 失敗時
 
 		// 「なし」を返す
-		return NULL;
+		return nullptr;
 	}
 
 	// ポインタを返す
@@ -217,7 +217,7 @@ void CModel::SetParent(CModel **pObjectModel, MODEL_TYPE modelType,int nCount)
 	}
 	else
 	{
-		m_pParent = NULL;
+		m_pParent = nullptr;
 	}
 }
 
@@ -233,7 +233,7 @@ void CModel::SetFile(MODEL_TYPE modelType)
 	pFile = fopen(pModelText[modelType], "r");
 
 	// ファイルの有無を判定
-	if (pFile != NULL)
+	if (pFile != nullptr)
 	{// ファイルが開けるとき
 
 		// 変数宣言
@@ -259,7 +259,7 @@ void CModel::SetFile(MODEL_TYPE modelType)
 			}
 
 			// モデルのパーツ数を設定
-			if (strstr(aFileData, "NUM_MODEL") != NULL)
+			if (strstr(aFileData, "NUM_MODEL") != nullptr)
 			{
 				// 変数宣言
 				char aTenp[2][256] = {};	// ゴミ入れ	
@@ -273,7 +273,7 @@ void CModel::SetFile(MODEL_TYPE modelType)
 			}
 
 			// パーツのファイル名を設定
-			if (strstr(aFileData, "MODEL_FILENAME") != NULL)
+			if (strstr(aFileData, "MODEL_FILENAME") != nullptr)
 			{
 				// 変数宣言
 				char aTenp[2][256] = {};	// ゴミ入れ	
@@ -290,7 +290,7 @@ void CModel::SetFile(MODEL_TYPE modelType)
 			}
 
 			// パーツ番号の設定
-			if (strstr(aFileData, "INDEX") != NULL)
+			if (strstr(aFileData, "INDEX") != nullptr)
 			{
 				// 変数宣言
 				char aTenp[2][256] = {};	// ゴミ入れ	
@@ -303,7 +303,7 @@ void CModel::SetFile(MODEL_TYPE modelType)
 			}
 
 			// 親の設定
-			if (strstr(aFileData, "PARENT") != NULL)
+			if (strstr(aFileData, "PARENT") != nullptr)
 			{
 				// 変数宣言
 				char aTenp[2][256] = {};	// ゴミ入れ	
@@ -317,7 +317,7 @@ void CModel::SetFile(MODEL_TYPE modelType)
 			}
 
 			// 位置情報の設定
-			if (strstr(aFileData, "POS") != NULL)
+			if (strstr(aFileData, "POS") != nullptr)
 			{
 				// 変数宣言
 				char aTenp[2][256] = {};	// ゴミ入れ	
@@ -333,7 +333,7 @@ void CModel::SetFile(MODEL_TYPE modelType)
 			}
 
 			// 向き情報の設定
-			if (strstr(aFileData, "ROT") != NULL)
+			if (strstr(aFileData, "ROT") != nullptr)
 			{
 				// 変数宣言
 				char aTenp[2][256] = {};	// ゴミ入れ	
@@ -349,7 +349,7 @@ void CModel::SetFile(MODEL_TYPE modelType)
 			}
 
 			// 終了
-			if (strstr(aFileData, "END_CHARACTERSET") != NULL)
+			if (strstr(aFileData, "END_CHARACTERSET") != nullptr)
 			{
 				break;
 			}
@@ -373,7 +373,7 @@ void CModel::SetMatrix(void)
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// デバイスの情報取得の成功を判定
-	if (pDevice == NULL)
+	if (pDevice == nullptr)
 	{// 失敗時
 
 		// 初期化処理を抜ける
@@ -402,7 +402,7 @@ void CModel::SetMatrix(void)
 	D3DXMATRIX mtxParent;
 
 	//パーツの「親マトリックス」を設定
-	if (m_pParent != NULL)
+	if (m_pParent != nullptr)
 	{//親モデルがある場合
 
 		// 親のマトリックスを代入
@@ -436,7 +436,7 @@ void CModel::SetMatrixMesh(void)
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// デバイスの情報取得の成功を判定
-	if (pDevice == NULL)
+	if (pDevice == nullptr)
 	{// 失敗時
 
 		// 初期化処理を抜ける
@@ -447,7 +447,7 @@ void CModel::SetMatrixMesh(void)
 	CManagerModel* pManagerModel = CManager::GetInstance()->GetManagerModel();
 
 	// モデル管理の有無を判定
-	if (pManagerModel == NULL)
+	if (pManagerModel == nullptr)
 	{
 		// 初期化処理を抜ける
 		return;
@@ -458,7 +458,7 @@ void CModel::SetMatrixMesh(void)
 	CManagerModel::Model model = pManagerModel->GetAddress(nModelNldx);
 
 	// モデルの有無を判定
-	if (model.m_pMesh == NULL)
+	if (model.m_pMesh == nullptr)
 	{
 		// 描画処理を抜ける
 		return;

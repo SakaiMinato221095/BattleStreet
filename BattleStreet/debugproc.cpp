@@ -15,7 +15,7 @@
 #include "game.h"
 
 // 静的メンバ変数宣言
-LPD3DXFONT CDebugProc::m_pFont = NULL;	// デバッグフォントへのポインタ
+LPD3DXFONT CDebugProc::m_pFont = nullptr;	// デバッグフォントへのポインタ
 
 //**********************************************************
 //マクロ定義
@@ -29,7 +29,7 @@ CDebugProc::CDebugProc()
 {
 	//デバッグ表示情報のクリア
 	m_bDisp = false;
-	m_pFont = NULL;
+	m_pFont = nullptr;
 	memset(&m_aStr[0], NULL, sizeof(m_aStr));
 }
 
@@ -70,10 +70,10 @@ HRESULT CDebugProc::Init(void)
 void CDebugProc::Uninit(void)
 {
 	//デバッグ表示用フォントの廃棄
-	if (m_pFont != NULL)
+	if (m_pFont != nullptr)
 	{
 		m_pFont->Release();
-		m_pFont = NULL;
+		m_pFont = nullptr;
 	}
 }
 
@@ -85,10 +85,14 @@ void CDebugProc::Update(void)
 	CInputKeyboard *pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();	// キーボードのポインタ
 
 #if _DEBUG
-	if(pInputKeyboard->GetTrigger(DIK_F1) == true)
-	{//F1キーが押されたとき
-		m_bDisp = m_bDisp ? false : true;
+	if (pInputKeyboard != nullptr)
+	{
+		if (pInputKeyboard->GetTrigger(DIK_F1) == true)
+		{//F1キーが押されたとき
+			m_bDisp = m_bDisp ? false : true;
+		}
 	}
+
 #endif
 
 }

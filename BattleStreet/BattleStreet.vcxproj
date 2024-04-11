@@ -67,6 +67,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="rank.cpp" />
     <ClCompile Include="record.cpp" />
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="ranking.cpp" />
@@ -76,7 +77,6 @@
     <ClCompile Include="spwan_wall.cpp" />
     <ClCompile Include="template.cpp" />
     <ClCompile Include="test.cpp" />
-    <ClCompile Include="timer.cpp" />
     <ClCompile Include="title.cpp" />
     <ClCompile Include="xinput.cpp" />
   </ItemGroup>
@@ -126,6 +126,7 @@
     <ClInclude Include="phase_manager.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="precompile.h" />
+    <ClInclude Include="rank.h" />
     <ClInclude Include="record.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="ranking.h" />
@@ -135,7 +136,6 @@
     <ClInclude Include="spwan_wall.h" />
     <ClInclude Include="template.h" />
     <ClInclude Include="test.h" />
-    <ClInclude Include="timer.h" />
     <ClInclude Include="title.h" />
     <ClInclude Include="xinput.h" />
   </ItemGroup>

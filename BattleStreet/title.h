@@ -51,7 +51,7 @@ public:
 	typedef enum
 	{
 		TYPE_2D_LOGO = 0,	// タイトルロゴ
-		TYPE_2D_BUTTON,	// タイトルボタン
+		TYPE_2D_BUTTON,		// タイトルボタン
 		TYPE_2D_MAX
 	}TYPE_2D;
 

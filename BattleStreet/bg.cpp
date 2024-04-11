@@ -64,7 +64,7 @@ HRESULT CBg::Load(void)
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// デバイスの情報取得の成功を判定
-	if (pDevice == NULL)
+	if (pDevice == nullptr)
 	{// 失敗時
 
 		// 初期化処理を抜ける
@@ -75,7 +75,7 @@ HRESULT CBg::Load(void)
 	CManagerTexture *pManagerTexture = CManager::GetInstance()->GetManagerTexture();
 
 	// テクスチャ管理の有無を判定
-	if (pManagerTexture == NULL)
+	if (pManagerTexture == nullptr)
 	{
 		// 初期化処理を抜ける
 		return E_FAIL;
@@ -167,21 +167,21 @@ CBg *CBg::Create(TEX tex)
 	CBg *pCBg = DBG_NEW CBg;
 
 	// 生成の成功の有無を判定
-	if (pCBg != NULL)
+	if (pCBg != nullptr)
 	{
 		// 初期化処理 if(背景の初期化成功の有無を判定)
 		if (FAILED(pCBg->Init(tex)))
 		{// 失敗時
 
 			// 「なし」を返す
-			return NULL;
+			return nullptr;
 		}
 	}
-	else if (pCBg == NULL)
+	else if (pCBg == nullptr)
 	{// 失敗時
 
 		// 「なし」を返す
-		return NULL;
+		return nullptr;
 	}
 
 	// 背景のポインタを返す
@@ -219,7 +219,7 @@ void CBg::SetVtx(void)
 	LPDIRECT3DVERTEXBUFFER9 vtxBuff = GetVtxBuff();
 
 	// 頂点バッファ取得成功の有無を判定
-	if (vtxBuff == NULL)
+	if (vtxBuff == nullptr)
 	{// 失敗時
 
 		// 頂点情報設定を抜ける
@@ -227,7 +227,7 @@ void CBg::SetVtx(void)
 	}
 
 	// 2D頂点情報のポインタを宣言
-	VERTEX_2D *pVtx = NULL;
+	VERTEX_2D *pVtx = nullptr;
 
 	// 頂点バッファをロックし、頂点情報のポインタを取得
 	vtxBuff->Lock(

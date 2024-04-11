@@ -16,9 +16,6 @@
     <Filter Include="Collision">
       <UniqueIdentifier>{e74660d2-64d8-4c72-9411-0e11368ec05e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Scene">
-      <UniqueIdentifier>{c7db45fd-0944-47e1-b4a0-0e0918205861}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Input">
       <UniqueIdentifier>{93cf51ad-cbe2-4184-bced-64c8eeb70ffa}</UniqueIdentifier>
     </Filter>
@@ -76,6 +73,9 @@
     <Filter Include="Rank">
       <UniqueIdentifier>{65fcb468-dd6f-4a56-9378-0f4c06165384}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scene">
+      <UniqueIdentifier>{c7db45fd-0944-47e1-b4a0-0e0918205861}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="debugproc.cpp">
@@ -85,9 +85,6 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="number.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="objectx_none.cpp">
@@ -100,9 +97,6 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="skybox.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="timer.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="bg.cpp">
@@ -249,6 +243,12 @@
     <ClCompile Include="record.cpp">
       <Filter>Rank</Filter>
     </ClCompile>
+    <ClCompile Include="rank.cpp">
+      <Filter>Rank</Filter>
+    </ClCompile>
+    <ClCompile Include="number.cpp">
+      <Filter>Obj2d</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="debugproc.h">
@@ -258,9 +258,6 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="main.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="number.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="objectx_none.h">
@@ -273,9 +270,6 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="skybox.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="timer.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="bg.h">
@@ -421,6 +415,12 @@
     </ClInclude>
     <ClInclude Include="record.h">
       <Filter>Rank</Filter>
+    </ClInclude>
+    <ClInclude Include="rank.h">
+      <Filter>Rank</Filter>
+    </ClInclude>
+    <ClInclude Include="number.h">
+      <Filter>Obj2d</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

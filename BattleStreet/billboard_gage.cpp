@@ -81,27 +81,27 @@ void CBillboardGage::Draw(void)
 CBillboardGage* CBillboardGage::Create(void)
 {
 	// ポインタを宣言
-	CBillboardGage* pBillboardGage = NULL;
+	CBillboardGage* pBillboardGage = nullptr;
 
 	// 生成
 	pBillboardGage = DBG_NEW CBillboardGage;
 
 	// 生成の成功の有無を判定
-	if (pBillboardGage != NULL)
+	if (pBillboardGage != nullptr)
 	{
 		// 初期化処理
 		if (FAILED(pBillboardGage->Init()))
 		{// 失敗時
 
 			// 「なし」を返す
-			return NULL;
+			return nullptr;
 		}
 	}
-	else if (pBillboardGage == NULL)
+	else if (pBillboardGage == nullptr)
 	{// 失敗時
 
 		// 「なし」を返す
-		return NULL;
+		return nullptr;
 	}
 
 	// ポインタを返す

@@ -62,7 +62,7 @@ HRESULT CEffect::Load(void)
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// デバイスの情報取得の成功を判定
-	if (pDevice == NULL)
+	if (pDevice == nullptr)
 	{// 失敗時
 
 	 // 初期化処理を抜ける
@@ -73,7 +73,7 @@ HRESULT CEffect::Load(void)
 	CManagerTexture *pManagerTexture = CManager::GetInstance()->GetManagerTexture();
 
 	// テクスチャ管理の有無を判定
-	if (pManagerTexture == NULL)
+	if (pManagerTexture == nullptr)
 	{
 		// 初期化処理を抜ける
 		return E_FAIL;
@@ -156,7 +156,7 @@ void CEffect::Draw(void)
 	CRenderer *pRenderer = CManager::GetInstance()->GetRenderer();
 
 	// デバイスの情報取得の成功を判定
-	if (pRenderer == NULL)
+	if (pRenderer == nullptr)
 	{// 失敗時
 
 		// 初期化処理を抜ける
@@ -217,21 +217,21 @@ CEffect *CEffect::Create(TEX tex)
 	CEffect *pCEffect = DBG_NEW CEffect(6);
 
 	// 生成の成功の有無を判定
-	if (pCEffect != NULL)
+	if (pCEffect != nullptr)
 	{
 		// 初期化処理
 		if (FAILED(pCEffect->Init(tex)))
 		{// 失敗時
 
 			// 「なし」を返す
-			return NULL;
+			return nullptr;
 		}
 	}
-	else if (pCEffect == NULL)
+	else if (pCEffect == nullptr)
 	{// 失敗時
 
 		// 「なし」を返す
-		return NULL;
+		return nullptr;
 	}
 
 	// エフェクトのポインタを返す

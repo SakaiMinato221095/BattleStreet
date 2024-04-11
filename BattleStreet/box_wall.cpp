@@ -92,21 +92,21 @@ CBoxWall* CBoxWall::Create(void)
 	CBoxWall* pCBoxWall = DBG_NEW CBoxWall(2);
 
 	// 生成の成功の有無を判定
-	if (pCBoxWall != NULL)
+	if (pCBoxWall != nullptr)
 	{
 		// 初期化処理
 		if (FAILED(pCBoxWall->Init()))
 		{// 失敗時
 
 			// 「なし」を返す
-			return NULL;
+			return nullptr;
 		}
 	}
-	else if (pCBoxWall == NULL)
+	else if (pCBoxWall == nullptr)
 	{// 失敗時
 
 		// 「なし」を返す
-		return NULL;
+		return nullptr;
 	}
 
 	// フィールドのポインタを返す
@@ -129,7 +129,7 @@ void CBoxWall::SetVtx(void)
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// デバイスの情報取得の成功を判定
-	if (pDevice == NULL)
+	if (pDevice == nullptr)
 	{// 失敗時
 
 	 // 初期化処理を抜ける

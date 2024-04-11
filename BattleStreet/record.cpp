@@ -22,14 +22,14 @@
 //=	静的変数宣言
 //=======================================
 
-CRecord* CRecord::m_pRecord = nullptr;	// 自身のポインタ
+CRecord* CRecord::m_pInstance = nullptr;	// 自身のポインタ
 
 //-------------------------------------
 //-	コンストラクタ
 //-------------------------------------
 CRecord::CRecord()
 {
-	ZeroMemory(&m_aInfo, sizeof(m_aInfo));
+	ZeroMemory(&m_info, sizeof(m_info));
 }
 
 //-------------------------------------
@@ -53,7 +53,8 @@ HRESULT CRecord::Init(void)
 //-------------------------------------
 void CRecord::Uninit(void)
 {
-	m_pRecord = nullptr;
+	delete m_pInstance;
+	m_pInstance = nullptr;
 }
 
 //-------------------------------------
@@ -71,25 +72,27 @@ void CRecord::Update(void)
 CRecord* CRecord::Create(void)
 {
 	// 生成処理
-	CRecord* pInstance = DBG_NEW CRecord;
+	m_pInstance = DBG_NEW CRecord;
 
-	if (pInstance != nullptr)
+	if (m_pInstance != nullptr)
 	{
 		// 初期化処理
-		if (FAILED(pInstance->Init()))
+		if (FAILED(m_pInstance->Init()))
 		{// 失敗時
 
-			return nullptr;
+			m_pInstance = nullptr;
+			return m_pInstance;
 		}
 	}
-	else if (pInstance == nullptr)
+	else if (m_pInstance == nullptr)
 	{// 失敗時
 
-		return nullptr;
+		m_pInstance = nullptr;
+		return m_pInstance;
 	}
 
 	// ポインタを返す
-	return pInstance;
+	return m_pInstance;
 }
 
 //-------------------------------------
@@ -101,12 +104,12 @@ void CRecord::Debug(void)
 	CDebugProc* pDebugProc = CManager::GetInstance()->GetDbugProc();
 
 	// デバックプロック取得の有無を判定
-	if (pDebugProc == NULL)
+	if (pDebugProc == nullptr)
 	{
 		return;
 	}
 
 	pDebugProc->Print("\n");
-	pDebugProc->Print("ゲーム時間 : %f",m_aInfo.fGmaeTime);
+	pDebugProc->Print("ゲーム時間 : %f", m_info.fGameTime);
 	pDebugProc->Print("\n");
 }

@@ -57,7 +57,7 @@ CMotion::CMotion()
 	m_bBlend = false;
 	m_bChangeBlend = false;
 
-	m_ppModel = NULL;
+	m_ppModel = nullptr;
 	m_nNumModel = 0;
 }
 
@@ -99,21 +99,21 @@ CMotion * CMotion::Create(int nNumModel, int nNumState)
 	CMotion *pMotion = DBG_NEW CMotion;
 
 	// 生成の成功の有無を判定
-	if (pMotion != NULL)
+	if (pMotion != nullptr)
 	{
 		// 初期化処理
 		if (FAILED(pMotion->Init(nNumModel, nNumState)))
 		{// 失敗時
 
 			// 「なし」を返す
-			return NULL;
+			return nullptr;
 		}
 	}
-	else if (pMotion == NULL)
+	else if (pMotion == nullptr)
 	{// 失敗時
 
 		// 「なし」を返す
-		return NULL;
+		return nullptr;
 	}
 
 	// プレイヤーのポインタを返す
@@ -235,7 +235,7 @@ void CMotion::SetFile(MOTION_TYPE MotionType)
 	pFile = fopen(pMotionText[MotionType], "r");
 
 	// ファイルの有無を判定
-	if (pFile != NULL)
+	if (pFile != nullptr)
 	{// ファイルが開けるとき
 
 		// 変数宣言
@@ -261,7 +261,7 @@ void CMotion::SetFile(MOTION_TYPE MotionType)
 			}
 
 			// モーションの数を増やす
-			if (strstr(aFileData, "MOTIONSET") != NULL)
+			if (strstr(aFileData, "MOTIONSET") != nullptr)
 			{
 				// 変数宣言
 				char aTenp[256] = {};	// ゴミ入れ	
@@ -280,10 +280,10 @@ void CMotion::SetFile(MOTION_TYPE MotionType)
 			}
 
 			// ループの設定を判定
-			if (strstr(aFileData, "LOOP") != NULL)
+			if (strstr(aFileData, "LOOP") != nullptr)
 			{
 				// 特定の文字を判定
-				if (strstr(aFileData, "=") != NULL)
+				if (strstr(aFileData, "=") != nullptr)
 				{
 					// 変数宣言
 					char aTenp[2][256] = {};	// ゴミ入れ	
@@ -308,10 +308,10 @@ void CMotion::SetFile(MOTION_TYPE MotionType)
 
 
 			// キー数設定を判定
-			if (strstr(aFileData, "NUM_KEY") != NULL)
+			if (strstr(aFileData, "NUM_KEY") != nullptr)
 			{
 				// 特定の文字を判定
-				if (strstr(aFileData, "=") != NULL)
+				if (strstr(aFileData, "=") != nullptr)
 				{
 					// 変数宣言
 					char aTenp[2][256] = {};	// ゴミ入れ	
@@ -327,7 +327,7 @@ void CMotion::SetFile(MOTION_TYPE MotionType)
 			}
 
 			// キー設定を判定
-			if (strstr(aFileData, "KEYSET") != NULL)
+			if (strstr(aFileData, "KEYSET") != nullptr)
 			{
 				// 変数宣言
 				char aTenp[256] = {};	// ゴミ入れ	
@@ -345,10 +345,10 @@ void CMotion::SetFile(MOTION_TYPE MotionType)
 			}
 
 			// フレーム設定を判定
-			if (strstr(aFileData, "FRAME") != NULL)
+			if (strstr(aFileData, "FRAME") != nullptr)
 			{
 				// 特定の文字を判定
-				if (strstr(aFileData, "=") != NULL)
+				if (strstr(aFileData, "=") != nullptr)
 				{
 					// 変数宣言
 					char aTenp[2][256] = {};	// ゴミ入れ	
@@ -364,7 +364,7 @@ void CMotion::SetFile(MOTION_TYPE MotionType)
 			}
 
 			// キーの判定
-			if (strstr(aFileData, "KEY") != NULL)
+			if (strstr(aFileData, "KEY") != nullptr)
 			{
 				// 変数宣言
 				char aTenp[256] = {};	// ゴミ入れ	
@@ -381,10 +381,10 @@ void CMotion::SetFile(MOTION_TYPE MotionType)
 			}
 
 			// 位置情報の判定
-			if (strstr(aFileData, "POS") != NULL)
+			if (strstr(aFileData, "POS") != nullptr)
 			{
 				// 特定の文字を判定
-				if (strstr(aFileData, "=") != NULL)
+				if (strstr(aFileData, "=") != nullptr)
 				{
 					// 変数宣言
 					char aTenp[2][256] = {};	// ゴミ入れ	
@@ -403,10 +403,10 @@ void CMotion::SetFile(MOTION_TYPE MotionType)
 			}
 
 			// 向き情報の判定
-			if (strstr(aFileData, "ROT") != NULL)
+			if (strstr(aFileData, "ROT") != nullptr)
 			{
 				// 特定の文字を判定
-				if (strstr(aFileData, "=") != NULL)
+				if (strstr(aFileData, "=") != nullptr)
 				{
 					// 変数宣言
 					char aTenp[2][256] = {};	// ゴミ入れ	
@@ -425,7 +425,7 @@ void CMotion::SetFile(MOTION_TYPE MotionType)
 				}
 			}
 
-			if (strstr(aFileData, "END_SCRIPT") != NULL)
+			if (strstr(aFileData, "END_SCRIPT") != nullptr)
 			{
 				break;
 			}

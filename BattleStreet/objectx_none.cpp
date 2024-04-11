@@ -62,7 +62,7 @@ HRESULT CObjectXNone::Load(void)
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// デバイスの情報取得の成功を判定
-	if (pDevice == NULL)
+	if (pDevice == nullptr)
 	{// 失敗時
 
 	 // 初期化処理を抜ける
@@ -73,7 +73,7 @@ HRESULT CObjectXNone::Load(void)
 	CManagerModel *pManagerModel = CManager::GetInstance()->GetManagerModel();
 
 	// モデル管理の有無を判定
-	if (pManagerModel == NULL)
+	if (pManagerModel == nullptr)
 	{
 		// 初期化処理を抜ける
 		return E_FAIL;
@@ -116,7 +116,7 @@ HRESULT CObjectXNone::Init(MODEL model, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	CManagerModel *pManagerModel = CManager::GetInstance()->GetManagerModel();
 
 	// モデル管理の有無を判定
-	if (pManagerModel == NULL)
+	if (pManagerModel == nullptr)
 	{
 		// 処理を抜ける
 		return E_FAIL;
@@ -178,21 +178,21 @@ CObjectXNone * CObjectXNone::Create(MODEL model, D3DXVECTOR3 pos, D3DXVECTOR3 ro
 	CObjectXNone *pCObjectXNone = DBG_NEW CObjectXNone(4);
 
 	// 生成の成功の有無を判定
-	if (pCObjectXNone != NULL)
+	if (pCObjectXNone != nullptr)
 	{
 		// 初期化処理
 		if (FAILED(pCObjectXNone->Init(model,pos,rot)))
 		{// 失敗時
 
 			// 「なし」を返す
-			return NULL;
+			return nullptr;
 		}
 	}
-	else if (pCObjectXNone == NULL)
+	else if (pCObjectXNone == nullptr)
 	{// 失敗時
 
 	 // 「なし」を返す
-		return NULL;
+		return nullptr;
 	}
 
 	// 効果なしオブジェクトのポインタを返す

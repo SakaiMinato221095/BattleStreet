@@ -26,16 +26,12 @@
 CSound::CSound()
 {
 	// 値をクリア
-	m_pXAudio2 = NULL;
-	m_pMasteringVoice = NULL;
+	m_pXAudio2 = nullptr;
+	m_pMasteringVoice = nullptr;
 
-	for (int nCount = 0; nCount < LABEL_MAX; nCount++)
-	{
-		m_apSourceVoice[nCount] = NULL;
-		m_apDataAudio[nCount] = NULL;
-		m_aSizeAudio[nCount] = NULL;
-	}
-
+	ZeroMemory(&m_apSourceVoice, sizeof(m_apSourceVoice));
+	ZeroMemory(&m_apDataAudio, sizeof(m_apDataAudio));
+	ZeroMemory(&m_aSizeAudio, sizeof(m_aSizeAudio));
 }
 
 //-------------------------------------
@@ -82,11 +78,11 @@ HRESULT CSound::Init(HWND hWnd)
 		MessageBox(hWnd, "マスターボイスの生成に失敗！", "警告！", MB_ICONWARNING);
 
 		// XAudio2オブジェクトの有無を判定
-		if (m_pXAudio2 != NULL)
+		if (m_pXAudio2 != nullptr)
 		{
 			// XAudio2オブジェクトの開放
 			m_pXAudio2->Release();
-			m_pXAudio2 = NULL;
+			m_pXAudio2 = nullptr;
 		}
 
 		// COMライブラリの終了処理
@@ -266,31 +262,31 @@ void CSound::Uninit(void)
 	for (int nCntSound = 0; nCntSound < LABEL_MAX; nCntSound++)
 	{
 		// ソースボイスの有無を判定
-		if (m_apSourceVoice[nCntSound] != NULL)
+		if (m_apSourceVoice[nCntSound] != nullptr)
 		{
 			// 一時停止
 			m_apSourceVoice[nCntSound]->Stop(0);
 
 			// ソースボイスの破棄
 			m_apSourceVoice[nCntSound]->DestroyVoice();
-			m_apSourceVoice[nCntSound] = NULL;
+			m_apSourceVoice[nCntSound] = nullptr;
 
 			// オーディオデータの開放
 			free(m_apDataAudio[nCntSound]);
-			m_apDataAudio[nCntSound] = NULL;
+			m_apDataAudio[nCntSound] = nullptr;
 		}
 	}
 
 	// マスターボイスの破棄
 	m_pMasteringVoice->DestroyVoice();
-	m_pMasteringVoice = NULL;
+	m_pMasteringVoice = nullptr;
 
 	// XAudio2オブジェクトの有無を判定
-	if (m_pXAudio2 != NULL)
+	if (m_pXAudio2 != nullptr)
 	{
 		// XAudio2オブジェクトの開放
 		m_pXAudio2->Release();
-		m_pXAudio2 = NULL;
+		m_pXAudio2 = nullptr;
 	}
 
 	// COMライブラリの終了処理
@@ -396,7 +392,7 @@ void CSound::Stop(void)
 	for (int nCntSound = 0; nCntSound < LABEL_MAX; nCntSound++)
 	{
 		// 状態の判定
-		if (m_apSourceVoice[nCntSound] != NULL)
+		if (m_apSourceVoice[nCntSound] != nullptr)
 		{
 			// 一時停止
 			m_apSourceVoice[nCntSound]->Stop(0);

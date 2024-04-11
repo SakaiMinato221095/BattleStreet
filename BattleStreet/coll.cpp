@@ -63,7 +63,7 @@ HRESULT CColl::Init(CMgrColl::TAG tag, CObject* pObj, D3DXVECTOR3 pos, D3DXVECTO
 	CMgrColl *pMgrColl = CManager::GetInstance()->GetMgrColl();
 
 	// 当たり判定の有無を判定
-	if (pMgrColl == NULL)
+	if (pMgrColl == nullptr)
 	{
 		// 処理を抜ける
 		return false;
@@ -117,7 +117,7 @@ void CColl::Uninit(void)
 	CMgrColl *pMgrColl = CManager::GetInstance()->GetMgrColl();
 
 	// 当たり判定の有無を判定
-	if (pMgrColl == NULL)
+	if (pMgrColl == nullptr)
 	{
 		// 処理を抜ける
 		return;
@@ -164,21 +164,21 @@ CColl* CColl::Create(CMgrColl::TAG tag, CObject* pObj, D3DXVECTOR3 pos, D3DXVECT
 	CColl *pCollision = DBG_NEW CColl;
 
 	// 生成の成功の有無を判定
-	if (pCollision != NULL)
+	if (pCollision != nullptr)
 	{
 		// 初期化処理
 		if (FAILED(pCollision->Init(tag, pObj,pos,size)))
 		{// 失敗時
 
 			// 「なし」を返す
-			return NULL;
+			return nullptr;
 		}
 	}
-	else if (pCollision == NULL)
+	else if (pCollision == nullptr)
 	{// 失敗時
 
 	 // 「なし」を返す
-		return NULL;
+		return nullptr;
 	}
 
 	// 当たり判定のポインタを返す
@@ -194,7 +194,7 @@ bool CColl::Hit(CMgrColl::TAG hitTag,CMgrColl::EVENT_TYPE eventType)
 	CMgrColl *pMgrColl = CManager::GetInstance()->GetMgrColl();		
 
 	// 当たり判定の有無を判定
-	if (pMgrColl == NULL)
+	if (pMgrColl == nullptr)
 	{
 		// 処理を抜ける
 		return false;
@@ -218,7 +218,7 @@ bool CColl::HitSide(CMgrColl::TAG hitTag,CMgrColl::EVENT_TYPE eventType, CMgrCol
 	CMgrColl* pMgrColl = CManager::GetInstance()->GetMgrColl();
 
 	// 当たり判定の有無を判定
-	if (pMgrColl == NULL)
+	if (pMgrColl == nullptr)
 	{
 		// 処理を抜ける
 		return false;

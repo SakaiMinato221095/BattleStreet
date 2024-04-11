@@ -21,6 +21,8 @@
 
 #include "spwan_wall.h"
 
+#include "record.h"
+
 //-======================================
 //-	マクロ定義
 //-======================================
@@ -113,21 +115,21 @@ CPhaseManager* CPhaseManager::Create(void)
 	CPhaseManager* pCPhaseManager = DBG_NEW CPhaseManager(1);
 
 	// 生成の成功の有無を判定
-	if (pCPhaseManager != NULL)
+	if (pCPhaseManager != nullptr)
 	{
 		// 初期化処理
 		if (FAILED(pCPhaseManager->Init()))
 		{// 失敗時
 
 			// 「なし」を返す
-			return NULL;
+			return nullptr;
 		}
 	}
-	else if (pCPhaseManager == NULL)
+	else if (pCPhaseManager == nullptr)
 	{// 失敗時
 
 		// 「なし」を返す
-		return NULL;
+		return nullptr;
 	}
 
 	// ポインタを返す
@@ -232,6 +234,9 @@ void CPhaseManager::SetComp(void)
 	{
 		if (CManager::GetInstance()->GetFade() != nullptr)
 		{
+			// 勝ちを設定
+			CRecord::GetInstance()->SetComp(CRecord::TYPE_COMP_WIN);
+
 			// ゲームモード
 			CManager::GetInstance()->GetFade()->SetFade(CScene::MODE_RANKING);
 		}

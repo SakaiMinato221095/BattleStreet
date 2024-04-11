@@ -116,7 +116,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLime
 	CManager *pManager = CManager::GetInstance();
 
 	// マネージャの初期化
-	if (pManager != NULL)
+	if (pManager != nullptr)
 	{
 		if (FAILED(pManager->Init(hInstance, hWnd, TRUE)))
 		{
@@ -165,7 +165,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLime
 				// 処理開始の時刻[現在時刻]を保存
 				dwExecLastTime = dwCurrentTime;
 
-				if (pManager != NULL)
+				if (pManager != nullptr)
 				{
 					// レンダラーの更新処理
 					pManager->Update();
@@ -180,22 +180,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLime
 		}
 	}
 
-	// マネージャの終了処理
-	pManager->Uninit();
-
 	// 管理の破棄
-	if (pManager != NULL)
+	if (pManager != nullptr)
 	{
 		// 管理の終了処理
 		pManager->Uninit();
 
 		// 管理の開放
 		delete pManager;
-		pManager = NULL;
+		pManager = nullptr;
 	}
 
+	// メモリ破壊確認
 	_CrtDumpMemoryLeaks();
-
 
 	//分解能を戻す
 	timeEndPeriod(1);

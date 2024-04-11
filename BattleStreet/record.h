@@ -22,7 +22,8 @@ public:
 	// クリア種類
 	enum TYPE_COMP
 	{
-		TYPE_COMP_WIN = 0,	// 勝ち
+		TYPE_COMP_NONE = 0,	// なし
+		TYPE_COMP_WIN,		// 勝ち
 		TYPE_COMP_LOOSE,	// 負け
 		TYPE_COMP_MAX
 	};
@@ -35,9 +36,12 @@ public:
 	void Uninit(void);
 	void Update(void);
 
-	void SetComp(TYPE_COMP typeComp) { m_aInfo.typeComp = typeComp; }
+	void SetComp(TYPE_COMP typeComp) { m_info.typeComp = typeComp; }
+	TYPE_COMP GetComp(void) { return m_info.typeComp; }
 
-	static CRecord* GetInstance(void) { return m_pRecord; }
+	float GetGameTime(void) { return m_info.fGameTime; }
+
+	static CRecord* GetInstance(void) { return m_pInstance; }
 
 private:
 
@@ -45,13 +49,13 @@ private:
 
 	struct SInfo
 	{
-		float fGmaeTime;		// ゲームの時間
-		TYPE_COMP typeComp;		// クリアの種類
+		float fGameTime;			// ゲームの時間
+		TYPE_COMP typeComp;			// クリアの種類
 	};
 
-	SInfo m_aInfo;				// 戦績情報
+	SInfo m_info;					// 戦績情報
 
-	static CRecord* m_pRecord;	// 自身のポインタ
+	static CRecord* m_pInstance;	// 自身のポインタ
 };
 
 #endif

@@ -63,7 +63,7 @@ void CXInput::Update(void)
 {
 	// 変数宣言
 	XINPUT_STATE state;							// ゲームパッドの状態を取得
-	ZeroMemory(&state, sizeof(XINPUT_STATE));
+	ZeroMemory(&state, sizeof(state));
 
 	// ゲームパッドの状態を判定
 	if (XInputGetState(0,&state) == ERROR_SUCCESS)
@@ -99,21 +99,21 @@ CXInput *CXInput::Create(HINSTANCE hInstance, HWND hWnd)
 	CXInput *pCXinput = DBG_NEW CXInput;
 
 	// 生成の成功の有無を判定
-	if (pCXinput != NULL)
+	if (pCXinput != nullptr)
 	{
 		// 初期化処理
 		if (FAILED(pCXinput->Init(hInstance,hWnd)))
 		{// 失敗時
 
 			// 「なし」を返す
-			return NULL;
+			return nullptr;
 		}
 	}
-	else if (pCXinput == NULL)
+	else if (pCXinput == nullptr)
 	{// 失敗時
 
 		// 「なし」を返す
-		return NULL;
+		return nullptr;
 	}
 
 	// X入力のポインタを返す

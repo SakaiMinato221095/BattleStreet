@@ -74,11 +74,10 @@ void CMapManager::Uninit(void)
 	if (pMapObjectX != nullptr)
 	{
 		pMapObjectX->Uninit();
-
-		delete pMapObjectX;
 		pMapObjectX = nullptr;
 	}
 
+	delete m_pInstance;
 	m_pInstance = nullptr;
 }
 
@@ -111,7 +110,6 @@ CMapManager* CMapManager::Create(void)
 	// ポインタを返す
 	return pInstance;
 }
-
 
 //-------------------------------------
 //-	ゲームセーブ

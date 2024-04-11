@@ -152,7 +152,7 @@ HRESULT CTitle::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 			D3DXVECTOR2(10.0f, 10.0f));
 	}
 
-	if (m_pCharacter == NULL)
+	if (m_pCharacter == nullptr)
 	{
 		// プレイヤーの生成
 		m_pCharacter = CCharacter::Create(
@@ -230,10 +230,10 @@ HRESULT CTitle::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 //-------------------------------------
 void CTitle::Uninit(void)
 {
-	if (m_pCharacter != NULL)
+	if (m_pCharacter != nullptr)
 	{
 		m_pCharacter->Uninit();
-		m_pCharacter = NULL;
+		m_pCharacter = nullptr;
 	}
 
 	for (int nCount = 0; nCount < TYPE_2D_MAX; nCount++)
@@ -255,7 +255,7 @@ void CTitle::Update(void)
 	CInputKeyboard *pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
 
 	// キーボードの情報取得の成功を判定
-	if (pInputKeyboard == NULL)
+	if (pInputKeyboard == nullptr)
 	{// 失敗時
 
 		// 更新処理を抜ける
@@ -266,14 +266,14 @@ void CTitle::Update(void)
 	CXInput *pXInput = CManager::GetInstance()->GetXInput();
 
 	// X入力の情報取得の成功を判定
-	if (pXInput == NULL)
+	if (pXInput == nullptr)
 	{
 		// 処理を抜ける
 		return;
 	}
 
 	// 遷移ボタン（えんたー）
-	if (pInputKeyboard->GetTrigger(DIK_RETURN) != NULL || 
+	if (pInputKeyboard->GetTrigger(DIK_RETURN) || 
 		pXInput->GetTrigger(XINPUT_GAMEPAD_A,CXInput::TYPE_INPUT_BUTTON))
 	{
 		// ゲームモード

@@ -17,6 +17,8 @@
 
 #include "manager_texture.h"
 
+#include "object2d.h"
+
 //=======================================
 //=	マクロ定義
 //=======================================
@@ -38,16 +40,20 @@ const char *pTextureNumber[] =
 
 int CNumber::m_nTextureNldx[TEX_MAX] = {};
 
+//=================================================
+//= 数字のデフォルトクラス
+//=================================================
 //-------------------------------------
-//-	数字のコンストラクタ
+//-	コンストラクタ
 //-------------------------------------
-CNumber::CNumber(int nPriority) : CObject2d(nPriority)
+CNumber::CNumber(int nPriority)
 {
-	ZeroMemory(&m_data, sizeof(m_data));
+	ZeroMemory(&m_info, sizeof(m_info));
+	ZeroMemory(&m_pInfoVisual, sizeof(m_pInfoVisual));
 }
 
 //-------------------------------------
-//-	数字のデストラクタ
+//-	デストラクタ
 //-------------------------------------
 CNumber::~CNumber()
 {
@@ -55,7 +61,7 @@ CNumber::~CNumber()
 }
 
 //-------------------------------------
-//- 数字の読み込み処理
+//- 読み込み処理
 //-------------------------------------
 HRESULT CNumber::Load(void)
 {
@@ -63,7 +69,7 @@ HRESULT CNumber::Load(void)
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// デバイスの情報取得の成功を判定
-	if (pDevice == NULL)
+	if (pDevice == nullptr)
 	{// 失敗時
 
 	 // 初期化処理を抜ける
@@ -74,7 +80,7 @@ HRESULT CNumber::Load(void)
 	CManagerTexture *pManagerTexture = CManager::GetInstance()->GetManagerTexture();
 
 	// テクスチャ管理の有無を判定
-	if (pManagerTexture == NULL)
+	if (pManagerTexture == nullptr)
 	{
 		// 初期化処理を抜ける
 		return E_FAIL;
@@ -107,132 +113,236 @@ void CNumber::Unload(void)
 }
 
 //-------------------------------------
-//- 数字の初期化処理
+//- 初期化処理
 //-------------------------------------
-HRESULT CNumber::Init(TEX tex)
+HRESULT CNumber::Init(TEX tex, int nDigits)
 {
-	// 使用テクスチャの設定
-	BindTexture(m_nTextureNldx[tex]);
+	// 情報代入
+	m_info.nDigits = nDigits;					// 桁数
+	m_info.nTexNldxUse = m_nTextureNldx[tex];	// テクスチャ番号
 
-	// 2Dオブジェクトの初期化
-	CObject2d::Init();
+	for (int nCnt = 0; nCnt < m_info.nDigits; nCnt++)
+	{
+		if (m_pInfoVisual.pObjNumber[nCnt] == nullptr)
+		{
+			// アニメーション2Dを生成
+			m_pInfoVisual.pObjNumber[nCnt] = C2dAnima::Create();
+
+			if (m_pInfoVisual.pObjNumber[nCnt] != nullptr)
+			{
+				// アニメーション2Dの情報設定
+				m_pInfoVisual.pObjNumber[nCnt]->BindTexture(m_info.nTexNldxUse);	// テクスチャ
+				m_pInfoVisual.pObjNumber[nCnt]->SetDiv(10, 1);						// 分割数
+				m_pInfoVisual.pObjNumber[nCnt]->SetVtx();
+			}
+		}
+	}
 
 	// 成功を返す
 	return S_OK;
 }
 
 //-------------------------------------
-//- 数字の終了処理
+//- 終了処理
 //-------------------------------------
 void CNumber::Uninit(void)
 {
-	// 2Dオブジェクトの終了処理
-	CObject2d::Uninit();
+	for (int nCnt = 0; nCnt < m_info.nDigits; nCnt++)
+	{
+		if (m_pInfoVisual.pObjNumber[nCnt] != nullptr)
+		{
+			m_pInfoVisual.pObjNumber[nCnt]->Uninit();
+			m_pInfoVisual.pObjNumber[nCnt] = nullptr;
+		}
+	}
+	
+	// 開放処理
+	Release();
 }
 
 //-------------------------------------
-//- 数字の更新処理
+//- 更新処理
 //-------------------------------------
 void CNumber::Update(void)
 {
-	// 頂点情報の設定処理
-	SetVtx();
+
 }
 
 //-------------------------------------
-//- 数字の描画処理
+//- 描画処理
 //-------------------------------------
 void CNumber::Draw(void)
 {
-	// 2Dオブジェクトの描画処理
-	CObject2d::Draw();
+
 }
 
 //-------------------------------------
-//-	数字の生成処理
+//-	生成処理
 //-------------------------------------
-CNumber *CNumber::Create(TEX tex)
+CNumber *CNumber::Create(TEX tex,int nDigits)
 {
-	// 数字の生成
-	CNumber *pNumber = DBG_NEW CNumber(7);
+	// 生成
+	CNumber *pInstance = DBG_NEW CNumber;
 
 	// 生成の成功の有無を判定
-	if (pNumber != NULL)
+	if (pInstance != nullptr)
 	{
 		// 初期化処理
-		if (FAILED(pNumber->Init(tex)))
+		if (FAILED(pInstance->Init(tex, nDigits)))
 		{// 失敗時
 
 			// 「なし」を返す
-			return NULL;
+			return nullptr;
 		}
 	}
-	else if (pNumber == NULL)
+	else if (pInstance == nullptr)
 	{// 失敗時
 
 		// 「なし」を返す
-		return NULL;
+		return nullptr;
 	}
 
-	// 数字のポインタを返す
-	return pNumber;
+	// ポインタを返す
+	return pInstance;
 }
 
 //-------------------------------------
-//- 数字の頂点情報設定
+//- 初期設定処理
 //-------------------------------------
-void CNumber::SetVtx(void)
+void CNumber::SetInit(D3DXVECTOR3 pos, D3DXVECTOR3 intvl, D3DXVECTOR3 size ,D3DXCOLOR color)
 {
-	// 変数宣言（情報の取得）
-	D3DXVECTOR3 pos = GetPos();		// 位置情報
-	D3DXVECTOR3 size = GetSize();	// 大きさ
-	D3DXCOLOR color = GetColor();	// 色
+	m_info.pos = pos;
+	m_info.intvl = intvl;
+	m_info.size = size;
+	m_info.color = color;
 
-	// 頂点バッファをポインタを宣言
-	LPDIRECT3DVERTEXBUFFER9 vtxBuff = GetVtxBuff();
+	for (int nCnt = 0; nCnt < m_info.nDigits; nCnt++)
+	{
+		m_pInfoVisual.pObjNumber[nCnt]->SetInit(
+			m_info.pos + (m_info.intvl * (float)nCnt),
+			m_info.size,
+			m_info.color);
+	}
+}
 
-	// 頂点バッファ取得成功の有無を判定
-	if (vtxBuff == NULL)
-	{// 失敗時
+//=================================================
+//= 数字のFloatクラス
+//=================================================
+//-------------------------------------
+//-	コンストラクタ
+//-------------------------------------
+CNumberFloat::CNumberFloat(int nPriority)
+{
+	ZeroMemory(&m_info, sizeof(m_info));
+	ZeroMemory(&m_pInfoVisual, sizeof(m_pInfoVisual));
+}
 
-		// 頂点情報設定を抜ける
-		return;
+//-------------------------------------
+//-	デストラクタ
+//-------------------------------------
+CNumberFloat::~CNumberFloat()
+{
+
+}
+
+//-------------------------------------
+//- 初期化処理
+//-------------------------------------
+HRESULT CNumberFloat::Init(TEX tex,int nDigits,int nDigitsDec)
+{
+	// 数字の初期化処理
+	CNumber::Init(tex,nDigits);
+
+	// 動的確保
+	m_pInfoVisual = DBG_NEW InfoVisual[m_info.nDigitsDec];
+
+	for (int nCnt = 0; nCnt < m_info.nDigitsDec; nCnt++)
+	{
+		// アニメーション2Dを生成
+		m_pInfoVisual[nCnt].pObjNumberDec = C2dAnima::Create();
+
+		if (m_pInfoVisual[nCnt].pObjNumberDec != nullptr)
+		{
+			// アニメーション2Dの情報設定
+			m_pInfoVisual[nCnt].pObjNumberDec->BindTexture(tex);	// テクスチャ
+			m_pInfoVisual[nCnt].pObjNumberDec->SetDiv(10, 1);		// 分割数
+			m_pInfoVisual[nCnt].pObjNumberDec->SetVtx();
+		}
 	}
 
-	// 2D頂点情報のポインタを宣言
-	VERTEX_2D *pVtx = NULL;
+	// 成功を返す
+	return S_OK;
+}
 
-	// 頂点バッファをロックし、頂点情報のポインタを取得
-	vtxBuff->Lock(
-		0,
-		0,
-		(void**)&pVtx,
-		0);
+//-------------------------------------
+//- 終了処理
+//-------------------------------------
+void CNumberFloat::Uninit(void)
+{
+	// 基底クラスの初期化処理
+	CNumber::Uninit();
 
-	// 頂点座標を設定
-	pVtx[0].pos = D3DXVECTOR3(pos.x - size.x, pos.y - size.y, 0.0f);
-	pVtx[1].pos = D3DXVECTOR3(pos.x + size.x, pos.y - size.y, 0.0f);
-	pVtx[2].pos = D3DXVECTOR3(pos.x - size.x, pos.y + size.y, 0.0f);
-	pVtx[3].pos = D3DXVECTOR3(pos.x + size.x, pos.y + size.y, 0.0f);
+	for (int nCnt = 0; nCnt < m_info.nDigitsDec; nCnt++)
+	{
+		if (m_pInfoVisual[nCnt].pObjNumberDec != nullptr)
+		{
+			m_pInfoVisual[nCnt].pObjNumberDec->Uninit();
+			m_pInfoVisual[nCnt].pObjNumberDec = nullptr;
+		}
+	}
+}
 
-	// rhwの設定
-	pVtx[0].rhw = 1.0f;
-	pVtx[1].rhw = 1.0f;
-	pVtx[2].rhw = 1.0f;
-	pVtx[3].rhw = 1.0f;
+//-------------------------------------
+//- 更新処理
+//-------------------------------------
+void CNumberFloat::Update(void)
+{
 
-	// 頂点カラーを設定
-	pVtx[0].col = color;
-	pVtx[1].col = color;
-	pVtx[2].col = color;
-	pVtx[3].col = color;
+}
 
-	// テクスチャの座標を設定
-	pVtx[0].tex = D3DXVECTOR2(0.1f * (m_data.nDigits + 0), 0.0f);
-	pVtx[1].tex = D3DXVECTOR2(0.1f * (m_data.nDigits + 1), 0.0f);
-	pVtx[2].tex = D3DXVECTOR2(0.1f * (m_data.nDigits + 0), 1.0f);
-	pVtx[3].tex = D3DXVECTOR2(0.1f * (m_data.nDigits + 1), 1.0f);
+//-------------------------------------
+//- 描画処理
+//-------------------------------------
+void CNumberFloat::Draw(void)
+{
 
-	// 頂点バッファをアンロックする
-	vtxBuff->Unlock();
+}
+
+//-------------------------------------
+//-	生成処理
+//-------------------------------------
+CNumberFloat* CNumberFloat::Create(TEX tex, int nDigits, int nDigitsDec)
+{
+	// 生成
+	CNumberFloat* pInstance = DBG_NEW CNumberFloat;
+
+	// 生成の成功の有無を判定
+	if (pInstance != nullptr)
+	{
+		// 初期化処理
+		if (FAILED(pInstance->Init(tex, nDigits, nDigitsDec)))
+		{// 失敗時
+
+			// 「なし」を返す
+			return nullptr;
+		}
+	}
+	else if (pInstance == nullptr)
+	{// 失敗時
+
+		// 「なし」を返す
+		return nullptr;
+	}
+
+	// ポインタを返す
+	return pInstance;
+}
+
+//-------------------------------------
+//- 初期設定処理
+//-------------------------------------
+void CNumberFloat::SetInit(D3DXVECTOR3 pos, D3DXVECTOR3 intvl, D3DXVECTOR3 intvlDec, D3DXVECTOR3 size, D3DXCOLOR color)
+{
+	CNumber::SetInit(pos,intvl,size,color);
+	m_info.intvlDec = intvlDec;
 }

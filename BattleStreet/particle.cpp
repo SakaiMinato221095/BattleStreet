@@ -36,7 +36,7 @@ void SetParticle(int nMaxEffect, D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 
 		CEffect *pEffect = CEffect::Create(CEffect::TEX_NORMAL_000);
 
 		// エフェクト生成の有無を判定
-		if (pEffect != NULL)
+		if (pEffect != nullptr)
 		{
 			// 変数宣言（XとZのランダム情報）
 			float fRotData = (float)(rand() % 629 - 314) / 100.0f;		// 向き
@@ -87,7 +87,7 @@ void SetParticleRange(int nMaxEffect, D3DXVECTOR3 objSize, D3DXVECTOR3 objRot,D3
 		CEffect *pEffect = CEffect::Create(CEffect::TEX_NORMAL_000);
 
 		// エフェクト生成の有無を判定
-		if (pEffect != NULL)
+		if (pEffect != nullptr)
 		{
 			// 変数宣言（サイズのランダム情報）
 			float fSizeX = (float)(rand() % int(objSize.x * 2)) - objSize.x;	// サイズ（X）のランダム

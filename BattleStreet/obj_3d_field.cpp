@@ -28,7 +28,7 @@
 // 3D地面のテクスチャのコンスト定義
 const char *pTextureField[] =
 {
-	NULL,										// テクスチャなし
+	nullptr,										// テクスチャなし
 	"data\\TEXTURE\\WhiteTile000.jpg",			// フィールドのテクスチャ
 	"data\\TEXTURE\\road000.png",				// 道路のテクスチャ
 	"data\\TEXTURE\\asphalt000.jpg",			// アスファルトのテクスチャ
@@ -66,7 +66,7 @@ HRESULT CObj3dField::Load(void)
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// デバイスの情報取得の成功を判定
-	if (pDevice == NULL)
+	if (pDevice == nullptr)
 	{// 失敗時
 
 	 // 初期化処理を抜ける
@@ -77,7 +77,7 @@ HRESULT CObj3dField::Load(void)
 	CManagerTexture *pManagerTexture = CManager::GetInstance()->GetManagerTexture();
 
 	// テクスチャ管理の有無を判定
-	if (pManagerTexture == NULL)
+	if (pManagerTexture == nullptr)
 	{
 		// 初期化処理を抜ける
 		return E_FAIL;
@@ -159,21 +159,21 @@ CObj3dField *CObj3dField::Create(TEX tex)
 	CObj3dField *pCObj3dField = DBG_NEW CObj3dField(4);
 
 	// 生成の成功の有無を判定
-	if (pCObj3dField != NULL)
+	if (pCObj3dField != nullptr)
 	{
 		// 初期化処理
 		if (FAILED(pCObj3dField->Init(tex)))
 		{// 失敗時
 
 			// 「なし」を返す
-			return NULL;
+			return nullptr;
 		}
 	}
-	else if (pCObj3dField == NULL)
+	else if (pCObj3dField == nullptr)
 	{// 失敗時
 
 		// 「なし」を返す
-		return NULL;
+		return nullptr;
 	}
 
 	// フィールドのポインタを返す
@@ -194,7 +194,7 @@ void CObj3dField::SetVtx(void)
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// デバイスの情報取得の成功を判定
-	if (pDevice == NULL)
+	if (pDevice == nullptr)
 	{// 失敗時
 
 	 // 初期化処理を抜ける

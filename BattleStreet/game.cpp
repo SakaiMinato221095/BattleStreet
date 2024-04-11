@@ -79,8 +79,8 @@ HRESULT CGame::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	CSound* pSound = CManager::GetInstance()->GetSound();
 
 	// 取得の有無判定
-	if (pCamera == NULL ||
-		pSound == NULL)
+	if (pCamera == nullptr ||
+		pSound == nullptr)
 	{
 		return E_FAIL;
 	}
@@ -215,7 +215,7 @@ HRESULT CGame::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		pMapManager->Load(CMapObjectX::TXT_GAME_000);
 	}
 
-	if (m_infoPoint.pPlayer == NULL)
+	if (m_infoPoint.pPlayer == nullptr)
 	{
 		// プレイヤーの生成
 		m_infoPoint.pPlayer = CPlayer::Create(
@@ -253,50 +253,61 @@ HRESULT CGame::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 //-------------------------------------
 void CGame::Uninit(void)
 {
-	if (m_infoPoint.pPause != NULL)
+	if (m_infoPoint.pPause != nullptr)
 	{
 		m_infoPoint.pPause->Uninit();
 
 		delete m_infoPoint.pPause;
-		m_infoPoint.pPause = NULL;
+		m_infoPoint.pPause = nullptr;
 	}
 
-	if (m_infoPoint.pPhaseManager != NULL)
+	if (m_infoPoint.pPhaseManager != nullptr)
 	{
 		m_infoPoint.pPhaseManager->Uninit();
 
 		delete m_infoPoint.pPhaseManager;
-		m_infoPoint.pPhaseManager = NULL;
+		m_infoPoint.pPhaseManager = nullptr;
 	}
 
-	if (m_infoPoint.pSkyBox != NULL)
+	if (m_infoPoint.pSkyBox != nullptr)
 	{
 		m_infoPoint.pSkyBox->Uninit();
-		m_infoPoint.pSkyBox = NULL;
+		m_infoPoint.pSkyBox = nullptr;
 	}
 
 	for (int nCnt = 0; nCnt < GAME::FIELD_NUM; nCnt++)
 	{
-		if (m_infoPoint.apField[nCnt] != NULL)
+		if (m_infoPoint.apField[nCnt] != nullptr)
 		{
 			m_infoPoint.apField[nCnt]->Uninit();
-			m_infoPoint.apField[nCnt] = NULL;
+			m_infoPoint.apField[nCnt] = nullptr;
 		}
 	}
 
 	for (int nCnt = 0; nCnt < GAME::WALL_NUM; nCnt++)
 	{
-		if (m_infoPoint.apWall[nCnt] != NULL)
+		if (m_infoPoint.apWall[nCnt] != nullptr)
 		{
 			m_infoPoint.apWall[nCnt]->Uninit();
-			m_infoPoint.apWall[nCnt] = NULL;
+			m_infoPoint.apWall[nCnt] = nullptr;
 		}
 	}
 
-	if (m_infoPoint.pPlayer != NULL)
+	if (m_infoPoint.pPlayer != nullptr)
 	{
 		m_infoPoint.pPlayer->Uninit();
-		m_infoPoint.pPlayer = NULL;
+		m_infoPoint.pPlayer = nullptr;
+	}
+
+	// レコードを取得
+	CRecord* pRecord = CRecord::GetInstance();
+
+	if (pRecord != nullptr)
+	{
+		if (pRecord->GetComp() == CRecord::TYPE_COMP_NONE)
+		{
+			pRecord->Uninit();
+		}
 	}
 
 	// オブジェクトの全開放処理
@@ -312,7 +323,7 @@ void CGame::Update(void)
 	CInputKeyboard *pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
 
 	// キーボードの情報取得の成功を判定
-	if (pInputKeyboard == NULL)
+	if (pInputKeyboard == nullptr)
 	{// 失敗時
 
 		// 更新処理を抜ける
@@ -323,14 +334,14 @@ void CGame::Update(void)
 	CXInput *pXInput = CManager::GetInstance()->GetXInput();
 
 	// X入力の情報取得の成功を判定
-	if (pXInput == NULL)
+	if (pXInput == nullptr)
 	{
 		// 処理を抜ける
 		return;
 	}
 
 	// 仮の遷移ボタン（えんたー）
-	if (pInputKeyboard->GetTrigger(DIK_P) != NULL)
+	if (pInputKeyboard->GetTrigger(DIK_P))
 	{
 		if (m_gameState == GAME_STATE_NONE)
 		{
@@ -341,12 +352,12 @@ void CGame::Update(void)
 		}
 		else if (m_gameState == GAME_STATE_PAUSE)
 		{
-			if (m_infoPoint.pPause != NULL)
+			if (m_infoPoint.pPause != nullptr)
 			{
 				m_infoPoint.pPause->Uninit();
 				delete m_infoPoint.pPause;
 
-				m_infoPoint.pPause = NULL;
+				m_infoPoint.pPause = nullptr;
 			}
 
 			// ゲーム状態
@@ -360,7 +371,7 @@ void CGame::Update(void)
 	}
 	else if (m_gameState == GAME_STATE_PAUSE)
 	{
-		if (m_infoPoint.pPause != NULL)
+		if (m_infoPoint.pPause != nullptr)
 		{
 			// ポーズの更新処理
 			m_infoPoint.pPause->Update();
@@ -391,7 +402,7 @@ void CGame::Update(void)
 				// ポーズの開放処理
 				m_infoPoint.pPause->Uninit();
 				delete m_infoPoint.pPause;
-				m_infoPoint.pPause = NULL;
+				m_infoPoint.pPause = nullptr;
 
 				// ゲーム状態
 				m_gameState = GAME_STATE_NONE;
