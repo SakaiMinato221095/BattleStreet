@@ -39,7 +39,7 @@ HRESULT CInput::Init(HINSTANCE hInstanse, HWND hWnd)
 	if (m_pInput == nullptr)
 	{
 		// 入力オブジェクトの生成
-		if (FAILED(DirectInput8Create(hInstanse, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&m_pInput, NULL)))
+		if (FAILED(DirectInput8Create(hInstanse, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&m_pInput, nullptr)))
 		{// 失敗時
 
 			// 初期化処理を抜ける
@@ -111,7 +111,7 @@ HRESULT CInputKeyboard::Init(HINSTANCE hInstanse, HWND hWnd)
 	}
 
 	// キーボードの入力デバイスを生成
-	if (FAILED(m_pInput->CreateDevice(GUID_SysKeyboard, &m_pDevice, NULL)))
+	if (FAILED(m_pInput->CreateDevice(GUID_SysKeyboard, &m_pDevice, nullptr)))
 	{// 失敗時
 
 		// 初期化処理を抜ける

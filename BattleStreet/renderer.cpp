@@ -200,7 +200,7 @@ void CRenderer::Update(void)
 void CRenderer::Draw(void)
 {
 	// 画面クリア（バックバッファとZバッファをクリア）
-	m_pD3DDevice->Clear(0, NULL,
+	m_pD3DDevice->Clear(0, nullptr,
 		(D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER),
 		D3DCOLOR_RGBA(0, 0, 0, 0), 1.0f, 0);
 
@@ -238,7 +238,7 @@ void CRenderer::Draw(void)
 	}
 
 	// バックバッファとフロントバッファの入れ替え
-	m_pD3DDevice->Present(NULL, NULL, NULL, NULL);
+	m_pD3DDevice->Present(nullptr, nullptr, nullptr, nullptr);
 }
 
 //-------------------------------------

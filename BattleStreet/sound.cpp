@@ -50,7 +50,7 @@ HRESULT CSound::Init(HWND hWnd)
 	HRESULT hr;
 
 	// COMライブラリの初期化
-	CoInitializeEx(NULL, COINIT_MULTITHREADED);
+	CoInitializeEx(nullptr, COINIT_MULTITHREADED);
 
 	// XAudio2オブジェクトの作成
 	hr = XAudio2Create(&m_pXAudio2, 0);
@@ -108,7 +108,7 @@ HRESULT CSound::Init(HWND hWnd)
 		memset(&buffer, 0, sizeof(XAUDIO2_BUFFER));
 
 		// サウンドデータファイルの生成
-		hFile = CreateFile(g_aSoundInfo[nCntSound].pFilename, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
+		hFile = CreateFile(g_aSoundInfo[nCntSound].pFilename, GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, 0, nullptr);
 
 		// サウンドデータファイル生成成功の有無を判定
 		if (hFile == INVALID_HANDLE_VALUE)
@@ -121,7 +121,7 @@ HRESULT CSound::Init(HWND hWnd)
 		}
 
 		// ファイルポインタの先頭を判定
-		if (SetFilePointer(hFile, 0, NULL, FILE_BEGIN) == INVALID_SET_FILE_POINTER)
+		if (SetFilePointer(hFile, 0, nullptr, FILE_BEGIN) == INVALID_SET_FILE_POINTER)
 		{// ファイルポインタを先頭に移動
 
 			// 失敗メッセージ
@@ -416,7 +416,7 @@ HRESULT CSound::CheckChunk(HANDLE hFile, DWORD format, DWORD * pChunkSize, DWORD
 	DWORD dwOffset = 0;
 
 	// ファイルポインタの先頭を判定
-	if (SetFilePointer(hFile, 0, NULL, FILE_BEGIN) == INVALID_SET_FILE_POINTER)
+	if (SetFilePointer(hFile, 0, nullptr, FILE_BEGIN) == INVALID_SET_FILE_POINTER)
 	{// ファイルポインタを先頭に移動
 
 		// 失敗を返す
@@ -427,7 +427,7 @@ HRESULT CSound::CheckChunk(HANDLE hFile, DWORD format, DWORD * pChunkSize, DWORD
 	while (hr == S_OK)
 	{
 		// チャンクタイプの有無を判定
-		if (ReadFile(hFile, &dwChunkType, sizeof(DWORD), &dwRead, NULL) == 0)
+		if (ReadFile(hFile, &dwChunkType, sizeof(DWORD), &dwRead, nullptr) == 0)
 		{// チャンクの読み込み
 
 			// 失敗を返す
@@ -435,7 +435,7 @@ HRESULT CSound::CheckChunk(HANDLE hFile, DWORD format, DWORD * pChunkSize, DWORD
 		}
 
 		// チャンクサイズの有無を判定
-		if (ReadFile(hFile, &dwChunkDataSize, sizeof(DWORD), &dwRead, NULL) == 0)
+		if (ReadFile(hFile, &dwChunkDataSize, sizeof(DWORD), &dwRead, nullptr) == 0)
 		{// チャンクデータの読み込み
 
 			// 失敗を返す
@@ -455,7 +455,7 @@ HRESULT CSound::CheckChunk(HANDLE hFile, DWORD format, DWORD * pChunkSize, DWORD
 			dwChunkDataSize = 4;
 
 			// ファイルタイプの有無を判定
-			if (ReadFile(hFile, &dwFileType, sizeof(DWORD), &dwRead, NULL) == 0)
+			if (ReadFile(hFile, &dwFileType, sizeof(DWORD), &dwRead, nullptr) == 0)
 			{// ファイルタイプの読み込み
 
 				// 失敗を返す
@@ -467,7 +467,7 @@ HRESULT CSound::CheckChunk(HANDLE hFile, DWORD format, DWORD * pChunkSize, DWORD
 		default:
 
 			// ファイルポインタの判定
-			if (SetFilePointer(hFile, dwChunkDataSize, NULL, FILE_CURRENT) == INVALID_SET_FILE_POINTER)
+			if (SetFilePointer(hFile, dwChunkDataSize, nullptr, FILE_CURRENT) == INVALID_SET_FILE_POINTER)
 			{// ファイルポインタをチャンクデータ分移動
 
 				// 失敗を返す
@@ -510,14 +510,14 @@ HRESULT CSound::ReadChunkData(HANDLE hFile, void * pBuffer, DWORD dwBuffersize, 
 	// 変数宣言
 	DWORD dwRead;
 
-	if (SetFilePointer(hFile, dwBufferoffset, NULL, FILE_BEGIN) == INVALID_SET_FILE_POINTER)
+	if (SetFilePointer(hFile, dwBufferoffset, nullptr, FILE_BEGIN) == INVALID_SET_FILE_POINTER)
 	{// ファイルポインタを指定位置まで移動
 
 		// 失敗を返す
 		return HRESULT_FROM_WIN32(GetLastError());
 	}
 
-	if (ReadFile(hFile, pBuffer, dwBuffersize, &dwRead, NULL) == 0)
+	if (ReadFile(hFile, pBuffer, dwBuffersize, &dwRead, nullptr) == 0)
 	{// データの読み込み
 
 		// 失敗を返す
