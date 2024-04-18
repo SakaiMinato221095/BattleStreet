@@ -345,7 +345,7 @@ void CRankInt::Save(void)
 	//ファイルを開く
 	FILE* pFile = fopen(pText[TEXT_GAMETIME_000], "wb");
 
-	if (pFile != NULL)
+	if (pFile != nullptr)
 	{// ファイルが開けた場合
 
 		// バイナリファイルに書き込む
@@ -368,7 +368,7 @@ void CRankInt::Load(void)
 	// ファイルを開く
 	FILE* pFile = fopen(pText[TEXT_GAMETIME_000], "rb");
 
-	if (pFile != NULL)
+	if (pFile != nullptr)
 	{// ファイルが開けた場合
 
 		// バイナリファイルから読み込む
@@ -616,7 +616,7 @@ void CRankFloat::Save(void)
 	//ファイルを開く
 	FILE* pFile = fopen(pText[TEXT_GAMETIME_000], "wb");
 
-	if (pFile != NULL)
+	if (pFile != nullptr)
 	{// ファイルが開けた場合
 
 		// バイナリファイルに書き込む
@@ -639,7 +639,7 @@ void CRankFloat::Load(void)
 	// ファイルを開く
 	FILE* pFile = fopen(pText[TEXT_GAMETIME_000], "rb");
 
-	if (pFile != NULL)
+	if (pFile != nullptr)
 	{// ファイルが開けた場合
 
 		// バイナリファイルから読み込む

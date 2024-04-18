@@ -23,10 +23,11 @@
 #include "skybox.h"
 
 //=======================================
-//=	コンスト定義
+//=	定数定義
 //=======================================
 
-const std::string FAIL_TEXT_WINDOW = "モデルの読み込み失敗";
+// モデル読み込み失敗文
+const char* FAIL_TEXT_WINDOW_MODEL = "モデルの読み込み失敗";
 
 //-------------------------------------
 //-	モデル管理のコンストラクタ
@@ -98,7 +99,7 @@ HRESULT CManagerModel::Load(HWND hWnd)
 	{// 失敗時
 
 		// 失敗メッセージ
-		return pManager->FileMessage(hWnd, "階層構造モデル", FAIL_TEXT_WINDOW);
+		return pManager->FileMessage(hWnd, "階層構造モデル", FAIL_TEXT_WINDOW_MODEL);
 	}
 
 	// 効果なしオブジェクト
@@ -106,7 +107,7 @@ HRESULT CManagerModel::Load(HWND hWnd)
 	{// 失敗時
 
 		// 失敗メッセージ
-		return pManager->FileMessage(hWnd, "効果なしモデル", FAIL_TEXT_WINDOW);
+		return pManager->FileMessage(hWnd, "効果なしモデル", FAIL_TEXT_WINDOW_MODEL);
 	}
 
 	// スカイボックス
@@ -114,7 +115,7 @@ HRESULT CManagerModel::Load(HWND hWnd)
 	{// 失敗時
 
 		// 失敗メッセージ
-		return pManager->FileMessage(hWnd, "スカイボックス", FAIL_TEXT_WINDOW);
+		return pManager->FileMessage(hWnd, "スカイボックス", FAIL_TEXT_WINDOW_MODEL);
 	}
 
 	// 成功を返す
@@ -203,9 +204,9 @@ int CManagerModel::Regist(const char *pFilename)
 				pFilename,						// Xファイルオブジェクト名
 				D3DXMESH_SYSTEMMEM,
 				pDevice,
-				nullptr,
+				NULL,
 				&m_model[nCount].m_pBuffMat,	// マテリアルの情報
-				nullptr,
+				NULL,
 				&m_model[nCount].m_dwNumMat,	// マテリアルの数
 				&m_model[nCount].m_pMesh)))		// メッシュの情報
 			{

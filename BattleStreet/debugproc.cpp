@@ -30,7 +30,7 @@ CDebugProc::CDebugProc()
 	//デバッグ表示情報のクリア
 	m_bDisp = false;
 	m_pFont = nullptr;
-	memset(&m_aStr[0], NULL, sizeof(m_aStr));
+	memset(&m_aStr[0], 0, sizeof(m_aStr));
 }
 
 //==========================================================
@@ -112,7 +112,7 @@ void CDebugProc::Draw(void)
 	}
 
 	//デバッグ表示情報のクリア
-	memset(&m_aStr[0], NULL, sizeof(m_aStr));
+	memset(&m_aStr[0], 0, sizeof(m_aStr));
 }
 
 //==========================================================

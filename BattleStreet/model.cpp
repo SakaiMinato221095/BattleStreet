@@ -253,7 +253,7 @@ void CModel::SetFile(MODEL_TYPE modelType)
 				if (aFileData[nCount] == '#')
 				{
 					// ƒRƒƒ“ƒg‚ğœ‹
-					memset(&aFileData[nCount], NULL, sizeof(256 - nCount));
+					memset(&aFileData[nCount], 0, sizeof(256 - nCount));
 					break;
 				}
 			}

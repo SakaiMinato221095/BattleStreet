@@ -63,7 +63,7 @@ public:
 	virtual void Update(void);
 	virtual void Draw(void);
 
-	static CScene *Create(MODE mode,HINSTANCE hInstance = NULL, HWND hWnd = 0, BOOL bWindow = true);
+	static CScene *Create(MODE mode,HINSTANCE hInstance = nullptr, HWND hWnd = 0, BOOL bWindow = true);
 
 	void SetMode(MODE mode) { m_mode = mode; }
 	MODE GetMode(void) { return m_mode; }
@@ -90,7 +90,9 @@ public:
 	void SetMode(CScene::MODE mode);
 	CScene::MODE GetMode(void);
 
-	HRESULT FileMessage(HWND hWnd, std::string textMessage, std::string textWindow );
+	static CManager* GetInstance();
+
+	HRESULT FileMessage(HWND hWnd, std::string textMessage, std::string textWindow);
 
 	CFade* GetFade(void) { return m_pFade; }
 
@@ -108,7 +110,6 @@ public:
 
 	CMgrColl* GetMgrColl(void) { return m_pMgrColl; }
 
-	static CManager *GetInstance();
 private:
 
 	void Debug(void);

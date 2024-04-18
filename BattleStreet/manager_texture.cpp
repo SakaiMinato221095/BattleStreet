@@ -25,10 +25,11 @@
 #include "spwan_wall.h"
 
 //=======================================
-//=	コンスト定義
+//=	定数定義
 //=======================================
 
-const std::string FAIL_TEXT_WINDOW = "テクスチャの読み込み失敗";
+// テクスチャ読み込み失敗文
+const char* FAIL_TEXT_WINDOW_TEX = "テクスチャの読み込み失敗";
 
 //-------------------------------------
 //-	テクスチャのコンストラクタ
@@ -99,7 +100,7 @@ HRESULT CManagerTexture::Load(HWND hWnd)
 	if (FAILED(CTitle::Load()))
 	{
 		// 失敗メッセージ
-		return pManager->FileMessage(hWnd, "タイトル", FAIL_TEXT_WINDOW);
+		return pManager->FileMessage(hWnd, "タイトル", FAIL_TEXT_WINDOW_TEX);
 
 	}
 
@@ -107,22 +108,22 @@ HRESULT CManagerTexture::Load(HWND hWnd)
 	if (FAILED(CPause::Load()))
 	{
 		// 失敗メッセージ
-		return pManager->FileMessage(hWnd, "ポーズ", FAIL_TEXT_WINDOW);
+		return pManager->FileMessage(hWnd, "ポーズ", FAIL_TEXT_WINDOW_TEX);
 	}
 
 	// フィールド
 	if (FAILED(CObj3dField::Load()))
 	{
 		// 失敗メッセージ
-		return pManager->FileMessage(hWnd, "フィールド", FAIL_TEXT_WINDOW);
+		return pManager->FileMessage(hWnd, "フィールド", FAIL_TEXT_WINDOW_TEX);
 	}
-	
+
 	// 背景
 	if (FAILED(CBg::Load()))
 	{// 失敗時
 
 		// 失敗メッセージ
-		return pManager->FileMessage(hWnd, "背景", FAIL_TEXT_WINDOW);
+		return pManager->FileMessage(hWnd, "背景", FAIL_TEXT_WINDOW_TEX);
 	}
 
 	// 数字
@@ -130,7 +131,7 @@ HRESULT CManagerTexture::Load(HWND hWnd)
 	{// 失敗時
 
 		// 失敗メッセージ
-		return pManager->FileMessage(hWnd, "数字", FAIL_TEXT_WINDOW);
+		return pManager->FileMessage(hWnd, "数字", FAIL_TEXT_WINDOW_TEX);
 	}
 
 	// エフェクト
@@ -138,7 +139,7 @@ HRESULT CManagerTexture::Load(HWND hWnd)
 	{// 失敗時
 
 		// 失敗メッセージ
-		return pManager->FileMessage(hWnd, "エフェクト", FAIL_TEXT_WINDOW);
+		return pManager->FileMessage(hWnd, "エフェクト", FAIL_TEXT_WINDOW_TEX);
 	}
 
 	// 出現壁
@@ -146,7 +147,7 @@ HRESULT CManagerTexture::Load(HWND hWnd)
 	{// 失敗時
 
 		// 失敗メッセージ
-		return pManager->FileMessage(hWnd, "出現壁", FAIL_TEXT_WINDOW);
+		return pManager->FileMessage(hWnd, "出現壁", FAIL_TEXT_WINDOW_TEX);
 	}
 
 	// 成功を返す

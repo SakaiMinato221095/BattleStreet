@@ -64,12 +64,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLime
 		0,									// 0にする（通常はしようしない）
 		0,									// 0にする（通常はしようしない）
 		hInstance,							// インスタンスハンドル
-		LoadIcon(nullptr,IDI_APPLICATION),		// タスクバーアイコン
-		LoadCursor(nullptr,IDC_ARROW),			// マウスカーソル
+		LoadIcon(NULL,IDI_APPLICATION),		// タスクバーアイコン
+		LoadCursor(NULL,IDC_ARROW),			// マウスカーソル
 		(HBRUSH)(COLOR_WINDOW + 1),			// クライアント領域の背景色
-		nullptr,								// メニューバー
+		NULL,								// メニューバー
 		CLASS_NAME,							// ウィンドウクラスの名前
-		LoadIcon(nullptr,IDI_APPLICATION),		// ファイルアイコン
+		LoadIcon(NULL,IDI_APPLICATION),		// ファイルアイコン
 	};
 
 	RECT rect = { 0,0,SCREEN_WIDTH,SCREEN_HEIGHT };		// 画面サイズの構造体
@@ -102,8 +102,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLime
 		CW_USEDEFAULT,				// ウィンドウの左上Y座標
 		(rect.right - rect.left),	// ウィンドウの幅
 		(rect.bottom - rect.top),	// ウィンドウの高さ
-		nullptr,						// 親ウィンドウのハンドル
-		nullptr,						// メニューハンドルまたは子ウィンドウID
+		NULL,						// 親ウィンドウのハンドル
+		NULL,						// メニューハンドルまたは子ウィンドウID
 		hInstance,					// インスタンスハンドル
 		nullptr);						// ウィンドウ作成データ
 
@@ -127,7 +127,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLime
 	// メッセージをループ
 	while (1)
 	{
-		if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE) != 0)
+		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE) != 0)
 		{// windosの処理
 
 			if (msg.message == WM_QUIT)
@@ -180,6 +180,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLime
 		}
 	}
 
+	// マネージャの終了処理
+	pManager->Uninit();
+
 	// 管理の破棄
 	if (pManager != nullptr)
 	{
@@ -191,14 +194,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLime
 		pManager = nullptr;
 	}
 
-	// メモリ破壊確認
 	_CrtDumpMemoryLeaks();
+
 
 	//分解能を戻す
 	timeEndPeriod(1);
 
 	// ウィンドウクラスの登録を解除
 	UnregisterClass(CLASS_NAME, wcex.hInstance);
+
 
 	// リターン
 	return(int)msg.wParam;

@@ -276,7 +276,7 @@ void CObject::Debug(void)
 	CDebugProc *pDebugProc = CManager::GetInstance()->GetDbugProc();
 
 	// デバックプロック取得の有無を判定
-	if (pDebugProc == NULL)
+	if (pDebugProc == nullptr)
 	{
 		return;
 	}

@@ -35,10 +35,10 @@
 #include "map_manager.h"
 
 //=======================================
-//=	コンスト定義
+//=	定数定義
 //=======================================
 
-const std::string FAIL_TEXT_WINDOW = "初期化の失敗";
+const char* FAIL_TEXT_WINDOW = "初期化の失敗";
 
 //=======================================
 //=	静的変数宣言
@@ -209,7 +209,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		else
 		{
 			// 失敗メッセージ
-			return FileMessage(hWnd, "キーボードの生成", FAIL_TEXT_WINDOW);
+			//return FileMessage(hWnd, "キーボードの生成", FAIL_TEXT_WINDOW);
 		}
 	}
 
@@ -227,7 +227,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		else
 		{
 			// 失敗メッセージ
-			return FileMessage(hWnd, "XINPUTの生成", FAIL_TEXT_WINDOW);
+			//return FileMessage(hWnd, "XINPUTの生成", FAIL_TEXT_WINDOW);
 		}
 	}
 
@@ -245,14 +245,14 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		else
 		{
 			// 失敗メッセージ
-			return FileMessage(hWnd, "サウンドの生成", FAIL_TEXT_WINDOW);
+			//return FileMessage(hWnd, "サウンドの生成", FAIL_TEXT_WINDOW);
 		}
 	}
 
 	// レンダラー
 	{
 		// 生成処理
-		CRenderer* pRenderer = CRenderer::Create(hWnd,TRUE);
+		CRenderer* pRenderer = CRenderer::Create(hWnd, TRUE);
 
 		// 生成成功の有無を判定
 		if (pRenderer != nullptr)
@@ -263,7 +263,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		else
 		{
 			// 失敗メッセージ
-			return FileMessage(hWnd, "レンダラーの生成", FAIL_TEXT_WINDOW);
+			//return FileMessage(hWnd, "レンダラーの生成", FAIL_TEXT_WINDOW);
 		}
 	}
 
@@ -282,7 +282,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		else
 		{
 			// 失敗メッセージ
-			return FileMessage(hWnd, "デバックプロックの生成", FAIL_TEXT_WINDOW);
+			//return FileMessage(hWnd, "デバックプロックの生成", FAIL_TEXT_WINDOW);
 		}
 	}
 
@@ -300,7 +300,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		else
 		{
 			// 失敗メッセージ
-			return FileMessage(hWnd, "フェードの生成", FAIL_TEXT_WINDOW);
+			//return FileMessage(hWnd, "フェードの生成", FAIL_TEXT_WINDOW);
 		}
 	}
 
@@ -324,7 +324,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		else
 		{
 			// 失敗メッセージ
-			return FileMessage(hWnd, "テクスチャ管理の生成", FAIL_TEXT_WINDOW);
+			//return FileMessage(hWnd, "テクスチャ管理の生成", FAIL_TEXT_WINDOW);
 		}
 	}
 
@@ -348,7 +348,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		else
 		{
 			// 失敗メッセージ
-			return FileMessage(hWnd, "モデル管理の生成", FAIL_TEXT_WINDOW);
+			//return FileMessage(hWnd, "モデル管理の生成", FAIL_TEXT_WINDOW);
 		}
 	}
 
@@ -366,7 +366,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		else
 		{
 			// 失敗メッセージ
-			return FileMessage(hWnd, "カメラの生成", FAIL_TEXT_WINDOW);
+			//return FileMessage(hWnd, "カメラの生成", FAIL_TEXT_WINDOW);
 		}
 	}
 
@@ -384,7 +384,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		else
 		{
 			// 失敗メッセージ
-			return FileMessage(hWnd, "ライトの生成", FAIL_TEXT_WINDOW);
+			//return FileMessage(hWnd, "ライトの生成", FAIL_TEXT_WINDOW);
 		}
 	}
 
@@ -402,7 +402,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		else
 		{
 			// 失敗メッセージ
-			return FileMessage(hWnd, "当たり判定管理の生成", FAIL_TEXT_WINDOW);
+			//return FileMessage(hWnd, "当たり判定管理の生成", FAIL_TEXT_WINDOW);
 		}
 	}
 
@@ -414,12 +414,12 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		// 生成成功の有無を判定
 		if (pMapManager != nullptr)
 		{
-			
+
 		}
 		else
 		{
 			// 失敗メッセージ
-			return FileMessage(hWnd, "マップ管理の生成", FAIL_TEXT_WINDOW);
+			//return FileMessage(hWnd, "マップ管理の生成", FAIL_TEXT_WINDOW);
 		}
 	}
 
@@ -437,7 +437,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		else
 		{
 			// 失敗メッセージ
-			return FileMessage(hWnd, "シーンの生成", FAIL_TEXT_WINDOW);
+			//return FileMessage(hWnd, "シーンの生成", FAIL_TEXT_WINDOW);
 		}
 	}
 
@@ -549,14 +549,13 @@ void CManager::Uninit(void)
 		m_pMgrColl = nullptr;
 	}
 
-	// 当たり判定管理の破棄
+	// マップ管理の取得
 	CMapManager* pMapManager = CMapManager::GetInstance();
 
 	if (pMapManager != nullptr)
 	{
-		// 当たり判定管理の終了処理
+		// マップ管理の終了処理
 		pMapManager->Uninit();
-		pMapManager = nullptr;
 	}
 
 	// シーンの破棄
@@ -658,16 +657,16 @@ void CManager::Update(void)
 	{
 		// フェードの更新処理
 		m_pFade->Update();
+	}
 
-		// フェードの有無を判定
-		if (m_pFade->GetFadeState() == CFade::STATE_NONE)
+	// フェードの有無を判定
+	if (m_pFade->GetFadeState() == CFade::STATE_NONE)
+	{
+		// シーンの有無を判定
+		if (m_pScene != nullptr)
 		{
-			// シーンの有無を判定
-			if (m_pScene != nullptr)
-			{
-				// シーンの更新処理
-				m_pScene->Update();
-			}
+			// シーンの更新処理
+			m_pScene->Update();
 		}
 	}
 

@@ -306,21 +306,21 @@ CEnemyMinion* CEnemyMinion::Create(CModel::MODEL_TYPE modelType, CMotion::MOTION
 	CEnemyMinion* pEnemyWeak = DBG_NEW CEnemyMinion;
 
 	// 生成の成功の有無を判定
-	if (pEnemyWeak != NULL)
+	if (pEnemyWeak != nullptr)
 	{
 		// 初期化処理
 		if (FAILED(pEnemyWeak->Init(modelType, motionType)))
 		{// 失敗時
 
 			// 「なし」を返す
-			return NULL;
+			return nullptr;
 		}
 	}
-	else if (pEnemyWeak == NULL)
+	else if (pEnemyWeak == nullptr)
 	{// 失敗時
 
 		// 「なし」を返す
-		return NULL;
+		return nullptr;
 	}
 
 	// ポインタを返す
@@ -834,7 +834,7 @@ void CEnemyMinion::Debug(void)
 	CDebugProc* pDebugProc = CManager::GetInstance()->GetDbugProc();
 
 	// デバックプロック取得の有無を判定
-	if (pDebugProc == NULL)
+	if (pDebugProc == nullptr)
 	{
 		return;
 	}
